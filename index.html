@@ -5300,7 +5300,12 @@ function updateBundleTray(){
 }
 function scrollToBundle(){
   var el=G("cart-section");
-  if(el){el.style.display="block";el.scrollIntoView({behavior:"smooth",block:"start"});}
+  if(el){
+    var rw=G("rw");
+    if(rw)rw.classList.remove("vis");
+    el.style.display="block";
+    el.scrollIntoView({behavior:"smooth",block:"start"});
+  }
 }
 function renderCart(){
   updateCartActionBar();
@@ -5314,7 +5319,6 @@ function renderCart(){
     updateBundleTray();
     return;
   }
-  section.style.display="block";
   function itemCard(entry){
     var cmp=entry.comparison;
     var C=CUR[cmp.country]||{};
@@ -5514,6 +5518,7 @@ function render(){
   renderCountryNotes(S.country,S.cat,mdata.rawName||mdata.displayName);
   renderCart();
   var rwEl=G("rw");if(rwEl&&!rwEl.classList.contains("vis"))rwEl.classList.add("vis");
+  var cs=G("cart-section");if(cs)cs.style.display="none";
 }
 function hideResult(){var rw=G("rw");if(rw)rw.classList.remove("vis");syncTradeUI();renderCountryNotes("","","");}
 function onVatCh(){
