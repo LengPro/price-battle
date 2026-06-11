@@ -1060,7 +1060,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 3.00pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 3.30pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -1380,7 +1380,8 @@ en:{
   cart_added:"Added to Compare Cart",cart_remove:"Remove",
   cart_total_th:"Thailand total",cart_total_vat:"VAT refund total",cart_total_net:"Thailand after VAT",cart_total_foreign:"Foreign total (THB)",cart_total_diff:"Total difference",
   cart_diff_th:"Thailand total is cheaper",cart_diff_ot:function(c){return c+" total is cheaper";},cart_diff_same:"Totals are equal",
-  tray_view:"View Bundle →"
+  tray_view:"View Bundle →",
+  cart_bundle_total:"Bundle Total"
 },
 th:{
   mode_compare:"เปรียบราคา",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",
@@ -1452,7 +1453,8 @@ th:{
   cart_added:"เพิ่มเข้า Compare Cart แล้ว",cart_remove:"ลบ",
   cart_total_th:"ราคารวมไทย",cart_total_vat:"VAT Refund รวม",cart_total_net:"ไทยหลังคืน VAT",cart_total_foreign:"ราคารวมต่างประเทศ (บาท)",cart_total_diff:"ส่วนต่างรวม",
   cart_diff_th:"รวมแล้วซื้อที่ไทยถูกกว่า",cart_diff_ot:function(c){return "รวมแล้วซื้อที่ "+c+" ถูกกว่า";},cart_diff_same:"ราคารวมเท่ากัน",
-  tray_view:"ดู Bundle →"
+  tray_view:"ดู Bundle →",
+  cart_bundle_total:"ราคารวม Bundle"
 }};
 
 var LANG="en";
@@ -5313,40 +5315,90 @@ function renderCart(){
     return;
   }
   section.style.display="block";
-  list.innerHTML=entries.map(function(entry){
+  function itemCard(entry){
     var cmp=entry.comparison;
-    return '<div class="cart-item">'
-      +'<div class="cart-item-ic">'+getIconHtml(entry.modelData.icon,"cmp-ic-img")+'</div>'
-      +'<div class="cart-item-main">'
-      +'<div class="cart-item-name">'+entry.fullName+'</div>'
-      +'<div class="cart-item-sub">'+cmp.countryFlag+' '+cmp.countryName+'</div>'
-      +'<div class="cart-item-stats">'
-      +'<div class="cart-stat"><span class="cart-stat-lbl">'+tr("cart_total_th")+'</span><span class="cart-stat-val">฿'+fmt(cmp.thPrice)+'</span></div>'
-      +'<div class="cart-stat"><span class="cart-stat-lbl">'+tr("cart_total_vat")+'</span><span class="cart-stat-val">฿'+fmt(cmp.vatRefund)+'</span></div>'
-      +'<div class="cart-stat"><span class="cart-stat-lbl">'+tr("cart_total_net")+'</span><span class="cart-stat-val">฿'+fmt(cmp.thAfterVat)+'</span></div>'
-      +'<div class="cart-stat"><span class="cart-stat-lbl">'+tr("cart_total_foreign")+'</span><span class="cart-stat-val">฿'+fmt(cmp.foreignTHB)+'</span></div>'
+    var C=CUR[cmp.country]||{};
+    var effTH=cmp.vatEnabled?cmp.thAfterVat:cmp.thPrice;
+    var diff=cmp.foreignTHB-effTH;
+    var thWin=diff>0,otWin=diff<0;
+    var hintLines="";
+    if(cmp.vatEnabled&&cmp.vatRefund>0){
+      hintLines='<div class="p-vat-hint" style="display:block"><span class="p-vat-hint-line">฿'+fmt(cmp.thPrice)+'</span><span class="p-vat-hint-line">-฿'+fmt(cmp.vatRefund)+' (VAT refund)</span></div>';
+    }
+    var absDiff=Math.abs(diff);
+    var pct=cmp.foreignTHB>0?absDiff/cmp.foreignTHB*100:0;
+    var chipCls=diff>0?"chip chip-green":diff<0?"chip chip-red":"chip chip-neutral";
+    var chipAmt=diff>0?"🇹🇭 saves ฿"+fmt(absDiff):diff<0?cmp.countryFlag+" saves ฿"+fmt(absDiff):"Equal";
+    var chipPct=diff!==0?'<div class="'+chipCls+'">'+pct.toFixed(1)+'%</div>':"";
+    var vatC=cmp.vatEnabled&&cmp.vatRefund>0?'<div class="vat-chip" style="display:block">VAT ฿'+fmt(cmp.vatRefund)+'</div>':"";
+    var icHtml=getIconHtml(entry.modelData.icon,"cmp-ic-img");
+    var icEl=icHtml.indexOf("<img")>=0?'<span class="cmp-ic" style="font-size:28px">'+icHtml+'</span>':'<span class="cmp-ic">'+entry.modelData.icon+'</span>';
+    return '<div class="cmp-card" style="margin-bottom:10px">'
+      +'<div class="cmp-hd"><div class="cmp-row1">'
+        +'<div class="cmp-product">'+icEl
+          +'<div><div class="cmp-nm" style="font-size:15px">'+entry.fullName+'</div>'
+          +'<div class="cmp-sp">'+cmp.countryFlag+' '+cmp.countryName+' &middot; '+cmp.currency+'</div></div>'
+        +'</div>'
+        +'<button class="cart-item-remove" onclick="removeCartItem(''+entry.id+'')">'+tr("cart_remove")+'</button>'
       +'</div></div>'
-      +'<button class="cart-item-remove" onclick="removeCartItem(\''+entry.id+'\')">'+tr("cart_remove")+'</button>'
-      +'</div>';
-  }).join("");
+      +'<div class="pcols">'
+        +'<div class="pcol'+(thWin?" win":"")+(otWin?" lose":"")+'">'
+          +'<div class="pcc"><span class="pcc-fl">🇹🇭</span><span class="pcc-nm">Thailand</span><span class="pcc-cu">THB</span></div>'
+          +'<div class="p-price'+(thWin?" win-price":"")+'">฿'+fmt(effTH)+'</div>'
+          +'<div class="p-convert">≈ '+C.sym+fmt2(t2f(effTH,C.rate))+' '+cmp.currency+'</div>'
+          +hintLines
+        +'</div>'
+        +'<div class="pcol'+(otWin?" win":"")+(thWin?" lose":"")+'">'
+          +'<div class="pcc"><span class="pcc-fl">'+cmp.countryFlag+'</span><span class="pcc-nm">'+cmp.countryName+'</span><span class="pcc-cu">'+cmp.currency+'</span></div>'
+          +'<div class="p-price'+(otWin?" win-price":"")+'">'+C.sym+fmt2(cmp.foreignRaw)+'</div>'
+          +'<div class="p-convert">≈ ฿'+fmt(cmp.foreignTHB)+'</div>'
+        +'</div>'
+      +'</div>'
+      +'<div class="diff-bar"><div class="diff-chips"><div class="'+chipCls+'">'+chipAmt+'</div>'+chipPct+'</div>'+vatC+'</div>'
+    +'</div>';
+  }
+  list.innerHTML=entries.map(itemCard).join("");
   var totals=entries.reduce(function(acc,entry){
     var cmp=entry.comparison;
-    acc.thPrice+=cmp.thPrice;
-    acc.vat+=cmp.vatRefund;
-    acc.thAfterVat+=cmp.thAfterVat;
+    var effTH=cmp.vatEnabled?cmp.thAfterVat:cmp.thPrice;
+    acc.thEff+=effTH;acc.thRaw+=cmp.thPrice;
+    acc.vat+=cmp.vatEnabled&&cmp.vatRefund>0?cmp.vatRefund:0;
     acc.foreignTHB+=cmp.foreignTHB;
     return acc;
-  },{thPrice:0,vat:0,thAfterVat:0,foreignTHB:0});
-  var totalDiff=totals.foreignTHB-totals.thAfterVat;
-  var totalWinClass=totalDiff>0?" total-win":(totalDiff<0?" total-lose":"");
-  var diffText=totalDiff>0?tr("cart_diff_th"):(totalDiff<0?tr("cart_diff_ot",CUR[S.country]?CUR[S.country].name:""):tr("cart_diff_same"));
-  summary.innerHTML='<div class="cart-summary-grid">'
-    +'<div class="cart-summary-box"><span class="cart-summary-lbl">'+tr("cart_total_th")+'</span><span class="cart-summary-val">฿'+fmt(totals.thPrice)+'</span></div>'
-    +'<div class="cart-summary-box"><span class="cart-summary-lbl">'+tr("cart_total_vat")+'</span><span class="cart-summary-val">฿'+fmt(totals.vat)+'</span></div>'
-    +'<div class="cart-summary-box"><span class="cart-summary-lbl">'+tr("cart_total_net")+'</span><span class="cart-summary-val">฿'+fmt(totals.thAfterVat)+'</span></div>'
-    +'<div class="cart-summary-box"><span class="cart-summary-lbl">'+tr("cart_total_foreign")+'</span><span class="cart-summary-val">฿'+fmt(totals.foreignTHB)+'</span></div>'
-    +'<div class="cart-summary-box'+totalWinClass+'" style="grid-column:1 / -1"><span class="cart-summary-lbl">'+tr("cart_total_diff")+'</span><span class="cart-summary-val">'+(totalDiff===0?'฿0':(totalDiff>0?'฿'+fmt(totalDiff):'-฿'+fmt(Math.abs(totalDiff))))+'</span><div class="cart-summary-note">'+diffText+'</div></div>'
-    +'</div>';
+  },{thEff:0,thRaw:0,vat:0,foreignTHB:0});
+  var C=CUR[S.country]||{};
+  var totalDiff=totals.foreignTHB-totals.thEff;
+  var thWin=totalDiff>0,otWin=totalDiff<0;
+  var pct=totals.foreignTHB>0?Math.abs(totalDiff)/totals.foreignTHB*100:0;
+  var chipCls=totalDiff>0?"chip chip-green":totalDiff<0?"chip chip-red":"chip chip-neutral";
+  var chipAmt=totalDiff>0?"🇹🇭 Bundle saves ฿"+fmt(Math.abs(totalDiff)):totalDiff<0?(C.flag||"")+" Bundle saves ฿"+fmt(Math.abs(totalDiff)):"Equal total";
+  var chipPct=totalDiff!==0?'<div class="'+chipCls+'">'+pct.toFixed(1)+'%</div>':"";
+  var vatC=totals.vat>0?'<div class="vat-chip" style="display:block">VAT Refund Total ฿'+fmt(totals.vat)+'</div>':"";
+  var vatHint=totals.vat>0?'<div class="p-vat-hint" style="display:block"><span class="p-vat-hint-line">฿'+fmt(totals.thRaw)+'</span><span class="p-vat-hint-line">-฿'+fmt(totals.vat)+' (VAT refund)</span></div>':"";
+  var n=entries.length;
+  summary.innerHTML='<div class="cmp-card" style="margin-bottom:0;border:2px solid rgba(0,113,227,.25)">'
+    +'<div class="cmp-hd"><div class="cmp-row1">'
+      +'<div class="cmp-product"><span class="cmp-ic">🛒</span>'
+        +'<div><div class="cmp-nm">'+tr("cart_bundle_total")+'</div>'
+        +'<div class="cmp-sp">'+n+' item'+(n!==1?'s':'')+'</div></div>'
+      +'</div>'
+      +'<button class="cmp-cart-btn secondary" onclick="clearCompareCart()">'+tr("cart_clear")+'</button>'
+    +'</div></div>'
+    +'<div class="pcols">'
+      +'<div class="pcol'+(thWin?" win":"")+(otWin?" lose":"")+'">'
+        +'<div class="pcc"><span class="pcc-fl">🇹🇭</span><span class="pcc-nm">Thailand</span><span class="pcc-cu">THB</span></div>'
+        +'<div class="p-price'+(thWin?" win-price":"")+'">฿'+fmt(totals.thEff)+'</div>'
+        +'<div class="p-convert">≈ '+(C.sym||"")+fmt2(t2f(totals.thEff,C.rate))+' '+(C.cur||"")+'</div>'
+        +vatHint
+      +'</div>'
+      +'<div class="pcol'+(otWin?" win":"")+(thWin?" lose":"")+'">'
+        +'<div class="pcc"><span class="pcc-fl">'+(C.flag||"🌍")+'</span><span class="pcc-nm">'+(C.name||"Foreign")+'</span><span class="pcc-cu">'+(C.cur||"")+'</span></div>'
+        +'<div class="p-price'+(otWin?" win-price":"")+'">฿'+fmt(totals.foreignTHB)+'</div>'
+        +'<div class="p-convert">'+(C.sym||"")+fmt2(t2f(totals.foreignTHB,C.rate))+' '+(C.cur||"")+'</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="diff-bar"><div class="diff-chips"><div class="'+chipCls+'">'+chipAmt+'</div>'+chipPct+'</div>'+vatC+'</div>'
+  +'</div>';
   updateBundleTray();
 }
 
