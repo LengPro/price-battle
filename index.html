@@ -120,7 +120,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ddph{font-size:14px;color:var(--tertiary-text);font-weight:400;line-height:1.2}
 .ddarr{font-size:9px;color:var(--secondary-text);transition:transform .2s;flex-shrink:0}
 .ddt.open .ddarr{transform:rotate(180deg)}
-.ddm{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--blue);border-top:1px solid var(--rule);border-radius:0 0 10px 10px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.12);max-height:52vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ddm{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--blue);border-top:1px solid var(--rule);border-radius:0 0 10px 10px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.12);max-height:52vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
 .ddm.open{display:block}
 .ddm::-webkit-scrollbar{width:4px}
 .ddm::-webkit-scrollbar-thumb{background:var(--mid-grey);border-radius:4px}
@@ -4834,7 +4834,6 @@ function bindDdDelegation(){
     activateDdOption(code,e);
   }
   wrap.addEventListener("pointerdown",delegatedPick,true);
-  wrap.addEventListener("touchstart",delegatedPick,{capture:true,passive:false});
   wrap.addEventListener("click",delegatedPick,true);
   wrap.addEventListener("mouseup",delegatedPick,true);
   wrap.addEventListener("pointerup",delegatedPick,true);
@@ -4844,10 +4843,9 @@ function bindDdOption(el,code){
   if(!el||!code||el.dataset.boundDd==="1")return;
   el.dataset.boundDd="1";
   el.setAttribute("onpointerdown","return activateDdOption('"+code+"',event)");
-  el.setAttribute("ontouchstart","return activateDdOption('"+code+"',event)");
   el.setAttribute("onclick","return activateDdOption('"+code+"',event)");
   el.setAttribute("ontouchend","return activateDdOption('"+code+"',event)");
-  el.style.touchAction="manipulation";
+  el.style.touchAction="pan-y";
 }
 function bindExistingDdOptions(){
   var opts=document.querySelectorAll("#ddopts .ddo");
