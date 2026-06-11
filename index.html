@@ -6139,6 +6139,7 @@ var APP_VERSION="06.06.2026-09:25";
   buildDd();ensureDdBuilt();buildCatGrid();updateRateBar();buildAdminRates();
   initGbUI();initTradeValueUI();
   loadCustomProducts();loadHiddenProducts();tryFetchRates(false);
+  setInterval(function(){tryFetchRates(false);},30*60*1000);
   renderCart();
   updateRateBar();
   setTimeout(updateRateBar,0);
