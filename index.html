@@ -28,10 +28,10 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .nl.on{background:var(--body-text);color:var(--white)}
 .nav-btn{padding:5px 9px;font-size:16px;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--mid-grey);background:transparent;font-family:var(--font)}
 .nav-btn:hover{background:var(--off-white)}
-.rate-bar{background:var(--off-white);border-bottom:1px solid var(--rule);padding:6px 22px;display:flex;gap:6px;align-items:center;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.rate-bar::-webkit-scrollbar{display:none}
+.rate-bar{background:var(--off-white);border-bottom:1px solid var(--rule);padding:6px 22px;display:flex;gap:6px;align-items:center}
 .rl{font-size:10px;font-weight:500;color:var(--secondary-text);white-space:nowrap;margin-right:2px;flex-shrink:0}
-.rpills{display:flex;align-items:center;gap:5px;flex-wrap:nowrap;min-width:0}
+.rpills{display:flex;align-items:center;gap:5px;flex-wrap:nowrap;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.rpills::-webkit-scrollbar{display:none}
 .rp{display:inline-flex;align-items:center;gap:3px;background:var(--white);border:1px solid var(--mid-grey);border-radius:20px;padding:2px 9px;font-size:10px;white-space:nowrap;flex-shrink:0;overflow:hidden}
 .rp .rf{font-size:11px}.rp .rv{font-weight:600;font-family:var(--mono)}.rp .rc{color:var(--secondary-text);font-size:9px}
 .rmeta{display:flex;align-items:center;gap:4px;margin-left:auto;font-size:10px;color:var(--tertiary-text);white-space:nowrap;flex-shrink:0}
@@ -120,7 +120,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ddph{font-size:14px;color:var(--tertiary-text);font-weight:400;line-height:1.2}
 .ddarr{font-size:9px;color:var(--secondary-text);transition:transform .2s;flex-shrink:0}
 .ddt.open .ddarr{transform:rotate(180deg)}
-.ddm{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--blue);border-top:1px solid var(--rule);border-radius:0 0 10px 10px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.12);max-height:52vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ddm{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--blue);border-top:1px solid var(--rule);border-radius:0 0 10px 10px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.12);max-height:52vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
 .ddm.open{display:block}
 .ddm::-webkit-scrollbar{width:4px}
 .ddm::-webkit-scrollbar-thumb{background:var(--mid-grey);border-radius:4px}
@@ -4834,7 +4834,6 @@ function bindDdDelegation(){
     activateDdOption(code,e);
   }
   wrap.addEventListener("pointerdown",delegatedPick,true);
-  wrap.addEventListener("touchstart",delegatedPick,{capture:true,passive:false});
   wrap.addEventListener("click",delegatedPick,true);
   wrap.addEventListener("mouseup",delegatedPick,true);
   wrap.addEventListener("pointerup",delegatedPick,true);
@@ -4844,10 +4843,9 @@ function bindDdOption(el,code){
   if(!el||!code||el.dataset.boundDd==="1")return;
   el.dataset.boundDd="1";
   el.setAttribute("onpointerdown","return activateDdOption('"+code+"',event)");
-  el.setAttribute("ontouchstart","return activateDdOption('"+code+"',event)");
   el.setAttribute("onclick","return activateDdOption('"+code+"',event)");
   el.setAttribute("ontouchend","return activateDdOption('"+code+"',event)");
-  el.style.touchAction="manipulation";
+  el.style.touchAction="pan-y";
 }
 function bindExistingDdOptions(){
   var opts=document.querySelectorAll("#ddopts .ddo");
@@ -5300,7 +5298,12 @@ function updateBundleTray(){
 }
 function scrollToBundle(){
   var el=G("cart-section");
-  if(el){el.style.display="block";el.scrollIntoView({behavior:"smooth",block:"start"});}
+  if(el){
+    var rw=G("rw");
+    if(rw)rw.classList.remove("vis");
+    el.style.display="block";
+    el.scrollIntoView({behavior:"smooth",block:"start"});
+  }
 }
 function renderCart(){
   updateCartActionBar();
@@ -5314,7 +5317,6 @@ function renderCart(){
     updateBundleTray();
     return;
   }
-  section.style.display="block";
   function itemCard(entry){
     var cmp=entry.comparison;
     var C=CUR[cmp.country]||{};
@@ -5514,6 +5516,7 @@ function render(){
   renderCountryNotes(S.country,S.cat,mdata.rawName||mdata.displayName);
   renderCart();
   var rwEl=G("rw");if(rwEl&&!rwEl.classList.contains("vis"))rwEl.classList.add("vis");
+  var cs=G("cart-section");if(cs)cs.style.display="none";
 }
 function hideResult(){var rw=G("rw");if(rw)rw.classList.remove("vis");syncTradeUI();renderCountryNotes("","","");}
 function onVatCh(){
@@ -6134,6 +6137,7 @@ var APP_VERSION="06.06.2026-09:25";
   buildDd();ensureDdBuilt();buildCatGrid();updateRateBar();buildAdminRates();
   initGbUI();initTradeValueUI();
   loadCustomProducts();loadHiddenProducts();tryFetchRates(false);
+  setInterval(function(){tryFetchRates(false);},30*60*1000);
   renderCart();
   updateRateBar();
   setTimeout(updateRateBar,0);
