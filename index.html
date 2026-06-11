@@ -193,7 +193,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .rate-badge{display:inline-flex;align-items:center;justify-content:center;min-height:31px;flex-shrink:0;white-space:nowrap;box-sizing:border-box;font-size:11px;font-weight:500;line-height:1.1;color:var(--secondary-text);background:var(--off-white);border:1px solid var(--rule);border-radius:20px;padding:4px 12px}
 .rate-badge-text{display:block;width:100%;text-align:center;line-height:1;position:relative;top:-1px}
 .pcols{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
-.pcol{padding:18px 16px;position:relative}
+.pcol{padding:18px 16px;position:relative;min-width:0;overflow:hidden}
 .pcol.win{background:rgba(52,199,89,.14)}
 .pcol.lose{opacity:.55}
 .pcol:first-child{border-right:1px solid var(--rule)}
@@ -218,6 +218,8 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 #rw.bundle-mode .cmp-tools{flex-direction:row;width:100%;gap:8px}
 #rw.bundle-mode .vat-toggle-inline{flex:1;width:auto;justify-content:space-between}
 #rw.bundle-mode .cmp-row2{gap:8px;flex-wrap:nowrap}
+#rw.bundle-mode .p-price{font-size:22px}
+#rw.bundle-mode .p-convert{font-size:13px}
 #rw.bundle-mode .cmp-badge{flex:1;justify-content:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #rw.bundle-mode .rate-badge{flex:1;justify-content:center}
 .bundle-breakdown{padding:8px 0 0;display:flex;flex-direction:column;gap:3px;overflow:hidden}
