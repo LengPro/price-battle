@@ -239,9 +239,9 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .cmp-cart-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 18px;border-top:1px solid var(--rule);background:var(--white)}
 .cmp-cart-meta{font-size:12px;font-weight:600;color:var(--secondary-text)}
 .cmp-cart-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.cmp-cart-btn{border:none;border-radius:20px;padding:9px 14px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer}
+.cmp-cart-btn{border:none;border-radius:20px;padding:9px 14px;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .cmp-cart-btn.primary{background:var(--blue);color:var(--white)}
-.cmp-cart-btn.secondary{background:var(--off-white);color:var(--body-text);border:1px solid var(--mid-grey)}
+.cmp-cart-btn.secondary{background:#ff3b30;color:#fff;border:none}
 .cmp-cart-btn:disabled{opacity:.45;cursor:not-allowed}
 .cart-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
 .cart-list{display:flex;flex-direction:column}
@@ -452,7 +452,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
   .step-hd{padding:14px 14px 13px}
   .step-body{padding:14px}
   .cmp-cart-meta{font-size:11px}
-  .cmp-cart-btn{padding:9px 12px;font-size:11px}
+  .cmp-cart-btn{padding:9px 12px;font-size:13px}
   .cart-item{gap:10px}
   .cart-item-name{font-size:13px}
   .cart-item-stats{grid-template-columns:1fr}
@@ -865,7 +865,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
       <div class="cmp-cart-actions">
         <div class="cmp-cart-meta" id="cart-count">0 devices selected</div>
         <div class="cmp-cart-btns">
-          <button class="cmp-cart-btn primary" id="add-cart-btn" onclick="addCurrentSelectionToCart()">Add to Compare Cart</button>
+          <button class="cmp-cart-btn primary" id="add-cart-btn" onclick="addCurrentSelectionToCart()">Add to Bundle Cart</button>
           <button class="cmp-cart-btn secondary" id="clear-cart-btn" onclick="clearCompareCart()">Clear Cart</button>
         </div>
       </div>
@@ -924,16 +924,6 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 </div>
 </div>
 <!-- BUNDLE TRAY -->
-<div id="bundle-tray">
-  <div class="bt-info">
-    <span class="bt-icon">🛒</span>
-    <div class="bt-text">
-      <div class="bt-count" id="tray-count"></div>
-      <div class="bt-price" id="tray-price"></div>
-    </div>
-  </div>
-  <button class="bt-btn" onclick="scrollToBundle()" id="tray-btn">View Bundle →</button>
-</div>
 <div class="mode-view" id="mode-view-gb">
   <div class="step-wrap" id="gb-sw2">
     <div class="step-card active" id="gb-sc2">
@@ -1080,7 +1070,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 7.10pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 7.40pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -1395,9 +1385,9 @@ en:{
   tv_type_lbl:"DEVICE TYPE",tv_col_model:"Model",tv_col_spec:"Storage / Spec",tv_col_value:"Value",
   tv_note_lbl:"Note:",tv_note:"Full value for trade in with purchase (Store only). Pricing shown is for full value, undamaged device only.",
   tv_empty:"No trade-in values available yet.",
-  cart_title:"Compare Cart",cart_add:"Add to Compare Cart",cart_clear:"Clear Cart",cart_empty:"No devices added yet.",
+  cart_title:"Compare Cart",cart_add:"Add to Bundle Cart",cart_clear:"Clear Cart",cart_empty:"No devices added yet.",
   cart_count:function(n){return n+" device"+(n!==1?"s":"")+" selected";},
-  cart_added:"Added to Compare Cart",cart_remove:"Remove",
+  cart_added:"Added to Bundle Cart",cart_remove:"Remove",
   cart_total_th:"Thailand total",cart_total_vat:"VAT refund total",cart_total_net:"Thailand after VAT",cart_total_foreign:"Foreign total (THB)",cart_total_diff:"Total difference",
   cart_diff_th:"Thailand total is cheaper",cart_diff_ot:function(c){return c+" total is cheaper";},cart_diff_same:"Totals are equal",
   tray_view:"View Bundle →",
@@ -1468,9 +1458,9 @@ th:{
   tv_type_lbl:"ประเภทอุปกรณ์",tv_col_model:"รุ่น",tv_col_spec:"ความจุ / สเปก",tv_col_value:"มูลค่า",
   tv_note_lbl:"หมายเหตุ:",tv_note:"เป็นมูลค่าสูงสุดสำหรับการเทรดพร้อมซื้อสินค้าในร้าน และใช้กับเครื่องสภาพสมบูรณ์เท่านั้น",
   tv_empty:"ยังไม่มีข้อมูลมูลค่า Trade-in",
-  cart_title:"รายการเปรียบเทียบ",cart_add:"เพิ่มเข้า Compare Cart",cart_clear:"ล้างรายการ",cart_empty:"ยังไม่มีอุปกรณ์ในรายการ",
+  cart_title:"รายการเปรียบเทียบ",cart_add:"เพิ่มเข้า Bundle Cart",cart_clear:"ล้างรายการ",cart_empty:"ยังไม่มีอุปกรณ์ในรายการ",
   cart_count:function(n){return "เลือกแล้ว "+n+" รายการ";},
-  cart_added:"เพิ่มเข้า Compare Cart แล้ว",cart_remove:"ลบ",
+  cart_added:"เพิ่มเข้า Bundle Cart แล้ว",cart_remove:"ลบ",
   cart_total_th:"ราคารวมไทย",cart_total_vat:"VAT Refund รวม",cart_total_net:"ไทยหลังคืน VAT",cart_total_foreign:"ราคารวมต่างประเทศ (บาท)",cart_total_diff:"ส่วนต่างรวม",
   cart_diff_th:"รวมแล้วซื้อที่ไทยถูกกว่า",cart_diff_ot:function(c){return "รวมแล้วซื้อที่ "+c+" ถูกกว่า";},cart_diff_same:"ราคารวมเท่ากัน",
   tray_view:"ดู Bundle →",
@@ -5301,29 +5291,7 @@ function clearCompareCart(){
   if(S.country&&S.csvRow)render();
 }
 function updateBundleTray(){
-  var tray=G("bundle-tray");
-  if(!tray)return;
-  var entries=(S.cart||[]).map(buildCartEntryData).filter(Boolean);
-  if(!entries.length){tray.style.display="none";document.body.style.paddingBottom="";return;}
-  var totalTH=entries.reduce(function(s,e){return s+e.comparison.thAfterVat;},0);
-  var totalForeign=entries.reduce(function(s,e){return s+e.comparison.foreignTHB;},0);
-  var count=entries.length;
-  var countEl=G("tray-count"),priceEl=G("tray-price"),btn=G("tray-btn");
-  if(countEl)countEl.textContent=count+(count===1?" item":" items")+" in bundle";
-  if(priceEl){
-    var C=CUR[S.country];
-    if(C&&S.country){
-      var diff=totalForeign-totalTH;
-      var sign=diff>0?"👍 Save ":"";
-      var diffAbs=Math.abs(diff);
-      priceEl.textContent="TH ฿"+fmt(totalTH)+" · "+C.flag+" ฿"+fmt(totalForeign)+(diff!==0?" · "+sign+"฿"+fmt(diffAbs):"");
-    }else{
-      priceEl.textContent="TH ฿"+fmt(totalTH);
-    }
-  }
-  if(btn)btn.textContent=tr("tray_view");
-  tray.style.display="flex";
-  document.body.style.paddingBottom="72px";
+  document.body.style.paddingBottom="";
 }
 function scrollToBundle(){
   var el=G("cart-section");
@@ -6261,7 +6229,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="11.06.2026-19:10";
+var APP_VERSION="11.06.2026-19:40";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
