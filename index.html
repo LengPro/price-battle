@@ -35,6 +35,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .rp{display:inline-flex;align-items:center;gap:3px;background:var(--white);border:1px solid var(--mid-grey);border-radius:20px;padding:2px 9px;font-size:10px;white-space:nowrap;flex-shrink:0;overflow:hidden}
 .rp .rf{font-size:11px}.rp .rv{font-weight:600;font-family:var(--mono)}.rp .rc{color:var(--secondary-text);font-size:9px}
 .rmeta{display:flex;align-items:center;gap:4px;margin-left:auto;font-size:10px;color:var(--tertiary-text);white-space:nowrap;flex-shrink:0}
+.rb-txt{display:flex;flex-direction:column;align-items:flex-end;line-height:1.3}
 .live-dot{width:5px;height:5px;border-radius:50%;background:#34c759;flex-shrink:0;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .page{max-width:980px;margin:0 auto;padding:0 22px 80px}
@@ -125,7 +126,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ddm::-webkit-scrollbar{width:4px}
 .ddm::-webkit-scrollbar-thumb{background:var(--mid-grey);border-radius:4px}
 .ddsrow{padding:8px 12px;border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--white);z-index:1}
-.ddsrow input{width:100%;height:46px;background:var(--off-white);border:1px solid var(--mid-grey);border-radius:7px;padding:0 11px;color:var(--body-text);font-size:15px;font-family:var(--font);outline:none}
+.ddsrow input{width:100%;height:46px;background:var(--off-white);border:1px solid var(--mid-grey);border-radius:7px;padding:0 11px;color:var(--body-text);font-size:16px;font-family:var(--font);outline:none}
 .ddsrow input:focus{border-color:var(--blue)}
 .ddsrow input::placeholder{color:var(--tertiary-text);font-size:14px}
 .ddrl{padding:6px 14px 4px;font-size:11px;font-weight:700;color:var(--secondary-text);letter-spacing:.06em;text-transform:uppercase}
@@ -135,7 +136,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ddo.sel{background:rgba(0,113,227,.05)}
 .ddofl{font-size:28px;flex-shrink:0;line-height:1}
 .ddoi{flex:1;display:flex;flex-direction:column;justify-content:center;min-width:0}
-.ddon{font-size:16px;font-weight:600;line-height:1.1}
+.ddon{font-size:16px;font-weight:600;line-height:1.1;color:var(--body-text)}
 .ddoc{font-size:12px;color:var(--secondary-text);margin-top:2px;line-height:1.1}
 .ddock{font-size:13px;color:var(--blue);opacity:0;flex-shrink:0}
 .ddo.sel .ddock{opacity:1}
@@ -671,7 +672,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
     <div class="rp"><span class="rf">🇳🇴</span><span class="rv">0.31000</span><span class="rc">NOK</span></div>
     <div class="rp"><span class="rf">🇳🇿</span><span class="rv">0.04700</span><span class="rc">NZD</span></div>
   </div>
-  <div class="rmeta"><div class="live-dot"></div><span id="rb-up">Loading...</span></div>
+  <div class="rmeta"><div class="live-dot"></div><div class="rb-txt"><span id="rb-src">Loading...</span><span id="rb-time"></span></div></div>
 </div>
 <div style="position:relative;height:0">
   <button class="info-btn" onclick="toggleInfoPopup()" id="info-btn" aria-label="Info" style="position:absolute;top:10px;right:16px;z-index:100">?</button>
@@ -1081,7 +1082,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 6.20pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 6.45pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -4759,7 +4760,7 @@ function updateRateBar(){
 }
 
 function tryFetchRates(manual){
-  var ri=G("ri"),rbup=G("rb-up");
+  var ri=G("ri"),rbsrc=G("rb-src"),rbtime=G("rb-time");
   if(ri)ri.textContent="⏳";
 
   // Validate & clean cached rates
@@ -4787,14 +4788,16 @@ function tryFetchRates(manual){
     syncAdminRates();updateRateBar();
     if(S.country&&S.csvRow)render();
     var now=new Date().toLocaleTimeString("en",{hour:"2-digit",minute:"2-digit"});
-    if(rbup)rbup.textContent="Live rates ("+source+") · "+now;
+    if(rbsrc)rbsrc.textContent="Live rates ("+source+")";
+    if(rbtime)rbtime.textContent=now;
     if(manual)toast("✅ Rates updated from "+source);
     if(ri)ri.textContent="🔄";
     return true;
   }
 
   function showOffline(){
-    if(rbup)rbup.textContent="Default rates (offline)";
+    if(rbsrc)rbsrc.textContent="Default rates (offline)";
+    if(rbtime)rbtime.textContent="";
     if(manual)toast("⚠️ Using default rates");
     if(ri)ri.textContent="🔄";
   }
@@ -6260,7 +6263,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="11.06.2026-18:20";
+var APP_VERSION="11.06.2026-18:45";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
