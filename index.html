@@ -209,6 +209,17 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .p-vat-hint-line{display:block}
 .store-link-wrap{margin-top:10px;display:none}
 .store-link-wrap a{font-size:12px;font-weight:500;color:var(--blue);text-decoration:none}
+.bundle-items-row{display:none;flex-wrap:wrap;gap:6px;padding:2px 0;align-items:center}
+.bundle-hd-item{display:flex;align-items:center;gap:5px;background:var(--off-white);border:1px solid var(--mid-grey);border-radius:20px;padding:4px 10px 4px 6px;max-width:100%}
+.bdl-ic{font-size:18px;line-height:1;flex-shrink:0;display:flex;align-items:center}
+.bdl-ic-img{width:20px;height:20px;object-fit:contain}
+.bdl-nm{font-size:12px;font-weight:500;color:var(--body-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.bdl-sep{font-size:14px;font-weight:700;color:var(--secondary-text);flex-shrink:0;padding:0 2px}
+.bundle-breakdown{padding:8px 0 0;display:flex;flex-direction:column;gap:3px}
+.bd-line{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11px;color:var(--secondary-text)}
+.bd-val{font-weight:600;font-family:var(--mono);flex-shrink:0;color:var(--body-text)}
+.bd-lbl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bd-deduct .bd-val{color:var(--green)}
 .diff-bar{border-top:1px solid var(--rule);padding:14px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--off-white)}
 .diff-lbl{font-size:10px;font-weight:600;color:var(--secondary-text);letter-spacing:.04em;text-transform:uppercase}
 .diff-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
@@ -773,6 +784,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
     <div class="sec-title" id="lbl-cmp">Price Comparison</div>
     <div class="cmp-card">
       <div class="cmp-hd">
+        <div id="bundle-items-row" class="bundle-items-row"></div>
         <div class="cmp-row1">
           <div class="cmp-product"><span class="cmp-ic" id="r-ic">&#128241;</span><div><div class="cmp-nm" id="r-nm">&#8212;</div><div class="cmp-sp" id="r-sp"></div></div></div>
           <div class="cmp-tools">
@@ -813,11 +825,13 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
           <div class="p-price win-price" id="th-n">&#3647;&#8212;</div>
           <div class="p-convert" id="th-f">&#8212;</div>
           <div class="p-vat-hint" id="th-vat-hint"></div>
+          <div class="bundle-breakdown" id="th-breakdown" style="display:none"></div>
         </div>
         <div class="pcol" id="oc">
           <div class="pcc"><span class="pcc-fl" id="ot-fl">&#127758;</span><span class="pcc-nm" id="ot-cn">&#8212;</span><span class="pcc-cu" id="ot-cu">&#8212;</span></div>
           <div class="p-price" id="ot-n">&#8212;</div>
           <div class="p-convert" id="ot-t">&#8212;</div>
+          <div class="bundle-breakdown" id="ot-breakdown" style="display:none"></div>
                     <div class="store-link-wrap" id="store-link-wrap"><a id="store-link" href="#" target="_blank" rel="noopener"><span id="store-link-text">View on Apple Store</span> &#8599;</a></div>
         </div>
       </div>
@@ -1556,7 +1570,8 @@ function loadState(){
   return{country:null,cat:null,modelKey:null,csvRow:null,
          rates:rates||Object.assign({},DEF_RATES),
          prices:prices||JSON.parse(JSON.stringify(CSV_PRICES)),
-         cart:Array.isArray(cart)?cart:[]};
+         cart:Array.isArray(cart)?cart:[],
+         bundleMode:false};
 }
 var S=loadState();
 var GB={repairCat:null,repairTypeKey:null,repairModelKey:null,repairIssue:null,buyCat:null,buyModelKey:null,buyCsvRow:null};
@@ -4689,7 +4704,8 @@ function onTradeCh(){
   var on=G("tchk")&&G("tchk").checked;
   var t2=G("tchk2");if(t2)t2.checked=!!on;
   syncTradeUI();
-  if(S.country&&S.csvRow)render();
+  if(S.bundleMode&&(S.cart||[]).length>=2)renderBundleComparison();
+  else if(S.country&&S.csvRow)render();
 }
 function syncTrade(el){
   var t1=G("tchk");if(t1)t1.checked=el.checked;
@@ -4699,10 +4715,11 @@ function toggleTrade(){var c=G("tchk");if(c){c.checked=!c.checked;onTradeCh();}}
 function onTradeTypeChange(){
   buildTradeModelOptions("","");
   syncTradeUI();
-  if(S.country&&S.csvRow)render();
+  if(S.bundleMode&&(S.cart||[]).length>=2)renderBundleComparison();
+  else if(S.country&&S.csvRow)render();
 }
-function onTradeModelChange(){buildTradeStorageOptions();syncTradeUI();if(S.country&&S.csvRow)render();}
-function onTradeStorageChange(){syncTradeUI();if(S.country&&S.csvRow)render();}
+function onTradeModelChange(){buildTradeStorageOptions();syncTradeUI();if(S.bundleMode&&(S.cart||[]).length>=2)renderBundleComparison();else if(S.country&&S.csvRow)render();}
+function onTradeStorageChange(){syncTradeUI();if(S.bundleMode&&(S.cart||[]).length>=2)renderBundleComparison();else if(S.country&&S.csvRow)render();}
 
 // ── RATES ────────────────────────────────────────────────────────────────────────
 function G(id){return document.getElementById(id);}
@@ -4932,8 +4949,9 @@ function pickCountry(code){
   var sw2=G("sw2");if(sw2)sw2.classList.remove("locked");
   var sc2=G("sc2");if(sc2)sc2.classList.add("active");
   setNum("sn2",S.cat?"done":"active");
-  if(prev&&prev!==code){S.csvRow=null;hideResult();var ch3=G("ch3");if(ch3)ch3.style.display="none";if(S.modelKey&&S.cat)buildStorRow(S.cat,S.modelKey);if(S.cat)buildMGrid(S.cat);}
-  if(S.csvRow)render();
+  if(prev&&prev!==code){S.csvRow=null;if(!S.bundleMode)hideResult();var ch3=G("ch3");if(ch3)ch3.style.display="none";if(S.modelKey&&S.cat)buildStorRow(S.cat,S.modelKey);if(S.cat)buildMGrid(S.cat);}
+  if(S.bundleMode&&(S.cart||[]).length>=2)renderBundleComparison();
+  else if(S.csvRow)render();
   else renderCart();
 }
 
@@ -5259,17 +5277,26 @@ function addCurrentSelectionToCart(){
   S.cart.push({id:"cart_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),cat:current.cat,modelKey:current.modelKey,csvRow:current.csvRow});
   saveCompareCart();
   renderCart();
-  toast(tr("cart_added"));
+  if((S.cart||[]).length>=2){
+    renderBundleComparison();
+  } else {
+    toast(tr("cart_added"));
+  }
 }
 function removeCartItem(id){
   S.cart=(S.cart||[]).filter(function(item){return item.id!==id;});
+  if((S.cart||[]).length<2)S.bundleMode=false;
   saveCompareCart();
   renderCart();
+  if(S.bundleMode)renderBundleComparison();
+  else if(S.country&&S.csvRow)render();
 }
 function clearCompareCart(){
   S.cart=[];
+  S.bundleMode=false;
   saveCompareCart();
   renderCart();
+  if(S.country&&S.csvRow)render();
 }
 function updateBundleTray(){
   var tray=G("bundle-tray");
@@ -5404,9 +5431,114 @@ function renderCart(){
   updateBundleTray();
 }
 
+// ── BUNDLE COMPARISON ─────────────────────────────────────────────────────────────
+function renderBundleComparison(){
+  var entries=(S.cart||[]).map(buildCartEntryData).filter(Boolean);
+  if(entries.length<2||!S.country)return;
+  var C=CUR[S.country];if(!C)return;
+  var vatOn=!!(G("vchk")&&G("vchk").checked);
+  var totalTH=0,totalVAT=0,totalForeignRaw=0,totalForeignTHB=0;
+  entries.forEach(function(e){
+    var cmp=e.comparison;
+    totalTH+=cmp.thPrice;
+    totalVAT+=vatOn?cmp.vatRefund:0;
+    totalForeignRaw+=cmp.foreignRaw;
+    totalForeignTHB+=cmp.foreignTHB;
+  });
+  var tradeVal=getTradeValue();
+  var effTH=Math.max(0,totalTH-totalVAT-tradeVal);
+
+  // Bundle items row in header
+  var bir=G("bundle-items-row");
+  if(bir){
+    bir.innerHTML=entries.map(function(e,i){
+      var ic=getIconHtml(e.modelData.icon,"bdl-ic-img");
+      return (i>0?'<span class="bdl-sep">+</span>':'')
+        +'<div class="bundle-hd-item">'
+        +'<span class="bdl-ic">'+(ic.indexOf("<img")>=0?ic:e.modelData.icon)+'</span>'
+        +'<span class="bdl-nm">'+e.fullName+'</span>'
+        +'</div>';
+    }).join("");
+    bir.style.display="flex";
+  }
+  // Hide single-product name/image, keep VAT/Trade-in tools visible
+  var cprod=document.querySelector("#rw .cmp-product");
+  if(cprod)cprod.style.display="none";
+
+  // Section title
+  var lbl=G("lbl-cmp");if(lbl)lbl.textContent="BUNDLE ("+entries.length+" items)";
+
+  // Country badge
+  var rcfl=G("r-cfl");if(rcfl)rcfl.textContent=C.flag;
+  var rcn=G("r-cn");if(rcn)rcn.textContent=C.name;
+  var rst=G("r-st");if(rst)rst.textContent=entries.length+" items";
+  var otfl=G("ot-fl");if(otfl)otfl.textContent=C.flag;
+  var otcn=G("ot-cn");if(otcn)otcn.textContent=C.name;
+  var otcu=G("ot-cu");if(otcu)otcu.textContent=C.cur;
+  var rateVal=S.rates[C.rate];
+  var orEl=G("ot-rate");
+  if(orEl&&rateVal){orEl.innerHTML='<span class="rate-badge-text">฿1 = '+C.sym+rateVal.toFixed(3)+'</span>';orEl.style.display="inline-flex";}
+
+  // Thailand column
+  var diff=totalForeignTHB-effTH;
+  var thn2=G("th-n");if(thn2){thn2.textContent="฿"+fmt(effTH);thn2.className="p-price"+(diff>=0?" win-price":"");}
+  var thf=G("th-f");if(thf)thf.textContent="≈ "+C.sym+fmt2(t2f(effTH,C.rate))+" "+C.cur;
+  var vatHint=G("th-vat-hint");if(vatHint)vatHint.style.display="none";
+  var thBd=G("th-breakdown");
+  if(thBd){
+    var lines=entries.map(function(e){
+      return '<div class="bd-line"><span class="bd-val">฿'+fmt(e.comparison.thPrice)+'</span><span class="bd-lbl">'+e.fullName+'</span></div>';
+    });
+    if(totalVAT>0)lines.push('<div class="bd-line bd-deduct"><span class="bd-val">-฿'+fmt(totalVAT)+'</span><span class="bd-lbl">VAT refund</span></div>');
+    if(tradeVal>0)lines.push('<div class="bd-line bd-deduct"><span class="bd-val">-฿'+fmt(tradeVal)+'</span><span class="bd-lbl">Trade-in</span></div>');
+    thBd.innerHTML=lines.join("");thBd.style.display="block";
+  }
+
+  // Foreign column
+  var otn=G("ot-n");if(otn){otn.textContent=C.sym+fmt2(totalForeignRaw);otn.className="p-price"+(diff<0?" win-price":"");}
+  var ott=G("ot-t");if(ott)ott.textContent="≈ ฿"+fmt(totalForeignTHB);
+  var otBd=G("ot-breakdown");
+  if(otBd){
+    var otLines=entries.map(function(e){
+      return '<div class="bd-line"><span class="bd-val">'+C.sym+fmt2(e.comparison.foreignRaw)+'</span><span class="bd-lbl">'+e.fullName+'</span></div>';
+    });
+    otBd.innerHTML=otLines.join("");otBd.style.display="block";
+  }
+
+  // Hide store link and tax widget
+  var slWrap=G("store-link-wrap");if(slWrap)slWrap.style.display="none";
+  var tw=G("tax-widget");if(tw)tw.style.display="none";
+
+  // Win/lose
+  var tc=G("tc");if(tc)tc.className="pcol"+(diff>=0?" win":"");
+  var oc=G("oc");if(oc)oc.className="pcol"+(diff<0?" win":"");
+
+  // Diff bar
+  var abd=Math.abs(diff),abf=t2f(abd,C.rate),pct=totalForeignTHB?(totalForeignTHB-effTH)/totalForeignTHB*100:0;
+  var ca=G("ch-a"),cp=G("ch-p");
+  if(ca&&cp){
+    if(diff>0){ca.className=cp.className="chip chip-green";ca.textContent="🇹🇭 Save "+C.sym+fmt2(abf);cp.textContent=Math.abs(pct).toFixed(1)+"%";}
+    else if(diff<0){ca.className=cp.className="chip chip-red";ca.textContent=C.flag+" Save "+C.sym+fmt2(abf);cp.textContent=Math.abs(pct).toFixed(1)+"%";}
+    else{ca.className=cp.className="chip chip-neutral";ca.textContent="Equal";cp.textContent="0%";}
+  }
+  var vatChip=G("vat-chip");
+  if(vatChip){if(totalVAT>0){vatChip.textContent="VAT Refund ฿"+fmt(totalVAT)+" ≈ "+C.sym+fmt2(t2f(totalVAT,C.rate));vatChip.style.display="block";}else vatChip.style.display="none";}
+
+  S.bundleMode=true;
+  var rwEl=G("rw");if(rwEl&&!rwEl.classList.contains("vis"))rwEl.classList.add("vis");
+  var cs=G("cart-section");if(cs)cs.style.display="none";
+  updateCartActionBar();updateBundleTray();
+}
+
 // ── RENDER ────────────────────────────────────────────────────────────────────────
 function render(){
   if(!S.country||!S.csvRow)return;
+  S.bundleMode=false;
+  var bir=G("bundle-items-row");if(bir)bir.style.display="none";
+  var cprod=document.querySelector("#rw .cmp-product");if(cprod)cprod.style.display="";
+  var thBd=G("th-breakdown");if(thBd)thBd.style.display="none";
+  var otBd=G("ot-breakdown");if(otBd)otBd.style.display="none";
+  var lbl=G("lbl-cmp");if(lbl)lbl.textContent=tr("lbl_cmp");
   var C=CUR[S.country],row=S.prices[S.csvRow]||{},comp=computeComparison(S.csvRow,S.country,{includeTrade:true});
   if(!C||!comp)return;
   var thp=comp.thPrice,fpn=row[S.country]||0;
@@ -5525,7 +5657,8 @@ function onVatCh(){
   var vl2=G("vat-lbl2");if(vl2)vl2.style.color=on?"var(--green)":"var(--secondary-text)";
   var b=G("vatbody");if(b){if(on)b.classList.add("open");else b.classList.remove("open");}
   var v2=G("vchk2");if(v2)v2.checked=!!on;
-  if(S.country&&S.csvRow)render();
+  if(S.bundleMode&&(S.cart||[]).length>=2)renderBundleComparison();
+  else if(S.country&&S.csvRow)render();
   else renderCart();
 }
 function syncVat(el){
