@@ -1060,7 +1060,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 3.30pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 4.00pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -5339,7 +5339,7 @@ function renderCart(){
           +'<div><div class="cmp-nm" style="font-size:15px">'+entry.fullName+'</div>'
           +'<div class="cmp-sp">'+cmp.countryFlag+' '+cmp.countryName+' &middot; '+cmp.currency+'</div></div>'
         +'</div>'
-        +'<button class="cart-item-remove" onclick="removeCartItem(''+entry.id+'')">'+tr("cart_remove")+'</button>'
+        +'<button class="cart-item-remove" onclick="removeCartItem(\''+entry.id+'\')">'+tr("cart_remove")+'</button>'
       +'</div></div>'
       +'<div class="pcols">'
         +'<div class="pcol'+(thWin?" win":"")+(otWin?" lose":"")+'">'
