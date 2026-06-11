@@ -1070,7 +1070,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 7.40pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 1.56am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -1562,7 +1562,7 @@ function loadState(){
     else if(cached)localStorage.removeItem("apc_rates");
   }catch(e){}
   try{prices=JSON.parse(localStorage.getItem("apc_prices")||"null");}catch(e){}
-  try{cart=JSON.parse(localStorage.getItem("apc_compare_cart")||"[]");}catch(e){}
+  cart=[];
   return{country:null,cat:null,modelKey:null,csvRow:null,
          rates:rates||Object.assign({},DEF_RATES),
          prices:prices||JSON.parse(JSON.stringify(CSV_PRICES)),
@@ -6229,7 +6229,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="11.06.2026-19:40";
+var APP_VERSION="12.06.2026-01:56";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){

@@ -171,3 +171,4 @@ AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, 
 
 ## Build Rules
 - **Every new build of `index.html` must include a current date+time stamp** in the version string (e.g. `v 26.06.2025 14:30`). Update the `APP_VERSION` constant and the visible version stamp in the Settings panel each time a new file is generated.
+- **Always use Thailand timezone (UTC+7)** for the timestamp. The build server runs UTC, so always run `TZ=Asia/Bangkok date` to get the correct Bangkok time before setting the stamp.
