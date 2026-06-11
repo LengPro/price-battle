@@ -166,3 +166,8 @@ AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, 
 - Percentage formula changed to `(foreign - thai) / foreign` to avoid misleadingly high numbers
 - VAT Refund only applies to Thailand side
 - Send Feedback → opens mail to `leng_pp2@icloud.com` with subject "Feedback: Price battle"
+
+---
+
+## Build Rules
+- **Every new build of `index.html` must include a current date+time stamp** in the version string (e.g. `v 26.06.2025 14:30`). Update the `APP_VERSION` constant and the visible version stamp in the Settings panel each time a new file is generated.
