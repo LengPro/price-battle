@@ -248,6 +248,14 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .cart-summary-val{display:block;font-size:18px;font-weight:700;line-height:1.15;margin-top:6px}
 .cart-summary-note{margin-top:12px;font-size:13px;font-weight:700;text-align:center}
 .cart-empty{padding:18px 16px;font-size:13px;color:var(--secondary-text);text-align:center}
+/* BUNDLE TRAY */
+#bundle-tray{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--blue);color:#fff;padding:12px 20px;padding-bottom:calc(12px + env(safe-area-inset-bottom));display:none;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 -2px 20px rgba(0,0,0,.18)}
+.bt-info{display:flex;align-items:center;gap:10px;min-width:0}
+.bt-icon{font-size:20px;flex-shrink:0}
+.bt-text{min-width:0}
+.bt-count{font-size:14px;font-weight:700;line-height:1.2}
+.bt-price{font-size:12px;opacity:.82;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bt-btn{background:#fff;color:var(--blue);border:none;border-radius:20px;padding:9px 16px;font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;flex-shrink:0;white-space:nowrap}
 /* VAT SECTION */
 .vat-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
 .vat-hd{padding:13px 17px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;flex-wrap:wrap;gap:8px;transition:background .15s}
@@ -895,6 +903,17 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
   <a href="mailto:leng_pp2@icloud.com?subject=Feedback%3A%20Price%20battle" style="font-size:13px;color:var(--secondary-text);text-decoration:none" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--secondary-text)'">&#9993;&#65039; Send Feedback</a>
 </div>
 </div>
+<!-- BUNDLE TRAY -->
+<div id="bundle-tray">
+  <div class="bt-info">
+    <span class="bt-icon">🛒</span>
+    <div class="bt-text">
+      <div class="bt-count" id="tray-count"></div>
+      <div class="bt-price" id="tray-price"></div>
+    </div>
+  </div>
+  <button class="bt-btn" onclick="scrollToBundle()" id="tray-btn">View Bundle →</button>
+</div>
 <div class="mode-view" id="mode-view-gb">
   <div class="step-wrap" id="gb-sw2">
     <div class="step-card active" id="gb-sc2">
@@ -1041,7 +1060,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 2.15pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 11 Jun 2026 3.00pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -1360,7 +1379,8 @@ en:{
   cart_count:function(n){return n+" device"+(n!==1?"s":"")+" selected";},
   cart_added:"Added to Compare Cart",cart_remove:"Remove",
   cart_total_th:"Thailand total",cart_total_vat:"VAT refund total",cart_total_net:"Thailand after VAT",cart_total_foreign:"Foreign total (THB)",cart_total_diff:"Total difference",
-  cart_diff_th:"Thailand total is cheaper",cart_diff_ot:function(c){return c+" total is cheaper";},cart_diff_same:"Totals are equal"
+  cart_diff_th:"Thailand total is cheaper",cart_diff_ot:function(c){return c+" total is cheaper";},cart_diff_same:"Totals are equal",
+  tray_view:"View Bundle →"
 },
 th:{
   mode_compare:"เปรียบราคา",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",
@@ -1431,7 +1451,8 @@ th:{
   cart_count:function(n){return "เลือกแล้ว "+n+" รายการ";},
   cart_added:"เพิ่มเข้า Compare Cart แล้ว",cart_remove:"ลบ",
   cart_total_th:"ราคารวมไทย",cart_total_vat:"VAT Refund รวม",cart_total_net:"ไทยหลังคืน VAT",cart_total_foreign:"ราคารวมต่างประเทศ (บาท)",cart_total_diff:"ส่วนต่างรวม",
-  cart_diff_th:"รวมแล้วซื้อที่ไทยถูกกว่า",cart_diff_ot:function(c){return "รวมแล้วซื้อที่ "+c+" ถูกกว่า";},cart_diff_same:"ราคารวมเท่ากัน"
+  cart_diff_th:"รวมแล้วซื้อที่ไทยถูกกว่า",cart_diff_ot:function(c){return "รวมแล้วซื้อที่ "+c+" ถูกกว่า";},cart_diff_same:"ราคารวมเท่ากัน",
+  tray_view:"ดู Bundle →"
 }};
 
 var LANG="en";
@@ -5250,6 +5271,35 @@ function clearCompareCart(){
   saveCompareCart();
   renderCart();
 }
+function updateBundleTray(){
+  var tray=G("bundle-tray");
+  if(!tray)return;
+  var entries=(S.cart||[]).map(buildCartEntryData).filter(Boolean);
+  if(!entries.length){tray.style.display="none";document.body.style.paddingBottom="";return;}
+  var totalTH=entries.reduce(function(s,e){return s+e.comparison.thAfterVat;},0);
+  var totalForeign=entries.reduce(function(s,e){return s+e.comparison.foreignTHB;},0);
+  var count=entries.length;
+  var countEl=G("tray-count"),priceEl=G("tray-price"),btn=G("tray-btn");
+  if(countEl)countEl.textContent=count+(count===1?" item":" items")+" in bundle";
+  if(priceEl){
+    var C=CUR[S.country];
+    if(C&&S.country){
+      var diff=totalForeign-totalTH;
+      var sign=diff>0?"👍 Save ":"";
+      var diffAbs=Math.abs(diff);
+      priceEl.textContent="TH ฿"+fmt(totalTH)+" · "+C.flag+" ฿"+fmt(totalForeign)+(diff!==0?" · "+sign+"฿"+fmt(diffAbs):"");
+    }else{
+      priceEl.textContent="TH ฿"+fmt(totalTH);
+    }
+  }
+  if(btn)btn.textContent=tr("tray_view");
+  tray.style.display="flex";
+  document.body.style.paddingBottom="72px";
+}
+function scrollToBundle(){
+  var el=G("cart-section");
+  if(el){el.style.display="block";el.scrollIntoView({behavior:"smooth",block:"start"});}
+}
 function renderCart(){
   updateCartActionBar();
   var section=G("cart-section"),list=G("cart-list"),summary=G("cart-summary");
@@ -5259,6 +5309,7 @@ function renderCart(){
     section.style.display="none";
     list.innerHTML="";
     summary.innerHTML="";
+    updateBundleTray();
     return;
   }
   section.style.display="block";
@@ -5296,6 +5347,7 @@ function renderCart(){
     +'<div class="cart-summary-box"><span class="cart-summary-lbl">'+tr("cart_total_foreign")+'</span><span class="cart-summary-val">฿'+fmt(totals.foreignTHB)+'</span></div>'
     +'<div class="cart-summary-box'+totalWinClass+'" style="grid-column:1 / -1"><span class="cart-summary-lbl">'+tr("cart_total_diff")+'</span><span class="cart-summary-val">'+(totalDiff===0?'฿0':(totalDiff>0?'฿'+fmt(totalDiff):'-฿'+fmt(Math.abs(totalDiff))))+'</span><div class="cart-summary-note">'+diffText+'</div></div>'
     +'</div>';
+  updateBundleTray();
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────────
