@@ -41,7 +41,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .page{max-width:980px;margin:0 auto;padding:0 22px 80px}
 .hero{text-align:center;padding:0 0 28px}
 .hero-eyebrow{font-size:12px;font-weight:600;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin:14px 0 10px}
-.hero-title{font-size:36px;font-weight:700;letter-spacing:-.025em;line-height:1.08;margin-bottom:10px}
+.hero-title{font-size:34px;font-weight:700;letter-spacing:-.025em;line-height:1.08;margin-bottom:10px}
 .hero-title span{color:var(--blue)}
 .hero-sub{font-size:14px;color:var(--secondary-text);max-width:500px;margin:0 auto}
 .mode-switch{display:flex;align-items:center;justify-content:center;gap:0;width:min(100%,420px);max-width:420px;margin:0 auto 18px;background:var(--off-white);border:1px solid rgba(0,113,227,.18);border-radius:12px;padding:2px}
@@ -96,7 +96,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .tv-table-wrap .at td:nth-child(3){text-align:right}
 .tv-empty{padding:20px 12px;text-align:center;color:var(--secondary-text);font-size:14px}
 @media(max-width:760px){.gb-step-grid{grid-template-columns:1fr}}
-@media(max-width:600px){.hero-title{font-size:26px}.hero-sub{font-size:14px}}
+@media(max-width:600px){.hero-title{font-size:24px}.hero-sub{font-size:14px}}
 .step-wrap{margin-bottom:12px}
 .step-wrap.locked{opacity:.38;pointer-events:none}
 .step-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r);transition:border-color .2s}
@@ -626,7 +626,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <body>
 <nav>
   <span class="nav-logo"><img src="data:image/png;base64,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" style="height:22px;width:auto;vertical-align:middle;position:relative;top:-2px"></span>
-  <span class="nav-title" id="nav-title"><span id="nav-title-main">Price Battle</span> <span style="color:var(--secondary-text);font-weight:400">&middot; Thailand Base</span></span>
+  <span class="nav-title" id="nav-title">Price Battle</span>
   <div class="nav-actions">
     <div class="nav-lang">
       <button class="nl on" id="lb-en" onclick="setLang('en')">EN</button>
@@ -1071,7 +1071,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 10.02am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 10.05am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -1330,7 +1330,7 @@ en:{
   t2:"Select product category",sub2:"iPhone · iPad · Mac · Watch · AirPods · Apple TV · HomePod · Beats · AirTag · iPhone Acc · iPad Acc · Mac Acc",
   t3:"Select model & storage",sub3:"Choose a model",
   lbl_rate:"1 THB =",lbl_cmp:"Price Comparison",lbl_vat:"VAT Refund",lbl_trade:"Trade-in",lbl_sum:"Summary",
-  lbl_diff:"Price Difference",lbl_th:"Thailand",nav_title:"Price Compare · Thailand Base",
+  lbl_diff:"Price Difference",lbl_th:"Thailand",nav_title:"Price Battle",
   vat_tl:"VAT Refund Calculator",vat_sl:"Net price after tourist VAT refund",
   trade_tl:"Trade-in Calculator",trade_sl:"Subtract your trade-in value from Thailand price",
   trade_type_lbl:"Device type",trade_model_lbl:"Model",trade_storage_lbl:"Storage / Spec",
@@ -1403,7 +1403,7 @@ th:{
   t2:"เลือกประเภทสินค้า",sub2:"iPhone · iPad · Mac · Watch · AirPods · Apple TV · HomePod · Beats · AirTag · iPhone Acc · iPad Acc · Mac Acc",
   t3:"เลือกรุ่นและความจุ",sub3:"เลือกรุ่นที่ต้องการ",
   lbl_rate:"1 บาท =",lbl_cmp:"เปรียบเทียบราคา",lbl_vat:"คืน VAT",lbl_trade:"Trade-in",lbl_sum:"สรุปผล",
-  lbl_diff:"ส่วนต่างราคา",lbl_th:"ไทย",nav_title:"เปรียบราคา · ฐานราคาไทย",
+  lbl_diff:"ส่วนต่างราคา",lbl_th:"ไทย",nav_title:"Price Battle",
   vat_tl:"คำนวณ VAT Refund",vat_sl:"ราคาสุทธิหลังหักคืน VAT",
   trade_tl:"คำนวณ Trade-in",trade_sl:"หักมูลค่า Trade-in ออกจากราคาไทย",
   trade_type_lbl:"ประเภทอุปกรณ์",trade_model_lbl:"รุ่น",trade_storage_lbl:"ความจุ / สเปก",
@@ -6236,7 +6236,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.06.2026-10:02";
+var APP_VERSION="12.06.2026-10:05";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
