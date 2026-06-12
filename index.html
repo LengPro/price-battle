@@ -6,6 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light only">
 <title>Price Battle — Thailand Base</title>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9VDKM0C9CM"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-9VDKM0C9CM');
+</script>
 
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1071,7 +1079,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 10.10am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 12.39pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -4923,8 +4931,10 @@ function closeDd(){
   if(t)t.classList.remove("open");if(m)m.classList.remove("open");
   var si=G("dds");if(si){si.value="";filterDd("");}
 }
+function track(event,params){try{if(typeof gtag==="function")gtag("event",event,params||{});}catch(e){}}
 function pickCountry(code){
   var prev=S.country;S.country=code;var C=CUR[code];
+  track("country_select",{country_code:code,country_name:C?C.name:code});
   showTaxWidget(code);
   var fl=G("ddfl");if(fl)fl.textContent=C.flag;
   var nm=G("ddnm");if(nm){nm.textContent=C.name;nm.className="ddnm";}
@@ -5177,6 +5187,7 @@ function buildStorRow(cat,modelKey){
 }
 function pickSpec(csvRow,specLabel,modelKey,modelData){
   S.csvRow=csvRow;
+  track("product_select",{category:S.cat||"",model:modelData?modelData.rawName||modelKey:modelKey,spec:specLabel||"",product:(modelData?modelData.rawName||modelKey:modelKey)+(specLabel&&specLabel!=="Standard"?" "+specLabel:"")});
   if(S.cat)buildStorRow(S.cat,modelKey);
   setNum("sn3","done");
   var ch3=G("ch3");
@@ -5268,6 +5279,7 @@ function addCurrentSelectionToCart(){
   if(!current)return;
   S.cart=S.cart||[];
   S.cart.push({id:"cart_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),cat:current.cat,modelKey:current.modelKey,csvRow:current.csvRow});
+  track("bundle_add",{item_count:S.cart.length,category:current.cat||"",model:current.modelKey||"",country:S.country||""});
   saveCompareCart();
   renderCart();
   if((S.cart||[]).length>=2){
@@ -6236,7 +6248,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.06.2026-10:10";
+var APP_VERSION="12.06.2026-12:39";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
