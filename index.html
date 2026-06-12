@@ -1079,7 +1079,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 12.39pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 1.20pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -4457,15 +4457,15 @@ const TRADE_IN_DATA={
     "iPhone 15":{"128GB":8300,"256GB":8500,"512GB":8800},
     "iPhone 14 Pro Max":{"128GB":10300,"256GB":10600,"512GB":11000,"1TB":11500},
     "iPhone 14 Pro":{"128GB":8000,"256GB":8300,"512GB":8600,"1TB":9000},
-    "iPhone 14 Plus":{"128GB":6200,"256GB":6500,"512GB":6800},
-    "iPhone 14":{"128GB":5700,"256GB":6000,"512GB":6300},
-    "iPhone SE (3rd generation)":{"64GB":1500,"128GB":1600,"256GB":1800},
+    "iPhone 14 Plus":{"128GB":6000,"256GB":6200,"512GB":6500},
+    "iPhone 14":{"128GB":5500,"256GB":5700,"512GB":6000},
+    "iPhone SE (3rd generation)":{"64GB":1400,"128GB":1600,"256GB":1800},
     "iPhone 13 Pro Max":{"128GB":7400,"256GB":7700,"512GB":8100,"1TB":8300},
     "iPhone 13 Pro":{"128GB":6100,"256GB":6300,"512GB":6600,"1TB":7000},
     "iPhone 13":{"128GB":4700,"256GB":5000,"512GB":5300},
     "iPhone 13 mini":{"128GB":3300,"256GB":3600,"512GB":3900},
-    "iPhone 12 Pro Max":{"128GB":5500,"256GB":5800,"512GB":6000},
-    "iPhone 12 Pro":{"128GB":4000,"256GB":4300,"512GB":4500},
+    "iPhone 12 Pro Max":{"128GB":5100,"256GB":5500,"512GB":5700},
+    "iPhone 12 Pro":{"128GB":3700,"256GB":4100,"512GB":4300},
     "iPhone 12":{"64GB":2500,"128GB":2800,"256GB":3000},
     "iPhone 12 mini":{"64GB":1500,"128GB":1700,"256GB":1900},
     "iPhone 11 Pro Max":{"64GB":3000,"256GB":3200,"512GB":3400},
@@ -6248,7 +6248,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.06.2026-12:39";
+var APP_VERSION="12.06.2026-13:20";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
