@@ -1081,7 +1081,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 2.07pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 13 Jun 2026 1.11am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -4711,6 +4711,7 @@ function onTradeCh(){
   var on=G("tchk")&&G("tchk").checked;
   var t2=G("tchk2");if(t2)t2.checked=!!on;
   syncTradeUI();
+  sbTrack("trade_toggle",{country_code:S.country||"",country_zone:ZONE_MAP[S.country]||""});
   if(S.bundleMode&&(S.cart||[]).length>=2)renderBundleComparison();
   else if(S.country&&S.csvRow)render();
 }
@@ -4934,9 +4935,53 @@ function closeDd(){
   var si=G("dds");if(si){si.value="";filterDd("");}
 }
 function track(event,params){try{if(typeof gtag==="function")gtag("event",event,params||{});}catch(e){}}
+
+// ── SUPABASE ANALYTICS ───────────────────────────────────────────────────────
+var SB={
+  url:"https://pclutmwvjdkcctlsrhuc.supabase.co",
+  key:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbHV0bXd2amRrY2N0bHNyaHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzI5MDQsImV4cCI6MjA5Njg0ODkwNH0.viLDekuYjYB_xAvlZlbQ-5GXY9cFRU3rMtmWywOLRIU"
+};
+var ZONE_MAP={
+  AU:"Oceania",AT:"Europe",BE:"Europe",BR:"Americas",CA:"Americas",
+  CL:"Americas",CN:"Asia",CZ:"Europe",DK:"Europe",FI:"Europe",
+  FR:"Europe",DE:"Europe",HK:"Asia",HU:"Europe",IN:"Asia",
+  IE:"Europe",IT:"Europe",JP:"Asia",LU:"Europe",MY:"Asia",
+  MX:"Americas",NL:"Europe",NZ:"Oceania",NO:"Europe",PH:"Asia",
+  PL:"Europe",PT:"Europe",SA:"Middle East",SG:"Asia",KR:"Asia",
+  ES:"Europe",SE:"Europe",CH:"Europe",TW:"Asia",TH:"Asia",
+  TR:"Europe",AE:"Middle East",GB:"Europe",US:"Americas",VN:"Asia"
+};
+var SB_SID=(function(){
+  try{var s=sessionStorage.getItem("pb_sid");if(s)return s;}catch(e){}
+  var sid=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+  try{sessionStorage.setItem("pb_sid",sid);}catch(e){}
+  return sid;
+})();
+function sbTrack(eventType,extra){
+  try{
+    var body=Object.assign({event_type:eventType,session_id:SB_SID},extra||{});
+    fetch(SB.url+"/rest/v1/pb_events",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":SB.key,"Authorization":"Bearer "+SB.key,"Prefer":"return=minimal"},
+      body:JSON.stringify(body),
+      keepalive:true
+    }).catch(function(){});
+  }catch(e){}
+}
+function sbHeartbeat(){
+  try{
+    fetch(SB.url+"/rest/v1/pb_sessions",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","apikey":SB.key,"Authorization":"Bearer "+SB.key,"Prefer":"resolution=merge-duplicates,return=minimal"},
+      body:JSON.stringify({session_id:SB_SID,last_seen:new Date().toISOString()}),
+      keepalive:true
+    }).catch(function(){});
+  }catch(e){}
+}
 function pickCountry(code){
   var prev=S.country;S.country=code;var C=CUR[code];
   track("country_select",{country_code:code,country_name:C?C.name:code});
+  sbTrack("country_select",{country_code:code,country_name:C?C.name:code,country_zone:ZONE_MAP[code]||""});
   showTaxWidget(code);
   var fl=G("ddfl");if(fl)fl.textContent=C.flag;
   var nm=G("ddnm");if(nm){nm.textContent=C.name;nm.className="ddnm";}
@@ -5189,7 +5234,9 @@ function buildStorRow(cat,modelKey){
 }
 function pickSpec(csvRow,specLabel,modelKey,modelData){
   S.csvRow=csvRow;
-  track("product_select",{category:S.cat||"",model:modelData?modelData.rawName||modelKey:modelKey,spec:specLabel||"",product:(modelData?modelData.rawName||modelKey:modelKey)+(specLabel&&specLabel!=="Standard"?" "+specLabel:"")});
+  var _prod=(modelData?modelData.rawName||modelKey:modelKey)+(specLabel&&specLabel!=="Standard"?" "+specLabel:"");
+  track("product_select",{category:S.cat||"",model:modelData?modelData.rawName||modelKey:modelKey,spec:specLabel||"",product:_prod});
+  sbTrack("product_select",{category:S.cat||"",product_name:_prod,country_code:S.country||"",country_zone:ZONE_MAP[S.country]||""});
   if(S.cat)buildStorRow(S.cat,modelKey);
   setNum("sn3","done");
   var ch3=G("ch3");
@@ -5282,6 +5329,7 @@ function addCurrentSelectionToCart(){
   S.cart=S.cart||[];
   S.cart.push({id:"cart_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),cat:current.cat,modelKey:current.modelKey,csvRow:current.csvRow});
   track("bundle_add",{item_count:S.cart.length,category:current.cat||"",model:current.modelKey||"",country:S.country||""});
+  sbTrack("bundle_add",{category:current.cat||"",product_name:current.modelKey||"",country_code:S.country||"",country_zone:ZONE_MAP[S.country]||""});
   saveCompareCart();
   renderCart();
   if((S.cart||[]).length>=2){
@@ -6250,7 +6298,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.06.2026-14:07";
+var APP_VERSION="13.06.2026-01:11";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
@@ -6275,6 +6323,9 @@ var APP_VERSION="12.06.2026-14:07";
     switchMode(savedMode==="gb"||savedMode==="tv"?savedMode:"pz");
   }catch(e){switchMode("pz");}
   var aovEl=G("aov");if(aovEl)aovEl.addEventListener("click",function(e){if(e.target===this)closeAdmin();});
+  sbTrack("page_open");
+  sbHeartbeat();
+  setInterval(sbHeartbeat,30000);
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initApp);
 else initApp();
