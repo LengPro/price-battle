@@ -182,6 +182,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .cmp-row1{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .cmp-tools{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
 .trade-inline-fields{display:none;width:100%;padding-top:2px}
+.trade-date-note{font-size:10px;font-weight:600;color:var(--secondary-text);letter-spacing:.05em;text-transform:uppercase;padding:0 0 4px}
 .trade-inline-fields .trade-grid{margin-top:0}
 .trade-inline-fields .form-sel{-webkit-appearance:none;appearance:none;background:var(--off-white);border:1px solid var(--mid-grey);border-radius:18px;padding:10px 38px 10px 14px;color:var(--body-text);font-size:13px;font-weight:500;line-height:1.2;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5.25 7 9l4-3.75' fill='none' stroke='%231d1d1f' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;background-size:14px 14px}
 .trade-inline-fields .form-sel:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,113,227,.12)}
@@ -814,6 +815,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
           </div>
         </div>
         <div class="trade-inline-fields" id="trade-inline-fields">
+          <div class="trade-date-note">Trade-in value · 26/05/2026</div>
           <div class="trade-grid">
             <div class="trade-field">
               <label id="trade-type-lbl" for="trade-type">Device type</label>
@@ -1079,7 +1081,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 1.20pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 1.24pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -6248,7 +6250,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.06.2026-13:20";
+var APP_VERSION="12.06.2026-13:24";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
