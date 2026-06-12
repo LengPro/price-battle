@@ -183,7 +183,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .cmp-sp{font-size:11px;color:var(--secondary-text);margin-top:3px}
 .cmp-badge{display:inline-flex;align-items:center;gap:5px;min-height:31px;flex-shrink:0;white-space:nowrap;box-sizing:border-box;background:var(--off-white);border:1px solid var(--rule);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:500;line-height:1.1;color:var(--secondary-text)}
 .cmp-row2{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.vat-toggle-inline{display:flex;align-items:center;justify-content:space-between;gap:6px;width:132px;box-sizing:border-box;background:var(--off-white);border:1px solid var(--mid-grey);border-radius:20px;padding:4px 10px;flex-shrink:0}
+.vat-toggle-inline{display:flex;align-items:center;justify-content:space-between;gap:6px;width:132px;min-height:31px;box-sizing:border-box;background:var(--off-white);border:1px solid var(--mid-grey);border-radius:20px;padding:4px 10px;flex-shrink:0}
 .vtil{font-size:12px;font-weight:700;color:var(--secondary-text);line-height:1;letter-spacing:-.01em}
 .tg{position:relative;width:40px;height:23px;flex-shrink:0}
 .tg input{opacity:0;width:0;height:0}
@@ -497,7 +497,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
     gap:6px;
   }
   .vat-toggle-inline{
-    min-height:29px;
+    min-height:31px;
     padding:4px 8px;
     border-radius:18px;
   }
@@ -763,7 +763,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
     <div class="step-card" id="sc2">
       <div class="step-hd">
         <div class="step-num" id="sn2">2</div>
-        <div><div class="step-title" id="t2">Select product category</div><div class="step-sub" id="sub2">iPhone &middot; iPad &middot; Mac &middot; Watch &middot; AirPods &middot; Apple TV &middot; HomePod &middot; Beats &middot; AirTag &middot; iPhone Acc &middot; iPad Acc &middot; Mac Acc</div></div>
+        <div><div class="step-title" id="t2">Select product category</div><div class="step-sub" id="sub2"></div></div>
         <div class="step-chosen" id="ch2"></div>
       </div>
       <div class="step-body"><div class="catg" id="catg"></div></div>
@@ -1071,7 +1071,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 10.05am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 10.10am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -1327,7 +1327,7 @@ en:{
   hero_title:"Find the <span>best price</span><br>for your next Apple device",
   hero_sub:"Compare iPhone, iPad, Mac, Apple Watch, AirPods, Apple TV and HomePod prices in Thailand vs. your country.",
   t1:"Select comparison country",sub1:"40 countries · 🇹🇭 Thailand as base price",
-  t2:"Select product category",sub2:"iPhone · iPad · Mac · Watch · AirPods · Apple TV · HomePod · Beats · AirTag · iPhone Acc · iPad Acc · Mac Acc",
+  t2:"Select product category",sub2:"",
   t3:"Select model & storage",sub3:"Choose a model",
   lbl_rate:"1 THB =",lbl_cmp:"Price Comparison",lbl_vat:"VAT Refund",lbl_trade:"Trade-in",lbl_sum:"Summary",
   lbl_diff:"Price Difference",lbl_th:"Thailand",nav_title:"Price Battle",
@@ -1400,7 +1400,7 @@ th:{
   hero_title:"ค้นหา<span>ราคาที่ดีที่สุด</span><br>สำหรับอุปกรณ์ Apple เครื่องถัดไปของคุณ",
   hero_sub:"เปรียบเทียบราคา iPhone, iPad, Mac, Apple Watch, AirPods, Apple TV และ HomePod ในประเทศไทยกับประเทศของคุณ",
   t1:"เลือกประเทศที่ต้องการเปรียบเทียบ",sub1:"40 ประเทศ · 🇹🇭 ไทยเป็นราคาหลัก",
-  t2:"เลือกประเภทสินค้า",sub2:"iPhone · iPad · Mac · Watch · AirPods · Apple TV · HomePod · Beats · AirTag · iPhone Acc · iPad Acc · Mac Acc",
+  t2:"เลือกประเภทสินค้า",sub2:"",
   t3:"เลือกรุ่นและความจุ",sub3:"เลือกรุ่นที่ต้องการ",
   lbl_rate:"1 บาท =",lbl_cmp:"เปรียบเทียบราคา",lbl_vat:"คืน VAT",lbl_trade:"Trade-in",lbl_sum:"สรุปผล",
   lbl_diff:"ส่วนต่างราคา",lbl_th:"ไทย",nav_title:"Price Battle",
@@ -6236,7 +6236,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.06.2026-10:05";
+var APP_VERSION="12.06.2026-10:10";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
