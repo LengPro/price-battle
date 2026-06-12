@@ -1071,7 +1071,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 9.48am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 12 Jun 2026 9.57am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -4971,7 +4971,7 @@ function pickCat(key){
   var s3=G("sub3");if(s3)s3.textContent=C.label+" — "+tr("sub3");
   buildMGrid(key);var ss=G("stor-section");if(ss)ss.classList.remove("show");
   hideResult();var ch3=G("ch3");if(ch3)ch3.style.display="none";
-  setTimeout(function(){var sw=G("sw3");if(sw)sw.scrollIntoView({behavior:"smooth",block:"nearest"});},80);
+  setTimeout(function(){var sw=G("sw3");if(sw)sw.scrollIntoView({behavior:"smooth",block:"start"});},80);
 }
 
 // ── MODEL GRID ───────────────────────────────────────────────────────────────────
@@ -6236,7 +6236,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.06.2026-09:48";
+var APP_VERSION="12.06.2026-09:57";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
