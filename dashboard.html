@@ -7,59 +7,114 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;}
-.nav{background:#1a1d27;border-bottom:1px solid #2d3142;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.nav-title{font-size:18px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;}
+
+/* NAV */
+.nav{background:#1a1d27;border-bottom:1px solid #2d3142;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.nav-title{font-size:17px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px;}
 .nav-title span{color:#818cf8;}
-.status{display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;}
-.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.status-wrap{display:flex;align-items:center;gap:7px;font-size:12px;color:#94a3b8;}
+.dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;flex-shrink:0;}
 .dot.err{background:#ef4444;animation:none;}
-.period-bar{display:flex;gap:6px;align-items:center;}
-.period-btn{padding:6px 14px;border-radius:20px;border:1px solid #2d3142;background:transparent;color:#94a3b8;font-size:13px;cursor:pointer;transition:all .15s;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+/* FILTER BAR */
+.filter-bar{background:#13151f;border-bottom:1px solid #2d3142;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.filter-group{display:flex;align-items:center;gap:6px;}
+.filter-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
+
+/* Period pills */
+.period-btn{padding:5px 13px;border-radius:18px;border:1px solid #2d3142;background:transparent;color:#94a3b8;font-size:12px;cursor:pointer;transition:all .12s;white-space:nowrap;}
 .period-btn:hover{border-color:#818cf8;color:#c7d2fe;}
 .period-btn.active{background:#818cf8;border-color:#818cf8;color:#fff;font-weight:600;}
-.main{max-width:1100px;margin:0 auto;padding:24px 16px;}
-.grid-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px;}
-.card{background:#1a1d27;border:1px solid #2d3142;border-radius:14px;padding:20px 22px;}
-.card-label{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
-.card-value{font-size:36px;font-weight:700;color:#fff;line-height:1;}
+
+/* Date range picker */
+.date-range{display:none;align-items:center;gap:6px;flex-wrap:wrap;}
+.date-range.show{display:flex;}
+input[type="date"]{background:#1e2236;border:1px solid #2d3142;color:#e2e8f0;border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;outline:none;}
+input[type="date"]:focus{border-color:#818cf8;}
+input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.6);}
+.apply-btn{padding:5px 14px;border-radius:18px;background:#818cf8;border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;}
+.apply-btn:hover{background:#6366f1;}
+
+/* Divider */
+.filter-divider{width:1px;height:20px;background:#2d3142;flex-shrink:0;}
+
+/* Site dropdown */
+select{background:#1e2236;border:1px solid #2d3142;color:#e2e8f0;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;outline:none;}
+select:focus{border-color:#818cf8;}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:20px 16px;}
+.grid-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:20px;}
+.card{background:#1a1d27;border:1px solid #2d3142;border-radius:14px;padding:18px 20px;}
+.card-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;}
+.card-value{font-size:34px;font-weight:700;color:#fff;line-height:1;}
 .card-value.active{color:#22c55e;}
-.card-sub{font-size:12px;color:#94a3b8;margin-top:6px;}
-.section-title{font-size:15px;font-weight:600;color:#c7d2fe;margin-bottom:12px;}
-.grid-bottom{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-bottom:24px;}
+.card-sub{font-size:11px;color:#64748b;margin-top:5px;}
+
+.section-title{font-size:14px;font-weight:600;color:#c7d2fe;margin-bottom:10px;}
+.grid-bottom{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:20px;}
 .rank-list{list-style:none;}
-.rank-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #23263a;}
+.rank-item{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #1e2236;}
 .rank-item:last-child{border-bottom:none;}
-.rank-num{font-size:12px;color:#475569;min-width:18px;text-align:right;}
-.rank-bar-wrap{flex:1;display:flex;flex-direction:column;gap:4px;}
-.rank-name{font-size:14px;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.rank-bar-bg{height:4px;border-radius:2px;background:#1e2236;overflow:hidden;}
+.rank-num{font-size:11px;color:#475569;min-width:16px;text-align:right;}
+.rank-bar-wrap{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0;}
+.rank-name{font-size:13px;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rank-bar-bg{height:3px;border-radius:2px;background:#1e2236;overflow:hidden;}
 .rank-bar-fill{height:100%;border-radius:2px;background:#818cf8;transition:width .5s ease;}
-.rank-count{font-size:13px;font-weight:600;color:#818cf8;min-width:32px;text-align:right;}
-.last-refresh{font-size:11px;color:#475569;text-align:center;padding:8px;}
-.err-banner{background:#2d1b1b;border:1px solid #7f1d1d;border-radius:10px;padding:12px 16px;color:#fca5a5;font-size:13px;margin-bottom:16px;display:none;}
-.skeleton{background:linear-gradient(90deg,#1e2236 25%,#272b3e 50%,#1e2236 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;height:36px;}
-@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;margin-left:6px;vertical-align:middle;}
+.rank-count{font-size:12px;font-weight:600;color:#818cf8;min-width:28px;text-align:right;}
+.no-data{color:#475569;font-size:13px;padding:8px 0;}
+.badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:600;margin-left:5px;vertical-align:middle;}
 .badge-iphone{background:#1d3557;color:#90caf9;}
 .badge-ipad{background:#1b3a2f;color:#86efac;}
 .badge-mac{background:#2d1b45;color:#d8b4fe;}
 .badge-watch{background:#3a2207;color:#fcd34d;}
 .badge-airpods{background:#1a2d3a;color:#7dd3fc;}
-@media(max-width:600px){.card-value{font-size:28px;}.nav{gap:10px;}}
+
+.last-refresh{font-size:11px;color:#475569;text-align:center;padding:6px;}
+.err-banner{background:#2d1b1b;border:1px solid #7f1d1d;border-radius:10px;padding:10px 14px;color:#fca5a5;font-size:12px;margin-bottom:14px;display:none;}
+.skeleton{background:linear-gradient(90deg,#1e2236 25%,#272b3e 50%,#1e2236 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+.period-range-lbl{font-size:11px;color:#64748b;margin-top:4px;}
+
+@media(max-width:600px){.card-value{font-size:26px;}.filter-bar{gap:8px;}}
 </style>
 </head>
 <body>
 
 <div class="nav">
   <div class="nav-title">📊 <span>Price Battle</span> · Dashboard</div>
-  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-    <div class="period-bar">
-      <button class="period-btn active" data-period="1">Today</button>
-      <button class="period-btn" data-period="7">7 Days</button>
-      <button class="period-btn" data-period="30">30 Days</button>
-    </div>
-    <div class="status"><div class="dot" id="dot"></div><span id="status-txt">Connecting…</span></div>
+  <div class="status-wrap"><div class="dot" id="dot"></div><span id="status-txt">Connecting…</span></div>
+</div>
+
+<div class="filter-bar">
+  <!-- Period presets -->
+  <div class="filter-group">
+    <span class="filter-label">Period</span>
+    <button class="period-btn active" data-preset="today">Today</button>
+    <button class="period-btn" data-preset="7">7 Days</button>
+    <button class="period-btn" data-preset="30">30 Days</button>
+    <button class="period-btn" data-preset="custom">Custom 📅</button>
+  </div>
+
+  <!-- Custom date range (shown when Custom clicked) -->
+  <div class="date-range" id="date-range">
+    <span class="filter-label">From</span>
+    <input type="date" id="dt-from">
+    <span class="filter-label">To</span>
+    <input type="date" id="dt-to">
+    <button class="apply-btn" id="apply-range">Apply</button>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <!-- Site filter -->
+  <div class="filter-group">
+    <span class="filter-label">Site</span>
+    <select id="site-select">
+      <option value="">All sites</option>
+    </select>
   </div>
 </div>
 
@@ -69,22 +124,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="grid-top">
     <div class="card">
       <div class="card-label">Active Now</div>
-      <div class="card-value active" id="val-active"><div class="skeleton" style="width:60px;height:36px;"></div></div>
-      <div class="card-sub">Users in last 2 min</div>
+      <div class="card-value active" id="val-active"><div class="skeleton" style="width:50px;height:34px;"></div></div>
+      <div class="card-sub">Sessions · last 2 min</div>
     </div>
     <div class="card">
       <div class="card-label">Total Opens</div>
-      <div class="card-value" id="val-opens"><div class="skeleton" style="width:80px;height:36px;"></div></div>
+      <div class="card-value" id="val-opens"><div class="skeleton" style="width:70px;height:34px;"></div></div>
       <div class="card-sub">Page loads</div>
     </div>
     <div class="card">
       <div class="card-label">Trade-In Toggles</div>
-      <div class="card-value" id="val-trade"><div class="skeleton" style="width:60px;height:36px;"></div></div>
+      <div class="card-value" id="val-trade"><div class="skeleton" style="width:50px;height:34px;"></div></div>
       <div class="card-sub">Toggle on/off events</div>
     </div>
     <div class="card">
       <div class="card-label">Bundle Adds</div>
-      <div class="card-value" id="val-bundle"><div class="skeleton" style="width:60px;height:36px;"></div></div>
+      <div class="card-value" id="val-bundle"><div class="skeleton" style="width:50px;height:34px;"></div></div>
       <div class="card-sub">Add to Bundle Cart</div>
     </div>
   </div>
@@ -92,15 +147,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="grid-bottom">
     <div class="card">
       <div class="section-title">Top 5 Regions</div>
-      <ul class="rank-list" id="list-zones"><li class="rank-item"><div class="skeleton" style="width:100%;"></div></li></ul>
+      <ul class="rank-list" id="list-zones"><li class="rank-item"><div class="skeleton" style="width:100%;height:14px;"></div></li></ul>
     </div>
     <div class="card">
       <div class="section-title">Top 5 Countries</div>
-      <ul class="rank-list" id="list-countries"><li class="rank-item"><div class="skeleton" style="width:100%;"></div></li></ul>
+      <ul class="rank-list" id="list-countries"><li class="rank-item"><div class="skeleton" style="width:100%;height:14px;"></div></li></ul>
     </div>
     <div class="card">
       <div class="section-title">Top 5 Products</div>
-      <ul class="rank-list" id="list-products"><li class="rank-item"><div class="skeleton" style="width:100%;"></div></li></ul>
+      <ul class="rank-list" id="list-products"><li class="rank-item"><div class="skeleton" style="width:100%;height:14px;"></div></li></ul>
     </div>
   </div>
 
@@ -110,32 +165,57 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script>
 var SB_URL="https://pclutmwvjdkcctlsrhuc.supabase.co";
 var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbHV0bXd2amRrY2N0bHNyaHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzI5MDQsImV4cCI6MjA5Njg0ODkwNH0.viLDekuYjYB_xAvlZlbQ-5GXY9cFRU3rMtmWywOLRIU";
-var PERIOD_DAYS=1;
 
-var CAT_BADGE={
-  "iPhone":"badge-iphone","iPad":"badge-ipad","Mac":"badge-mac",
-  "Watch":"badge-watch","AirPods":"badge-airpods"
+var CAT_BADGE={iPhone:"badge-iphone",iPad:"badge-ipad",Mac:"badge-mac",Watch:"badge-watch",AirPods:"badge-airpods"};
+
+// State
+var STATE={
+  preset:"today",   // "today"|"7"|"30"|"custom"
+  fromTs:null,
+  untilTs:null,
+  site:""
 };
 
 function G(id){return document.getElementById(id);}
-
-function sinceTs(days){
-  var d=new Date();
-  if(days===1){d.setHours(0,0,0,0);}
-  else{d=new Date(Date.now()-days*24*60*60*1000);}
-  return d.toISOString();
-}
-
 function fmtNum(n){return Number(n).toLocaleString("en");}
 
+// ── Date helpers ─────────────────────────────────────────────────────────────
+function todayStart(){var d=new Date();d.setHours(0,0,0,0);return d;}
+function isoDate(d){return d.toISOString().slice(0,10);}
+
+function buildTimestamps(){
+  if(STATE.preset==="today"){
+    STATE.fromTs=todayStart().toISOString();
+    STATE.untilTs=null;
+  } else if(STATE.preset==="7"){
+    STATE.fromTs=new Date(Date.now()-7*864e5).toISOString();
+    STATE.untilTs=null;
+  } else if(STATE.preset==="30"){
+    STATE.fromTs=new Date(Date.now()-30*864e5).toISOString();
+    STATE.untilTs=null;
+  }
+  // "custom" already set by applyRange()
+}
+
+function applyRange(){
+  var f=G("dt-from").value,t=G("dt-to").value;
+  if(!f)return;
+  STATE.fromTs=new Date(f+"T00:00:00").toISOString();
+  STATE.untilTs=t?new Date(t+"T23:59:59").toISOString():null;
+  load();
+}
+
+// ── Render helpers ────────────────────────────────────────────────────────────
 function renderStat(id,val){G(id).textContent=fmtNum(val);}
 
 function renderRankList(listId,items,nameFn,maxCnt){
   var ul=G(listId);
-  if(!items||!items.length){ul.innerHTML="<li class='rank-item' style='color:#475569;font-size:13px;'>No data yet</li>";return;}
+  if(!items||!items.length){
+    ul.innerHTML="<li class='no-data'>No data yet</li>";return;
+  }
   ul.innerHTML=items.map(function(item,i){
     var pct=maxCnt?Math.round((item.cnt/maxCnt)*100):0;
-    return "<li class='rank-item'>"+
+    return"<li class='rank-item'>"+
       "<span class='rank-num'>"+(i+1)+"</span>"+
       "<div class='rank-bar-wrap'>"+
         "<span class='rank-name'>"+nameFn(item)+"</span>"+
@@ -148,32 +228,45 @@ function renderRankList(listId,items,nameFn,maxCnt){
 
 function catBadge(cat){
   if(!cat)return"";
-  var cls=CAT_BADGE[cat]||"";
-  return"<span class='badge "+(cls||"")+"'>"+cat+"</span>";
+  return"<span class='badge "+(CAT_BADGE[cat]||"")+"'>"+cat+"</span>";
 }
 
 function setStatus(live,msg){
-  var dot=G("dot");var txt=G("status-txt");
-  dot.className="dot"+(live?"":" err");
-  txt.textContent=msg;
+  G("dot").className="dot"+(live?"":" err");
+  G("status-txt").textContent=msg;
 }
 
+// ── Site dropdown ─────────────────────────────────────────────────────────────
+function populateSites(siteIds){
+  var sel=G("site-select");
+  var current=sel.value;
+  // preserve options already added
+  var existing=[];
+  for(var i=1;i<sel.options.length;i++)existing.push(sel.options[i].value);
+  (siteIds||[]).forEach(function(s){
+    if(s&&existing.indexOf(s)<0){
+      var o=document.createElement("option");o.value=s;o.textContent=s;
+      sel.appendChild(o);
+    }
+  });
+  if(current)sel.value=current;
+}
+
+// ── Load ──────────────────────────────────────────────────────────────────────
 function load(){
   setStatus(true,"Loading…");
-  var ts=sinceTs(PERIOD_DAYS);
+  buildTimestamps();
+
+  var body={since_ts:STATE.fromTs};
+  if(STATE.untilTs)body.until_ts=STATE.untilTs;
+  if(STATE.site)body.p_site_id=STATE.site;
+
   fetch(SB_URL+"/rest/v1/rpc/get_dashboard",{
     method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "apikey":SB_KEY,
-      "Authorization":"Bearer "+SB_KEY
-    },
-    body:JSON.stringify({since_ts:ts})
+    headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY},
+    body:JSON.stringify(body)
   })
-  .then(function(r){
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    return r.json();
-  })
+  .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
   .then(function(d){
     G("err-banner").style.display="none";
     renderStat("val-active",d.active_now||0);
@@ -181,42 +274,54 @@ function load(){
     renderStat("val-trade",d.trade_toggles||0);
     renderStat("val-bundle",d.bundle_adds||0);
 
-    var zones=d.top_zones||[];
-    var countries=d.top_countries||[];
-    var products=d.top_products||[];
+    var zones=d.top_zones||[],countries=d.top_countries||[],products=d.top_products||[];
+    renderRankList("list-zones",zones,function(z){return z.zone;},zones[0]?zones[0].cnt:1);
+    renderRankList("list-countries",countries,function(c){return c.country_name||c.country_code||"?";},countries[0]?countries[0].cnt:1);
+    renderRankList("list-products",products,function(p){return(p.product_name||"?")+catBadge(p.category);},products[0]?products[0].cnt:1);
 
-    var maxZ=zones.length?zones[0].cnt:1;
-    var maxC=countries.length?countries[0].cnt:1;
-    var maxP=products.length?products[0].cnt:1;
-
-    renderRankList("list-zones",zones,function(z){return z.zone;},maxZ);
-    renderRankList("list-countries",countries,function(c){return (c.country_name||c.country_code||"?");},maxC);
-    renderRankList("list-products",products,function(p){
-      return (p.product_name||"?")+catBadge(p.category);
-    },maxP);
+    populateSites(d.site_ids);
 
     var now=new Date();
-    G("last-refresh").textContent="Last updated "+now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · auto-refresh every 30s";
+    G("last-refresh").textContent="Updated "+now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · auto-refresh 30s";
     setStatus(true,"Live");
   })
   .catch(function(e){
-    var banner=G("err-banner");
-    banner.textContent="Failed to load data: "+e.message+". Check Supabase RLS policies and network.";
-    banner.style.display="block";
+    G("err-banner").textContent="Error: "+e.message+" — Check Supabase migration v2 was run.";
+    G("err-banner").style.display="block";
     setStatus(false,"Error");
   });
 }
 
-// Period buttons
+// ── Period buttons ────────────────────────────────────────────────────────────
 document.querySelectorAll(".period-btn").forEach(function(btn){
   btn.addEventListener("click",function(){
     document.querySelectorAll(".period-btn").forEach(function(b){b.classList.remove("active");});
     btn.classList.add("active");
-    PERIOD_DAYS=parseInt(btn.dataset.period)||1;
-    load();
+    var preset=btn.dataset.preset;
+    STATE.preset=preset;
+    var range=G("date-range");
+    if(preset==="custom"){
+      range.classList.add("show");
+      // Default: today only
+      if(!G("dt-from").value){
+        var td=isoDate(new Date());
+        G("dt-from").value=td;G("dt-to").value=td;
+      }
+    } else {
+      range.classList.remove("show");
+      load();
+    }
   });
 });
 
+G("apply-range").addEventListener("click",applyRange);
+
+G("site-select").addEventListener("change",function(){
+  STATE.site=this.value;
+  load();
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 load();
 setInterval(load,30000);
 </script>
