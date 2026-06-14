@@ -1081,7 +1081,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 14 Jun 2026 6.04pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 14 Jun 2026 9.00pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -4940,8 +4940,36 @@ function track(event,params){try{if(typeof gtag==="function")gtag("event",event,
 var SB={
   url:"https://pclutmwvjdkcctlsrhuc.supabase.co",
   key:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbHV0bXd2amRrY2N0bHNyaHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzI5MDQsImV4cCI6MjA5Njg0ODkwNH0.viLDekuYjYB_xAvlZlbQ-5GXY9cFRU3rMtmWywOLRIU",
-  site:"main"
+  site:"unknown"
 };
+// Branch locations — GPS coordinates
+var BRANCHES=[
+  {id:"iconsiam",    lat:13.7264, lng:100.5124},
+  {id:"centralworld",lat:13.7463, lng:100.5390}
+];
+function _distKm(la1,ln1,la2,ln2){
+  var R=6371,dL=(la2-la1)*Math.PI/180,dN=(ln2-ln1)*Math.PI/180;
+  var a=Math.sin(dL/2)*Math.sin(dL/2)+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dN/2)*Math.sin(dN/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function initBranch(cb){
+  try{var stored=localStorage.getItem("apc_branch");if(stored){SB.site=stored;cb();return;}}catch(e){}
+  if(!navigator.geolocation){cb();return;}
+  var done=false;
+  var timer=setTimeout(function(){if(!done){done=true;cb();}},8000);
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      if(done)return;done=true;clearTimeout(timer);
+      var lat=pos.coords.latitude,lng=pos.coords.longitude;
+      var best=null,minD=Infinity;
+      BRANCHES.forEach(function(b){var d=_distKm(lat,lng,b.lat,b.lng);if(d<minD){minD=d;best=b.id;}});
+      SB.site=best||"unknown";
+      try{localStorage.setItem("apc_branch",SB.site);}catch(e){}
+      cb();
+    },
+    function(){if(!done){done=true;clearTimeout(timer);cb();}}
+  );
+}
 var ZONE_MAP={
   AU:"Oceania",AT:"Europe",BE:"Europe",BR:"Americas",CA:"Americas",
   CL:"Americas",CN:"Asia",CZ:"Europe",DK:"Europe",FI:"Europe",
@@ -6299,7 +6327,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="14.06.2026-18:04";
+var APP_VERSION="14.06.2026-21:00";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
@@ -6324,9 +6352,11 @@ var APP_VERSION="14.06.2026-18:04";
     switchMode(savedMode==="gb"||savedMode==="tv"?savedMode:"pz");
   }catch(e){switchMode("pz");}
   var aovEl=G("aov");if(aovEl)aovEl.addEventListener("click",function(e){if(e.target===this)closeAdmin();});
-  sbTrack("page_open");
-  sbHeartbeat();
-  setInterval(sbHeartbeat,30000);
+  initBranch(function(){
+    sbTrack("page_open");
+    sbHeartbeat();
+    setInterval(sbHeartbeat,30000);
+  });
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initApp);
 else initApp();
