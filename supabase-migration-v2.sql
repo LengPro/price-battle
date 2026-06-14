@@ -62,7 +62,7 @@ BEGIN
           AND created_at >= since_ts AND created_at <= _until
           AND country_code IS NOT NULL
           AND (p_site_id IS NULL OR site_id = p_site_id)
-        GROUP BY country_code, country_name ORDER BY cnt DESC LIMIT 5
+        GROUP BY country_code, country_name ORDER BY cnt DESC LIMIT 10
       ) c
     ),
     'top_products', (
@@ -74,7 +74,7 @@ BEGIN
           AND created_at >= since_ts AND created_at <= _until
           AND product_name IS NOT NULL
           AND (p_site_id IS NULL OR site_id = p_site_id)
-        GROUP BY product_name, category ORDER BY cnt DESC LIMIT 5
+        GROUP BY product_name, category ORDER BY cnt DESC LIMIT 10
       ) p
     ),
     'site_ids', (
