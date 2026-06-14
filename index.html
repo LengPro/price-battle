@@ -1081,7 +1081,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 14 Jun 2026 9.00pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 14 Jun 2026 9.06pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -4942,10 +4942,10 @@ var SB={
   key:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbHV0bXd2amRrY2N0bHNyaHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzI5MDQsImV4cCI6MjA5Njg0ODkwNH0.viLDekuYjYB_xAvlZlbQ-5GXY9cFRU3rMtmWywOLRIU",
   site:"unknown"
 };
-// Branch locations — GPS coordinates
+// Branch locations — Apple Store GPS coordinates
 var BRANCHES=[
-  {id:"iconsiam",    lat:13.7264, lng:100.5124},
-  {id:"centralworld",lat:13.7463, lng:100.5390}
+  {id:"iconsiam",    lat:13.726694, lng:100.510498},
+  {id:"centralworld",lat:13.746944, lng:100.539719}
 ];
 function _distKm(la1,ln1,la2,ln2){
   var R=6371,dL=(la2-la1)*Math.PI/180,dN=(ln2-ln1)*Math.PI/180;
@@ -6327,7 +6327,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="14.06.2026-21:00";
+var APP_VERSION="14.06.2026-21:06";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
