@@ -1084,7 +1084,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 19 Jun 2026 12.08pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 19 Jun 2026 12.20pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -4745,7 +4745,7 @@ function switchMode(mode){
   try{localStorage.setItem("apc_mode",mode);}catch(e){}
 }
 function fmt(n){return Math.round(n).toLocaleString("en");}
-function fmt2(n){if(!n)return"0";if(n>=10000)return Math.round(n).toLocaleString("en");if(n>=100)return n.toFixed(0);var s=n>=10?n.toFixed(1):n.toFixed(2);return parseFloat(s).toString();}
+function fmt2(n){if(!n)return"0";if(n>=10000)return Math.round(n).toLocaleString("en");return parseFloat(n.toFixed(2)).toString();}
 function fmtTax(n){if(!n)return"0.00";return n.toFixed(2);}
 function setNum(id,st){var el=G(id);if(!el)return;el.classList.remove("done","active");if(st)el.classList.add(st);}
 function f2t(a,rk){var r=S.rates[rk];return r?a/r:0;}
@@ -5975,7 +5975,7 @@ function buildAdminTable(cat){
       tr2.innerHTML='<td class="tnm">'+getIconHtml(m.icon,"admin-ic-img")+" "+(m.rawName||m.displayName)+' <span style="color:var(--secondary-text);font-size:9px">'+(sp.label!=="Standard"?sp.label:"")+'</span></td>';
       cols.forEach(function(cc){
         var td=document.createElement("td");
-        var inp=document.createElement("input");inp.type="number";inp.min="0";inp.step="1";
+        var inp=document.createElement("input");inp.type="number";inp.min="0";inp.step="0.01";
         inp.className="pf"+(cc==="TH"?" thf":"");
         inp.id="ap-"+sp.csvRow.replace(/[^a-z0-9]/gi,"-")+"-"+cc;
         inp.value=(S.prices[sp.csvRow]&&S.prices[sp.csvRow][cc])||"";
@@ -6337,7 +6337,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="19.06.2026-12:08";
+var APP_VERSION="19.06.2026-12:20";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
