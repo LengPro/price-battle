@@ -223,13 +223,13 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .store-link-wrap{margin-top:10px;display:none}
 .store-link-wrap a{font-size:12px;font-weight:500;color:var(--blue);text-decoration:none}
 .bundle-items-row{display:none;flex-direction:column;align-items:stretch;gap:0;padding:2px 0}
-.bundle-hd-item{display:flex;align-items:center;gap:8px;background:var(--off-white);border:1px solid var(--mid-grey);border-radius:20px;padding:8px 14px;width:100%;box-sizing:border-box}
+.bundle-hd-item{display:flex;align-items:center;gap:8px;background:var(--off-white);border:1px solid var(--mid-grey);border-radius:20px;padding:8px 14px;flex:1 1 auto;min-width:0;box-sizing:border-box}
 .bdl-ic{font-size:20px;line-height:1;flex-shrink:0;display:flex;align-items:center}
 .bdl-ic-img{width:22px;height:22px;object-fit:contain}
 .bdl-nm{font-size:13px;font-weight:600;color:var(--body-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
-.bdl-rm{width:24px;height:24px;border-radius:50%;background:#ff3b30;color:#fff;border:none;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
-.bdl-sep{align-self:center;display:flex;justify-content:center;align-items:center;font-size:13px;font-weight:700;color:#fff;width:22px;height:22px;min-width:22px;margin:3px 0;background:#007aff;border-radius:50%;flex-shrink:0}
-.bdl-row{display:flex;align-items:center;gap:6px}
+.bdl-rm{width:24px;height:24px;border-radius:50%;background:#ff3b30;color:#fff;border:none;font-size:18px;font-weight:400;line-height:0;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
+.bdl-sep{align-self:center;display:flex;justify-content:center;align-items:center;font-size:15px;font-weight:600;line-height:0;color:#fff;width:22px;height:22px;min-width:22px;margin:3px 0;background:#007aff;border-radius:50%;flex-shrink:0}
+.bdl-row{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box}
 #rw.bundle-mode .cmp-tools{flex-direction:row;width:100%;gap:8px}
 #rw.bundle-mode .vat-toggle-inline{flex:1;width:auto;justify-content:space-between}
 #rw .cmp-row2{gap:8px;flex-wrap:nowrap}
@@ -1098,7 +1098,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 20 Jun 2026 1.34pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 20 Jun 2026 1.43pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -6362,7 +6362,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="20.06.2026-13:34";
+var APP_VERSION="20.06.2026-13:43";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
