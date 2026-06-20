@@ -895,7 +895,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
         </div>
     </div>
     <div id="acc-suggest-strip" style="display:none">
-      <div class="acc-suggest-label">Pair with</div>
+      <div class="acc-suggest-label">Accessories suggest</div>
       <div class="acc-suggest-pills" id="acc-suggest-pills"></div>
     </div>
     <!-- COUNTRY NOTES -->
@@ -1098,7 +1098,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 20 Jun 2026 1.29pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 20 Jun 2026 1.34pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -6362,7 +6362,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="20.06.2026-13:29";
+var APP_VERSION="20.06.2026-13:34";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
@@ -6641,7 +6641,7 @@ function renderAccSuggest(){
     pill.className="acc-pill";
     pill.title=nm;
     pill.innerHTML=icon+'<span class="acc-pill-label">'+nm+'</span>';
-    pill.onclick=(function(c,m){return function(){goToAcc(c,m);};})(accCat,model);
+    pill.onclick=(function(c,m){return function(){pairAccToBundle(c,m);};})(accCat,model);
     pillsEl.appendChild(pill);
   });
   var cmpCard=document.querySelector("#rw .cmp-card");
@@ -6660,6 +6660,29 @@ function goToAcc(accCat,accModel){
     pickModel(accCat,accModel);
     var rw=G("rw");if(rw)setTimeout(function(){rw.scrollIntoView({behavior:"smooth",block:"start"});},120);
   },80);
+}
+function pairAccToBundle(accCat,accModel){
+  var mg=MODEL_GROUPS[accCat]&&MODEL_GROUPS[accCat][accModel];
+  if(!mg||!mg.specs||!mg.specs.length){goToAcc(accCat,accModel);return;}
+  var accCsvRow=mg.specs[0].csvRow;
+  S.cart=S.cart||[];
+  // Ensure the current main product is part of the bundle
+  if(!S.bundleMode){
+    var cur=getCurrentComparisonSelection();
+    if(cur){
+      var has=S.cart.some(function(it){return it.cat===cur.cat&&it.modelKey===cur.modelKey&&it.csvRow===cur.csvRow;});
+      if(!has){
+        S.cart.push({id:"cart_"+Date.now()+"_"+Math.random().toString(36).slice(2,7),cat:cur.cat,modelKey:cur.modelKey,csvRow:cur.csvRow});
+      }
+    }
+  }
+  // Add the chosen accessory
+  S.cart.push({id:"cart_"+Date.now()+"_"+Math.random().toString(36).slice(2,8),cat:accCat,modelKey:accModel,csvRow:accCsvRow});
+  track("bundle_add_suggest",{acc_cat:accCat,acc_model:accModel});
+  sbTrack("bundle_add",{category:accCat,product_name:accModel,country_code:S.country||"",country_zone:ZONE_MAP[S.country]||""});
+  saveCompareCart();renderCart();
+  if((S.cart||[]).length>=2)renderBundleComparison();
+  var rw=G("rw");if(rw)setTimeout(function(){rw.scrollIntoView({behavior:"smooth",block:"start"});},120);
 }
 function addAccToBundle(accCat,accModel,addBtn){
   var mg=MODEL_GROUPS[accCat]&&MODEL_GROUPS[accCat][accModel];
