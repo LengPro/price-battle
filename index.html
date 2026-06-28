@@ -1099,7 +1099,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 28 Jun 2026 1.55am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 28 jun 2026 10.53am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -4197,7 +4197,7 @@ function buildGbBuyStorRow(){
   var section=G("gb-buy-stor-section"),row=G("gb-buy-stor-row"),lbl=G("gb-buy-stor-lbl");
   if(!section||!row||!lbl)return;
   row.innerHTML="";
-  if(GB.buyCat==="Mac"&&GB.buyModelKey&&GB.buyModelKey.indexOf("Neo")<0){row.classList.add("two-col");}else{row.classList.remove("two-col");}
+  if(GB.buyCat==="Mac"&&GB.buyModelKey){row.classList.add("two-col");}else{row.classList.remove("two-col");}
   if(!GB.buyCat||!GB.buyModelKey){
     section.classList.remove("show");
     return;
@@ -5184,6 +5184,9 @@ function splitSpecLabel(lbl){
   // Standard storage: "256GB Wi-Fi", "1TB Cellular Nano", "256GB"
   var storMatch=lbl.match(/^(\d+(?:GB|TB|mm))(\s+(.+))?$/);
   if(storMatch)return{size:storMatch[1],rest:storMatch[3]||""};
+  // Neo storage format: "256/8GB/20W", "512/8GB/20W/Touch ID"
+  var neoMatch=lbl.match(/^(\d+)\/(.+)$/);
+  if(neoMatch)return{size:neoMatch[1],rest:neoMatch[2]};
   return{size:lbl,rest:""};
 }
 function getSpecSortKey(lbl){
@@ -5266,7 +5269,7 @@ function getMacBookProChipGroup(modelName,lbl){
 function buildStorRow(cat,modelKey){
   var m=MODEL_GROUPS[cat]&&MODEL_GROUPS[cat][modelKey];if(!m)return;
   var row=G("stor-row");if(!row)return;row.innerHTML="";
-  if(cat==="Mac"&&modelKey.indexOf("Neo")<0){row.classList.add("two-col");}else{row.classList.remove("two-col");}
+  if(cat==="Mac"){row.classList.add("two-col");}else{row.classList.remove("two-col");}
   var hasSize=false;
   for(var i=0;i<m.specs.length;i++){if(m.specs[i].label.indexOf("mm")>=0){hasSize=true;break;}}
   var sl=G("stor-lbl");if(sl)sl.textContent=tr(hasSize?"stor_lbl_size":"stor_lbl");
