@@ -699,7 +699,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
     <div class="nav-lang">
       <button class="nl on" id="lb-en" onclick="setLang('en')">EN</button>
       <button class="nl" id="lb-th" onclick="setLang('th')">TH</button>
-      <button class="nl" id="lb-zh" onclick="setLang('zh')">ZH</button>
+      <button class="nl" id="lb-zh" onclick="setLang('zh')">中文</button>
     </div>
     <button class="nav-btn" onclick="openAdmin()">&#9881;&#65039;</button>
   </div>
@@ -1144,7 +1144,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 6 jul 2026 8.26am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 6 jul 2026 9.18am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -6526,7 +6526,7 @@ var APP_VERSION="26.06.2026-14:48";
   updateRateBar();
   setTimeout(updateRateBar,0);
   setTimeout(updateRateBar,300);
-  try{var l=localStorage.getItem("apc_lang");if(l==="th")setLang("th");}catch(e){}
+  try{var l=localStorage.getItem("apc_lang");if(l==="th"||l==="zh")setLang(l);}catch(e){}
   try{
     var savedMode=localStorage.getItem("apc_mode");
     switchMode(savedMode==="gb"||savedMode==="tv"?savedMode:"pz");
