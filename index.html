@@ -699,6 +699,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
     <div class="nav-lang">
       <button class="nl on" id="lb-en" onclick="setLang('en')">EN</button>
       <button class="nl" id="lb-th" onclick="setLang('th')">TH</button>
+      <button class="nl" id="lb-zh" onclick="setLang('zh')">ZH</button>
     </div>
     <button class="nav-btn" onclick="openAdmin()">&#9881;&#65039;</button>
   </div>
@@ -1143,7 +1144,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 4 jul 2026 8.24pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 6 jul 2026 8.26am</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -1541,7 +1542,80 @@ th:{
   cart_total_th:"ราคารวมไทย",cart_total_vat:"VAT Refund รวม",cart_total_net:"ไทยหลังคืน VAT",cart_total_foreign:"ราคารวมต่างประเทศ (บาท)",cart_total_diff:"ส่วนต่างรวม",
   cart_diff_th:"รวมแล้วซื้อที่ไทยถูกกว่า",cart_diff_ot:function(c){return "รวมแล้วซื้อที่ "+c+" ถูกกว่า";},cart_diff_same:"ราคารวมเท่ากัน",
   tray_view:"ดู Bundle →",
-  cart_bundle_total:"ราคารวม Bundle"
+  cart_bundle_total:"ราคารวม Bundle",
+zh:{
+  mode_compare:"比价",mode_repair:"维修",mode_trade_value:"以旧换新价值",
+  hero_eyebrow:"🔵 PRICE BATTLE 🔵",
+  hero_title:"找到<span>最优惠价格</span><br>购买你的下一台 Apple 设备",
+  hero_sub:"比较 iPhone、iPad、Mac、Apple Watch、AirPods、Apple TV 和 HomePod 在泰国与其他国家的价格",
+  t1:"选择比较国家",sub1:"40 个国家 · 🇹🇭 以泰国价格为基准",
+  t2:"选择产品类别",sub2:"",
+  t3:"选择型号与容量",sub3:"请选择型号",
+  lbl_rate:"1 泰铢 =",lbl_cmp:"价格对比",lbl_vat:"退税",lbl_trade:"以旧换新",lbl_sum:"汇总",
+  lbl_diff:"价格差异",lbl_th:"泰国",nav_title:"Price Battle",
+  vat_tl:"退税计算器",vat_sl:"退税后净价",
+  trade_tl:"以旧换新计算器",trade_sl:"从泰国价格中扣除以旧换新价值",
+  trade_type_lbl:"设备类型",trade_model_lbl:"型号",trade_storage_lbl:"容量 / 规格",
+  trade_vc1:"泰国价格对比以旧换新",trade_vl1:"商品价格",trade_vl2:"以旧换新价值",trade_vl3:"扣除后净价",
+  trade_note_lbl:"备注：",trade_note:"以旧换新最高价值仅适用于购机时在门店交易，且设备须完好无损。",
+  trade_ph_type:"请选择设备类型",trade_ph_model:"请选择型号",trade_ph_storage:"请选择容量或规格",
+  vc1:"正常价格 vs 退税后",vc2:"退税后对比",
+  vl1:"商品价格",vl2:"退税金额",vl3:"退税后净价",vl4:"泰国净价",
+  vl5:"海外价格（泰铢）",vl6:"退税后差额",vl7:"百分比",
+  vl8:"备注：",vl9:"泰国官方旅客退税表 · 最低消费 ฿2,000 · ฿200,000 以上退 6.1% · 在机场申请",
+  sr1:"泰国价格",sr2:"海外价格（泰铢）",sr3:"退税后",sr4:"差额（不含退税）",sr5:"差额（含退税）",
+  w_al:"更便宜（泰铢）",vat_off:"关",vat_on:"开",dd_ph:"请选择国家...",
+  stor_lbl:"选择容量 / 尺寸",stor_lbl_size:"选择尺寸",
+  th_cheap:function(s,v){return "🇹🇭 节省 "+s+v;},
+  ot_cheap:function(fl,s,v){return fl+" 节省 "+s+v;},
+  pct:function(p){return "节省 "+p+"%";},
+  same:"价格相同",
+  th_wins:"🇹🇭 泰国更便宜！",
+  ot_wins:function(c){return c+" 更便宜！";},
+  tie_t:"价格相同！",tie_s:"两国价格完全相同",
+  cheaper_than:function(c){return "比 "+c+" 便宜";},cheaper_th:"比泰国便宜",
+  th_sub:function(n,sp,c,v,d){return n+(sp?" ("+sp+") ":"")+"在泰国"+(v?" 退税后":"")+" 比 "+c+" 便宜 ฿"+d;},
+  ot_sub:function(n,sp,c,v,d){return n+(sp?" ("+sp+") ":"")+"在 "+c+" 比泰国便宜"+(v?" （包含退税）":"")+" ฿"+d;},
+  rec_th:function(n,d,c,v,p){return "建议：在 <span class='hl'>泰国 🇹🇭 购买 "+n+"</span> — 比 "+c+(v?" （含退税）":"")+" 节省 <span class='hl'>฿"+d+"</span> · <span class='hl'>便宜 "+p+"%</span>";},
+  rec_ot:function(n,c,fl,d,v,p){return "建议：在 <span class='hl r'>"+fl+" "+c+" 购买 "+n+"</span> — 比泰国"+(v?" （含退税）":"")+" 节省 <span class='hl r'>฿"+d+"</span> · <span class='hl r'>便宜 "+p+"%</span>";},
+  rec_tie:"结果：价格相同，在任何地方购买均可。",
+  thby:"🇹🇭 便宜 ฿",otby:function(fl){return fl+" 便宜 ฿";},
+  mc_th:function(p){return "▼ 便宜 "+p+"% 🇹🇭";},
+  mc_ot:function(p,fl){return "▲ 便宜 "+p+"% "+fl;},
+  mc_eq:"= 价格相同",
+  info_title:"ℹ️ 关于 Price Battle",
+  info_b1:"共覆盖 41 个国家，包括泰国",
+  info_time:"更新于：2026年5月8日",
+  info_b2:"价格参考 Apple Store 及 Apple Store 官网上架国家",
+  info_b3:"美国及加拿大价格不含销售税（请填写邮政编码）",
+  info_b4:"汇率每日更新，数据来源可靠",
+  info_b5:"以旧换新功能（iPhone、iPad、Watch，不含 Mac）",
+  info_b6:"组合购物车可添加多个商品查看总价",
+  gb_t1:"选择维修产品类别",gb_sub1:"选择您要在泰国维修的 Apple 设备",
+  gb_t2:"填写维修详情",gb_sub2:"选择产品类别、设备类型、型号及维修问题",
+  gb_t3:"与购买新品对比",gb_sub3:"选择您可能购买的新设备，对比价格差距",
+  gb_left_picker_title:"维修",gb_right_picker_title:"购买",
+  gb_repair_cat_lbl:"产品类别",gb_repair_type_lbl:"设备类型",gb_repair_model_lbl:"型号",gb_repair_issue_lbl:"问题 / 症状",gb_buy_cat_lbl:"产品类别",gb_buy_model_lbl:"型号",gb_buy_model_grid_lbl:"型号",gb_buy_spec_lbl:"容量 / 规格",
+  gb_repair_note:"",
+  gb_lbl_cmp:"维修 vs 买新",gb_left_title:"维修",gb_right_title:"购买",
+  gb_repair_sub:"选择问题以预览维修价格",gb_repair_hint:"维修价格使用此文件中保存的最新 Apple 泰国快照数据",
+  gb_buy_sub:"选择要购买的产品",gb_diff_lbl:"价值差额",
+  gb_trade_type_lbl:"设备类型",gb_trade_model_lbl:"型号",gb_trade_spec_lbl:"容量 / 规格",
+  gb_trade_ph_type:"请选择设备类型",gb_trade_ph_model:"请选择型号",gb_trade_ph_spec:"请选择容量或规格",
+  gb_repair_ph_cat:"请选择产品类别",gb_repair_ph_type:"请选择设备类型",gb_repair_ph_model:"请选择型号",
+  gb_pending_chip:"等待维修数据",gb_pending_chip2:"同步维修价格后对比将自动更新",
+  tv_t1:"以旧换新价值一览",tv_sub1:"选择设备类别，查看各型号当前以旧换新价值",
+  tv_type_lbl:"设备类型",tv_col_model:"型号",tv_col_spec:"容量 / 规格",tv_col_value:"价值",
+  tv_note_lbl:"备注：",tv_note:"以旧换新最高价值仅适用于购机时在门店交易，且设备须完好无损。",
+  tv_empty:"暂无以旧换新数据",
+  cart_title:"对比购物车",cart_add:"添加到组合购物车",cart_clear:"清空购物车",cart_empty:"购物车暂无设备",
+  cart_count:function(n){return "已选 "+n+" 件";},
+  cart_added:"已添加到组合购物车",cart_remove:"删除",
+  cart_total_th:"泰国合计",cart_total_vat:"退税合计",cart_total_net:"泰国退税后合计",cart_total_foreign:"海外合计（泰铢）",cart_total_diff:"总差额",
+  cart_diff_th:"合计泰国更便宜",cart_diff_ot:function(c){return "合计 "+c+" 更便宜";},cart_diff_same:"合计价格相同",
+  tray_view:"查看组合 →",
+  cart_bundle_total:"组合总价"
+}
 }};
 
 var LANG="en";
@@ -1553,9 +1627,10 @@ function tr(k){
 }
 function setLang(l){
   LANG=l;
-  var enBtn=G("lb-en"),thBtn=G("lb-th");
+  var enBtn=G("lb-en"),thBtn=G("lb-th"),zhBtn=G("lb-zh");
   if(enBtn)enBtn.classList[l==="en"?"add":"remove"]("on");
   if(thBtn)thBtn.classList[l==="th"?"add":"remove"]("on");
+  if(zhBtn)zhBtn.classList[l==="zh"?"add":"remove"]("on");
   var m={"t1":"t1","sub1":"sub1","t2":"t2","t3":"t3","lbl-rate":"lbl_rate","lbl-cmp":"lbl_cmp",
          "lbl-vat":"lbl_vat","lbl-trade":"lbl_trade","lbl-diff":"lbl_diff","lbl-th":"lbl_th","nav-title":"nav_title",
          "vat-tl":"vat_tl","vat-sl":"vat_sl","vc1":"vc1","vc2":"vc2","vl1":"vl1","vl2":"vl2",
