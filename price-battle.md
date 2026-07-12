@@ -1,7 +1,7 @@
 # Price Battle — Project Knowledge
 
 ## Overview
-**Price Battle** is a single-file web app (`index.html`) that compares Apple product prices between Thailand (base) and 39 other countries. Users can quickly find where to buy their next Apple device at the best price.
+**Price Battle** is a single-file web app (`index.html`) that compares Apple product prices between Thailand (base) and other supported Apple Store countries/regions. Users can quickly find where to buy their next Apple device at the best price, compare multiple items as a bundle, and add suggested accessories.
 
 ---
 
@@ -54,6 +54,42 @@
 - Examples: "eSIM only", "Dual physical SIM (no eSIM)", "Can't turn off shutter sound"
 - Notes are per model (not per storage size)
 
+### 7. Bundle Cart / Bundle Comparison
+- Users can add more than one selected product to a bundle cart
+- Bundle mode compares the total Thailand price vs selected country total
+- Bundle result keeps the same core comparison behaviours: exchange conversion, VAT refund, sales tax where supported, and difference display
+- Bundle header shows selected bundle items and bundle breakdown rows for Thailand and the foreign country
+- Cart state is saved in `localStorage` using `apc_compare_cart`
+
+### 8. Suggested Accessories
+- Accessory suggestion strip appears below the comparison card when the selected product category has mapped accessories
+- Suggested accessory pills can add an accessory directly into the bundle cart
+- If an accessory needs a storage/spec choice, the app jumps to that accessory category/model for selection
+- Used to encourage natural bundles such as device + compatible accessory
+
+### 9. Trade-in
+- Trade-in toggle appears in the comparison result when a product is selected
+- User selects device type → model → storage/spec to subtract trade-in value from the Thailand price
+- Trade-in values are stored in `TRADE_IN_DATA`
+- Supported trade-in device families: `iPhone`, `iPad`, `Apple Watch`
+- Trade-in affects the effective Thailand-side price and can be included in normal comparison and bundle comparison
+- Trade-in value date is shown in the UI (e.g. `Trade-in value · 26/05/2026`)
+- Separate **Trade-in value overview** mode lets users browse trade-in values by device family
+
+### 10. Repair / Buy New Comparison
+- App includes a Repair mode (`gb`) that compares repair cost vs buying a new Apple product
+- Supports repair category/model/issue selection and buy-new product selection
+- Repair comparison can also apply VAT refund and trade-in to the buy-new side
+
+### 11. Analytics / Dashboard Data Collection
+- Sends lightweight usage events for dashboard/analytics using `sbTrack(...)`
+- Backend endpoint uses Supabase tables such as `pb_events` and `pb_sessions`
+- Tracks events such as page open, country select, product select, trade-in toggle, bundle add, and suggested accessory bundle add
+- Each analytics session gets a `pb_sid` stored in `sessionStorage`
+- Sends heartbeat updates to keep `pb_sessions.last_seen` current
+- Uses browser geolocation, when permission is granted, to assign nearest Thai Apple Store branch/site (`iconsiam`, `centralworld`, or `unknown`) and saves it as `apc_branch`
+- Event payloads can include selected country location fields such as `country_code`, `country_name`, and `country_zone` from `ZONE_MAP`
+
 ---
 
 ## Data Structure
@@ -70,8 +106,10 @@ Examples:
 ### Categories
 `iPhone`, `iPad`, `Mac`, `Watch`, `AirPods`
 
-### Countries (40 total including Thailand)
-AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, MX, NL, NZ, NO, PH, PL, PT, SA, SG, KR, ES, SE, CH, TW, TH, TR, AE, GB, US, VN
+### Countries / Regions
+Supported country/region codes currently include:
+
+AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, MX, NL, NZ, NO, PH, PL, PT, SA, SG, KR, ES, SE, CH, TW, TH, TR, AE, GB, US, VN, MO
 
 ### Key JS Constants
 | Constant | Description |
@@ -84,6 +122,11 @@ AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, 
 | `ZIP_COMBINED_RATES` | `{ "zipPrefix3": combinedRate }` — 922 entries |
 | `US_STATE_TAX` | State-level fallback rates |
 | `CA_PROVINCE_TAX` | Canada province combined rates |
+| `ACC_CAT_MAP` | Maps a main product category to its suggested accessory category |
+| `TRADE_IN_DATA` | Trade-in values by device family → model → storage/spec |
+| `TRADE_IN_TYPES` | Supported trade-in families (`iPhone`, `iPad`, `Apple Watch`) |
+| `GB_REPAIR_PRICE_DATA` | Repair prices used by Repair mode |
+| `ZONE_MAP` | Maps country codes to dashboard geography zones |
 
 ---
 
@@ -91,7 +134,7 @@ AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, 
 
 ### Navigation Bar
 - Logo + "Price Battle · Thailand Base"
-- EN / TH language toggle
+- EN / TH / 中文 language toggle
 - ⚙️ Settings/Manage button
 - `?` Info button (below rate bar, top-right)
 
@@ -111,13 +154,24 @@ AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, 
 
 ### Result Card
 - Header: product image + name + VAT Refund toggle
+- Trade-in toggle and inline trade-in selectors when available
+- Bundle item row when bundle mode is active
 - Sub-header: country + storage + exchange rate
 - Price columns: Thailand (left) vs Foreign (right)
+- Bundle breakdown under each price column when comparing multiple selected items
 - Sales Tax widget (US/CA only)
 - Price Difference chips
 - VAT Refund chip (if VAT on)
+- Trade-in deduction can be shown in the Thailand price breakdown
+- Bundle cart controls: add current selection, clear cart, selected item count
+- Suggested accessories strip when accessory mappings are available
 - Notes section
 - Send Feedback link
+
+### Mode Switcher
+- **Compare**: standard international Apple price comparison
+- **Repair**: compare repair price vs buying new, with optional VAT refund/trade-in on buy-new side
+- **Trade-in value**: table-style overview of trade-in values by device family/model/spec
 
 ### Settings Panel (⚙️)
 - **Prices & Rates tab**: Edit exchange rates, edit individual prices per country
@@ -128,10 +182,11 @@ AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, 
 ---
 
 ## Localisation
-- EN / TH toggle
-- All UI strings stored in `TR.en` and `TR.th` objects
+- EN / TH / 中文 toggle
+- All UI strings stored in `TR.en`, `TR.th`, and `TR.zh` objects
 - `tr(key)` function returns current language string
 - `setLang(l)` switches language and updates all UI elements
+- `apc_lang` can store `en`, `th`, or `zh`
 
 ---
 
@@ -146,7 +201,10 @@ AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, 
 | `apc_hidden_products` | Hidden/removed products |
 | `apc_model_order` | Custom model sort order |
 | `apc_spec_order` | Custom spec sort order |
-| `apc_lang` | Last selected language (en/th) |
+| `apc_lang` | Last selected language (`en`/`th`/`zh`) |
+| `apc_compare_cart` | Bundle cart selections |
+| `apc_mode` | Last selected app mode/section |
+| `apc_branch` | Nearest Thai Apple Store branch/site selected from browser geolocation |
 
 > **Auto-clear**: On app load, if `apc_app_version` doesn't match the current version string, all data keys above are cleared and the new version is stored. This ensures fresh data when a new HTML file is deployed.
 
@@ -165,6 +223,11 @@ AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, 
 - "State rate only" label shown when ZIP prefix not in combined table
 - Percentage formula changed to `(foreign - thai) / foreign` to avoid misleadingly high numbers
 - VAT Refund only applies to Thailand side
+- Trade-in only reduces the Thailand-side effective price
+- Trade-in pricing is for full-value, undamaged devices and store trade-in with purchase
+- Bundle comparison requires at least two selected cart items before rendering the bundle total view
+- Suggested accessories are category-mapped; if no mapping or accessory models exist, the strip is hidden
+- Analytics geolocation is optional and depends on browser permission; if unavailable or denied, dashboard site defaults to `unknown`
 - Send Feedback → opens mail to `leng_pp2@icloud.com` with subject "Feedback: Price battle"
 
 ---
@@ -172,3 +235,4 @@ AU, AT, BE, BR, CA, CL, CN, CZ, DK, FI, FR, DE, HK, HU, IN, IE, IT, JP, LU, MY, 
 ## Build Rules
 - **Every new build of `index.html` must include a current date+time stamp** in the version string (e.g. `v 26.06.2025 14:30`). Update the `APP_VERSION` constant and the visible version stamp in the Settings panel each time a new file is generated.
 - **Always use Thailand timezone (UTC+7)** for the timestamp. The build server runs UTC, so always run `TZ=Asia/Bangkok date` to get the correct Bangkok time before setting the stamp.
+- **Every version change or meaningful feature change must also update this `price-battle.md` file** so the project knowledge stays current with the shipped `index.html`.
