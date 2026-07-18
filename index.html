@@ -157,6 +157,12 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .cpill:hover{border-color:#6e6e73;color:var(--body-text)}
 .cpill.sel{background:var(--body-text);border-color:var(--body-text);color:var(--white)}
 .cpill .ci{font-size:18px;line-height:1}
+.focus-site-pill{display:inline-flex;align-items:center;padding:6px 16px;border-radius:20px;border:1.5px solid var(--mid-grey);background:var(--white);color:var(--secondary-text);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s;letter-spacing:.3px;touch-action:manipulation}
+.focus-site-pill:hover{border-color:#6e6e73;color:var(--body-text)}
+.focus-site-pill.sel{background:var(--body-text);border-color:var(--body-text);color:var(--white)}
+.focus-stat-card{background:var(--off-white);border-radius:12px;padding:14px 16px;text-align:center}
+.focus-stat-num{font-size:28px;font-weight:700;color:var(--body-text);line-height:1}
+.focus-stat-lbl{font-size:10px;color:var(--secondary-text);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 /* MODEL GRID */
 .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .mcard{padding:14px 12px;background:var(--white);border:1.5px solid var(--rule);border-radius:var(--r);cursor:pointer;touch-action:manipulation;transition:border-color .15s,background .15s}
@@ -1144,11 +1150,12 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 18 jul 2026 5.55pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 18 jul 2026 6.15pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
       <button class="tab-btn" id="tab-export-btn" onclick="switchTab('export')">&#128228; Export / Import</button>
+      <button class="tab-btn" id="tab-focus-btn" onclick="switchTab('focus')">&#128202; Focus</button>
     </div>
     <div class="tab-pane on" id="tab-prices">
       <div class="asec">Exchange Rates (1 THB = ?)</div>
@@ -1230,6 +1237,17 @@ iPhone in China uses dual SIM&#10;Prices exclude local tax" style="font-size:12p
         <p>Remove all custom products and price overrides.</p>
         <button class="btn-import" style="color:var(--red);border-color:rgba(255,59,48,.3)" onclick="resetAllData()">Reset to Default</button>
       </div>
+    </div>
+    <div class="tab-pane" id="tab-focus">
+      <div class="asec" style="margin-bottom:12px">Focus Dashboard</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
+        <span style="font-size:11px;color:var(--secondary-text);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-right:2px">Site</span>
+        <button class="focus-site-pill sel" id="fpill-all" onclick="setFocusSite('all')">All</button>
+        <button class="focus-site-pill" id="fpill-iconsiam" onclick="setFocusSite('iconsiam')">ICON</button>
+        <button class="focus-site-pill" id="fpill-centralworld" onclick="setFocusSite('centralworld')">CTW</button>
+      </div>
+      <div id="focus-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px"></div>
+      <div id="focus-content"></div>
     </div>
     <div class="aft"><span class="smsg" id="smsg">Saved!</span><button class="btn-secondary" onclick="closeAdmin()">Cancel</button><button class="btn-primary" onclick="saveAdmin()" id="a-save-btn">&#128190; Save</button></div>
   </div>
@@ -6171,12 +6189,75 @@ function switchTab(tab){
   var pane=G("tab-"+tab);if(pane)pane.classList.add("on");
   var saveBtn=G("a-save-btn");if(saveBtn)saveBtn.style.display=tab==="prices"?"":"none";
   if(tab==="add")buildCustomProductList();
+  if(tab==="focus")loadFocusData();
   if(tab==="export"){
     initLinksTab();initNotesEditor();
     var lc=G("links-coll"),nc=G("notes-coll");
     if(lc)lc.classList.remove("open");
     if(nc)nc.classList.remove("open");
   }
+}
+
+// ── FOCUS DASHBOARD ────────────────────────────────────────────────────────────
+var FOCUS_SITE="all";
+function setFocusSite(site){
+  FOCUS_SITE=site;
+  ["all","iconsiam","centralworld"].forEach(function(s){
+    var el=G("fpill-"+s);
+    if(el)el.classList[s===site?"add":"remove"]("sel");
+  });
+  loadFocusData();
+}
+function loadFocusData(){
+  var statsEl=G("focus-stats"),contentEl=G("focus-content");
+  if(!statsEl||!contentEl)return;
+  statsEl.innerHTML='<div style="grid-column:1/-1;text-align:center;font-size:12px;color:var(--secondary-text);padding:20px">Loading…</div>';
+  contentEl.innerHTML="";
+  var params="?select=event_type,country_code,country_name,product_name,category,created_at&order=created_at.desc&limit=1000";
+  if(FOCUS_SITE!=="all")params+="&site_id=eq."+FOCUS_SITE;
+  fetch(SB.url+"/rest/v1/pb_events"+params,{
+    headers:{"apikey":SB.key,"Authorization":"Bearer "+SB.key}
+  }).then(function(r){return r.json();}).then(function(data){
+    if(!Array.isArray(data)){
+      statsEl.innerHTML='<div style="grid-column:1/-1;font-size:12px;color:var(--red);padding:10px">Failed to load data</div>';
+      return;
+    }
+    renderFocusData(data);
+  }).catch(function(){
+    statsEl.innerHTML='<div style="grid-column:1/-1;font-size:12px;color:var(--red);padding:10px">Connection error</div>';
+  });
+}
+function renderFocusData(events){
+  var statsEl=G("focus-stats"),contentEl=G("focus-content");
+  if(!statsEl||!contentEl)return;
+  var pageViews=events.filter(function(e){return e.event_type==="page_open";}).length;
+  var countryPicks=events.filter(function(e){return e.event_type==="country_select";}).length;
+  var productViews=events.filter(function(e){return e.event_type==="product_select";}).length;
+  statsEl.innerHTML=[
+    {num:pageViews,lbl:"Page Opens"},
+    {num:countryPicks,lbl:"Country Picks"},
+    {num:productViews,lbl:"Products Viewed"}
+  ].map(function(s){
+    return'<div class="focus-stat-card"><div class="focus-stat-num">'+s.num+'</div><div class="focus-stat-lbl">'+s.lbl+'</div></div>';
+  }).join("");
+  var cntMap={};
+  events.filter(function(e){return e.event_type==="country_select"&&e.country_name;}).forEach(function(e){cntMap[e.country_name]=(cntMap[e.country_name]||0)+1;});
+  var topCnt=Object.entries(cntMap).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
+  var prdMap={};
+  events.filter(function(e){return e.event_type==="product_select"&&e.product_name;}).forEach(function(e){prdMap[e.product_name]=(prdMap[e.product_name]||0)+1;});
+  var topPrd=Object.entries(prdMap).sort(function(a,b){return b[1]-a[1];}).slice(0,8);
+  function makeRows(pairs,cls){
+    if(!pairs.length)return'<div style="font-size:12px;color:var(--secondary-text);padding:8px 0">No data yet</div>';
+    return pairs.map(function(p,i){
+      return'<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:12px;border-bottom:1px solid var(--rule)">'
+        +'<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px">'+(i+1)+'. '+p[0]+'</span>'
+        +'<span style="font-weight:700;flex-shrink:0;color:var(--blue)">'+p[1]+'</span></div>';
+    }).join("");
+  }
+  contentEl.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">'
+    +'<div><div class="asec" style="margin-bottom:8px">Top Countries</div>'+makeRows(topCnt)+'</div>'
+    +'<div><div class="asec" style="margin-bottom:8px">Top Products</div>'+makeRows(topPrd)+'</div>'
+    +'</div>';
 }
 
 // ── ADD PRODUCT ────────────────────────────────────────────────────────────────────
@@ -6511,7 +6592,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="18.07.2026-17:55";
+var APP_VERSION="18.07.2026-18:15";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
