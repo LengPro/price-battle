@@ -1144,7 +1144,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 <!-- ADMIN -->
 <div class="aov" id="aov">
   <div class="ap">
-    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 18 jul 2026 5.46pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
+    <div class="ahd"><div><h2>&#9881;&#65039; Manage</h2><p>Changes saved to localStorage</p><p style="font-size:11px;color:var(--secondary-text);margin-top:2px">v 18 jul 2026 5.55pm</p></div><button class="cbtn" onclick="closeAdmin()">&#10005;</button></div>
     <div class="tab-bar">
       <button class="tab-btn on" id="tab-prices-btn" onclick="switchTab('prices')">&#128176; Prices &amp; Rates</button>
       <button class="tab-btn" id="tab-add-btn" onclick="switchTab('add')">&#10133; Add Product</button>
@@ -5947,7 +5947,8 @@ function renderCountryNotes(code,cat,model){
   if(!wrap||!list)return;
   list.innerHTML="";
   if(!code){wrap.style.display="none";return;}
-  var notes=getCountryNotes(code).concat(getModelNotes(code,cat,model));
+  var seen=Object.create(null);
+  var notes=getCountryNotes(code).concat(getModelNotes(code,cat,model)).filter(function(n){var k=(n||'').trim().toLowerCase();return k&&!seen[k]&&(seen[k]=1);});
   if(!notes.length){wrap.style.display="none";return;}
   notes.forEach(function(note){
     var cleanNote=(note||"").replace(/^\s*[•\-\u2022]+\s*/,"").trim();
@@ -6510,7 +6511,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="18.07.2026-17:46";
+var APP_VERSION="18.07.2026-17:55";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
