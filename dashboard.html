@@ -10,143 +10,151 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#e9eae6;color:#1a1d1b;min-height:100vh;padding:20px 16px;}
 
-/* NAV */
-.nav{background:#1a1d27;border-bottom:1px solid #2d3142;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-.nav-title{font-size:17px;font-weight:700;color:#fff;display:flex;align-items:center;gap:7px;}
-.nav-title span{color:#818cf8;}
-.status-wrap{display:flex;align-items:center;gap:7px;font-size:12px;color:#94a3b8;}
-.dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;flex-shrink:0;}
-.dot.err{background:#ef4444;animation:none;}
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.logo-circle{width:40px;height:40px;border-radius:50%;background:#1a56db;color:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.header-title{font-size:30px;font-weight:700;color:#1a1d1b;line-height:1;}
+.status-wrap{display:flex;align-items:center;gap:7px;font-size:12px;color:#9a9d99;background:#fff;border-radius:20px;padding:5px 12px;}
+.dot{width:7px;height:7px;border-radius:50%;background:#6ee7a8;animation:pulse 2s infinite;flex-shrink:0;}
+.dot.err{background:#f87171;animation:none;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 
+/* CONTAINER */
+.container{background:#f7f7f5;border-radius:20px;padding:24px 22px;max-width:1100px;margin:0 auto;}
+
 /* FILTER BAR */
-.filter-bar{background:#13151f;border-bottom:1px solid #2d3142;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.filter-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
 .filter-group{display:flex;align-items:center;gap:6px;}
-.filter-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
+.filter-label{font-size:11px;color:#9a9d99;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
 
 /* Period pills */
-.period-btn{padding:5px 13px;border-radius:18px;border:1px solid #2d3142;background:transparent;color:#94a3b8;font-size:12px;cursor:pointer;transition:all .12s;white-space:nowrap;}
-.period-btn:hover{border-color:#818cf8;color:#c7d2fe;}
-.period-btn.active{background:#818cf8;border-color:#818cf8;color:#fff;font-weight:600;}
+.period-btn{padding:5px 14px;border-radius:18px;border:1.5px solid #d0d2ce;background:#fff;color:#5a5d59;font-size:12px;font-weight:600;cursor:pointer;transition:all .12s;white-space:nowrap;font-family:inherit;}
+.period-btn:hover{border-color:#1a56db;color:#1a56db;}
+.period-btn.active{background:#1a56db;border-color:#1a56db;color:#fff;}
 
 /* Date range picker */
 .date-range{display:none;align-items:center;gap:6px;flex-wrap:wrap;}
 .date-range.show{display:flex;}
-input[type="date"]{background:#1e2236;border:1px solid #2d3142;color:#e2e8f0;border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;outline:none;}
-input[type="date"]:focus{border-color:#818cf8;}
-input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.6);}
-.apply-btn{padding:5px 14px;border-radius:18px;background:#818cf8;border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;}
-.apply-btn:hover{background:#6366f1;}
-.site-pill{padding:5px 14px;border-radius:18px;border:1px solid #2d3142;background:transparent;color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;}
-.site-pill:hover{border-color:#818cf8;color:#c7d2fe;}
-.site-pill.active{background:#818cf8;border-color:#818cf8;color:#fff;}
+input[type="date"]{background:#fff;border:1.5px solid #d0d2ce;color:#1a1d1b;border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;outline:none;font-family:inherit;}
+input[type="date"]:focus{border-color:#1a56db;}
+.apply-btn{padding:5px 14px;border-radius:18px;background:#1a56db;border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+.apply-btn:hover{background:#1447c0;}
+
+/* Site pills */
+.site-pill{padding:5px 14px;border-radius:18px;border:1.5px solid #d0d2ce;background:#fff;color:#5a5d59;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;}
+.site-pill:hover{border-color:#1a56db;color:#1a56db;}
+.site-pill.active{background:#1a56db;border-color:#1a56db;color:#fff;}
 
 /* Divider */
-.filter-divider{width:1px;height:20px;background:#2d3142;flex-shrink:0;}
+.filter-divider{width:1px;height:20px;background:#d0d2ce;flex-shrink:0;}
 
-/* Site dropdown */
-select{background:#1e2236;border:1px solid #2d3142;color:#e2e8f0;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;outline:none;}
-select:focus{border-color:#818cf8;}
+/* TOP STATS GRID */
+.grid-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:18px;}
 
-/* MAIN */
-.main{max-width:1100px;margin:0 auto;padding:20px 16px;}
-.grid-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:20px;}
-.card{background:#1a1d27;border:1px solid #2d3142;border-radius:14px;padding:18px 20px;}
-.card-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;}
-.card-value{font-size:34px;font-weight:700;color:#fff;line-height:1;}
-.card-value.active{color:#22c55e;}
-.card-sub{font-size:11px;color:#64748b;margin-top:5px;}
+/* Regular stat cards */
+.card{background:#fff;border-radius:18px;padding:22px;}
+.card-label{font-size:11px;color:#9a9d99;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.card-value{font-size:44px;font-weight:700;color:#1a1d1b;line-height:1;}
+.card-sub{font-size:11px;color:#9a9d99;margin-top:6px;}
 
-.section-title{font-size:14px;font-weight:600;color:#c7d2fe;margin-bottom:10px;}
-.grid-bottom{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:20px;}
+/* Active Now special card */
+.card-active-now{background:linear-gradient(150deg,#2f6fe4,#0d3390);border-radius:18px;padding:22px;}
+.card-active-now .card-label{color:#9dc4f8;font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.card-active-now .card-value{font-size:44px;font-weight:700;color:#dbe9ff;line-height:1;}
+.card-active-now .card-sub{font-size:11px;color:#9dc4f8;margin-top:6px;}
+
+/* BOTTOM GRID */
+.section-title{font-size:14px;font-weight:700;color:#1a1d1b;margin-bottom:12px;}
+.grid-bottom{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
+
+/* Rank list */
 .rank-list{list-style:none;}
-.rank-item{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #1e2236;}
+.rank-item{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #f0f0ee;}
 .rank-item:last-child{border-bottom:none;}
-.rank-num{font-size:11px;color:#475569;min-width:16px;text-align:right;}
-.rank-bar-wrap{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0;}
-.rank-name{font-size:13px;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.rank-bar-bg{height:3px;border-radius:2px;background:#1e2236;overflow:hidden;}
-.rank-bar-fill{height:100%;border-radius:2px;background:#818cf8;transition:width .5s ease;}
-.rank-count{font-size:12px;font-weight:600;color:#818cf8;min-width:28px;text-align:right;}
-.no-data{color:#475569;font-size:13px;padding:8px 0;}
-.badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:600;margin-left:5px;vertical-align:middle;}
-.badge-iphone{background:#1d3557;color:#90caf9;}
-.badge-ipad{background:#1b3a2f;color:#86efac;}
-.badge-mac{background:#2d1b45;color:#d8b4fe;}
-.badge-watch{background:#3a2207;color:#fcd34d;}
-.badge-airpods{background:#1a2d3a;color:#7dd3fc;}
+.rank-num{font-size:11px;color:#b8bbb6;min-width:16px;text-align:right;}
+.rank-bar-wrap{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0;}
+.rank-name{font-size:13px;color:#1a1d1b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rank-bar-bg{height:7px;border-radius:4px;background:repeating-linear-gradient(-45deg,#eceeea 0 3px,#f7f7f5 3px 6px);overflow:hidden;}
+.rank-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#6da2f0,#1a56db);transition:width .5s ease;}
+.rank-count{font-size:12px;font-weight:700;color:#1a56db;min-width:28px;text-align:right;}
+.no-data{color:#b8bbb6;font-size:13px;padding:8px 0;}
 
-.last-refresh{font-size:11px;color:#475569;text-align:center;padding:6px;}
-.err-banner{background:#2d1b1b;border:1px solid #7f1d1d;border-radius:10px;padding:10px 14px;color:#fca5a5;font-size:12px;margin-bottom:14px;display:none;}
-.skeleton{background:linear-gradient(90deg,#1e2236 25%,#272b3e 50%,#1e2236 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;}
+/* Badges */
+.badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:8px;font-weight:600;margin-left:5px;vertical-align:middle;background:#e3ecfc;color:#1a56db;}
+
+.last-refresh{font-size:11px;color:#9a9d99;text-align:center;padding:4px 0 0;}
+.err-banner{background:#fdf0ef;border:1px solid #f3c8c4;border-radius:10px;padding:10px 14px;color:#b3372c;font-size:12px;margin-bottom:14px;display:none;}
+.skeleton{background:linear-gradient(90deg,#eeeeed 25%,#e4e5e2 50%,#eeeeed 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;}
 @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 
-.period-range-lbl{font-size:11px;color:#64748b;margin-top:4px;}
-
-@media(max-width:600px){.card-value{font-size:26px;}.filter-bar{gap:8px;}}
+@media(max-width:600px){.card-value{font-size:32px;}.card-active-now .card-value{font-size:32px;}.filter-bar{gap:8px;}.header-title{font-size:22px;}}
 </style>
 </head>
 <body>
 
-<div class="nav">
-  <div class="nav-title">📊 <span>Price Battle</span> · Dashboard</div>
+<div class="header">
+  <div class="header-left">
+    <div class="logo-circle">P</div>
+    <div class="header-title">Dashboard</div>
+  </div>
   <div class="status-wrap"><div class="dot" id="dot"></div><span id="status-txt">Connecting…</span></div>
 </div>
 
-<div class="filter-bar">
-  <!-- Period presets -->
-  <div class="filter-group">
-    <span class="filter-label">Period</span>
-    <button class="period-btn active" data-preset="today">Today</button>
-    <button class="period-btn" data-preset="7">7 Days</button>
-    <button class="period-btn" data-preset="30">30 Days</button>
-    <button class="period-btn" data-preset="custom">Custom 📅</button>
+<div class="container">
+  <div class="filter-bar">
+    <!-- Period presets -->
+    <div class="filter-group">
+      <span class="filter-label">Period</span>
+      <button class="period-btn active" data-preset="today">Today</button>
+      <button class="period-btn" data-preset="7">7 Days</button>
+      <button class="period-btn" data-preset="30">30 Days</button>
+      <button class="period-btn" data-preset="custom">Custom 📅</button>
+    </div>
+
+    <!-- Custom date range (shown when Custom clicked) -->
+    <div class="date-range" id="date-range">
+      <span class="filter-label">From</span>
+      <input type="date" id="dt-from">
+      <span class="filter-label">To</span>
+      <input type="date" id="dt-to">
+      <button class="apply-btn" id="apply-range">Apply</button>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <!-- Site filter pills -->
+    <div class="filter-group">
+      <span class="filter-label">Site</span>
+      <button class="site-pill active" id="spill-all" onclick="setSite('')">All</button>
+      <button class="site-pill" id="spill-iconsiam" onclick="setSite('iconsiam')">ICON</button>
+      <button class="site-pill" id="spill-centralworld" onclick="setSite('centralworld')">CTW</button>
+    </div>
   </div>
 
-  <!-- Custom date range (shown when Custom clicked) -->
-  <div class="date-range" id="date-range">
-    <span class="filter-label">From</span>
-    <input type="date" id="dt-from">
-    <span class="filter-label">To</span>
-    <input type="date" id="dt-to">
-    <button class="apply-btn" id="apply-range">Apply</button>
-  </div>
-
-  <div class="filter-divider"></div>
-
-  <!-- Site filter pills -->
-  <div class="filter-group">
-    <span class="filter-label">Site</span>
-    <button class="site-pill active" id="spill-all" onclick="setSite('')">All</button>
-    <button class="site-pill" id="spill-iconsiam" onclick="setSite('iconsiam')">ICON</button>
-    <button class="site-pill" id="spill-centralworld" onclick="setSite('centralworld')">CTW</button>
-  </div>
-</div>
-
-<div class="main">
   <div class="err-banner" id="err-banner"></div>
 
   <div class="grid-top">
-    <div class="card">
+    <div class="card-active-now">
       <div class="card-label">Active Now</div>
-      <div class="card-value active" id="val-active"><div class="skeleton" style="width:50px;height:34px;"></div></div>
+      <div class="card-value" id="val-active"><div class="skeleton" style="width:50px;height:44px;"></div></div>
       <div class="card-sub">Sessions · last 2 min</div>
     </div>
     <div class="card">
       <div class="card-label">Total Opens</div>
-      <div class="card-value" id="val-opens"><div class="skeleton" style="width:70px;height:34px;"></div></div>
+      <div class="card-value" id="val-opens"><div class="skeleton" style="width:70px;height:44px;"></div></div>
       <div class="card-sub">Page loads</div>
     </div>
     <div class="card">
       <div class="card-label">Trade-In Toggles</div>
-      <div class="card-value" id="val-trade"><div class="skeleton" style="width:50px;height:34px;"></div></div>
+      <div class="card-value" id="val-trade"><div class="skeleton" style="width:50px;height:44px;"></div></div>
       <div class="card-sub">Toggle on/off events</div>
     </div>
     <div class="card">
       <div class="card-label">Bundle Adds</div>
-      <div class="card-value" id="val-bundle"><div class="skeleton" style="width:50px;height:34px;"></div></div>
+      <div class="card-value" id="val-bundle"><div class="skeleton" style="width:50px;height:44px;"></div></div>
       <div class="card-sub">Add to Bundle Cart</div>
     </div>
   </div>
@@ -173,11 +181,9 @@ select:focus{border-color:#818cf8;}
 var SB_URL="https://pclutmwvjdkcctlsrhuc.supabase.co";
 var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjbHV0bXd2amRrY2N0bHNyaHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzI5MDQsImV4cCI6MjA5Njg0ODkwNH0.viLDekuYjYB_xAvlZlbQ-5GXY9cFRU3rMtmWywOLRIU";
 
-var CAT_BADGE={iPhone:"badge-iphone",iPad:"badge-ipad",Mac:"badge-mac",Watch:"badge-watch",AirPods:"badge-airpods"};
-
 // State
 var STATE={
-  preset:"today",   // "today"|"7"|"30"|"custom"
+  preset:"today",
   fromTs:null,
   untilTs:null,
   site:""
@@ -186,7 +192,7 @@ var STATE={
 function G(id){return document.getElementById(id);}
 function fmtNum(n){return Number(n).toLocaleString("en");}
 
-// ── Date helpers ─────────────────────────────────────────────────────────────
+// ── Date helpers ──────────────────────────────────────────────────────────────
 function todayStart(){var d=new Date();d.setHours(0,0,0,0);return d;}
 function isoDate(d){return d.toISOString().slice(0,10);}
 
@@ -235,7 +241,7 @@ function renderRankList(listId,items,nameFn,maxCnt){
 
 function catBadge(cat){
   if(!cat)return"";
-  return"<span class='badge "+(CAT_BADGE[cat]||"")+"'>"+cat+"</span>";
+  return"<span class='badge'>"+cat+"</span>";
 }
 
 function setStatus(live,msg){
@@ -270,7 +276,6 @@ function load(){
     renderRankList("list-countries",countries,function(c){return c.country_name||c.country_code||"?";},countries[0]?countries[0].cnt:1);
     renderRankList("list-products",products,function(p){return(p.product_name||"?")+catBadge(p.category);},products[0]?products[0].cnt:1);
 
-
     var now=new Date();
     G("last-refresh").textContent="Updated "+now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · auto-refresh 30s";
     setStatus(true,"Live");
@@ -292,7 +297,6 @@ document.querySelectorAll(".period-btn").forEach(function(btn){
     var range=G("date-range");
     if(preset==="custom"){
       range.classList.add("show");
-      // Default: today only
       if(!G("dt-from").value){
         var td=isoDate(new Date());
         G("dt-from").value=td;G("dt-to").value=td;
