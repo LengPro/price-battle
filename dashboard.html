@@ -39,6 +39,9 @@ input[type="date"]:focus{border-color:#818cf8;}
 input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.6);}
 .apply-btn{padding:5px 14px;border-radius:18px;background:#818cf8;border:none;color:#fff;font-size:12px;font-weight:600;cursor:pointer;}
 .apply-btn:hover{background:#6366f1;}
+.site-pill{padding:5px 14px;border-radius:18px;border:1px solid #2d3142;background:transparent;color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;}
+.site-pill:hover{border-color:#818cf8;color:#c7d2fe;}
+.site-pill.active{background:#818cf8;border-color:#818cf8;color:#fff;}
 
 /* Divider */
 .filter-divider{width:1px;height:20px;background:#2d3142;flex-shrink:0;}
@@ -113,12 +116,12 @@ select:focus{border-color:#818cf8;}
 
   <div class="filter-divider"></div>
 
-  <!-- Site filter -->
+  <!-- Site filter pills -->
   <div class="filter-group">
     <span class="filter-label">Site</span>
-    <select id="site-select">
-      <option value="">All sites</option>
-    </select>
+    <button class="site-pill active" id="spill-all" onclick="setSite('')">All</button>
+    <button class="site-pill" id="spill-iconsiam" onclick="setSite('iconsiam')">ICON</button>
+    <button class="site-pill" id="spill-centralworld" onclick="setSite('centralworld')">CTW</button>
   </div>
 </div>
 
@@ -240,22 +243,6 @@ function setStatus(live,msg){
   G("status-txt").textContent=msg;
 }
 
-// ── Site dropdown ─────────────────────────────────────────────────────────────
-function populateSites(siteIds){
-  var sel=G("site-select");
-  var current=sel.value;
-  // preserve options already added
-  var existing=[];
-  for(var i=1;i<sel.options.length;i++)existing.push(sel.options[i].value);
-  (siteIds||[]).forEach(function(s){
-    if(s&&existing.indexOf(s)<0){
-      var o=document.createElement("option");o.value=s;o.textContent=s;
-      sel.appendChild(o);
-    }
-  });
-  if(current)sel.value=current;
-}
-
 // ── Load ──────────────────────────────────────────────────────────────────────
 function load(){
   setStatus(true,"Loading…");
@@ -283,7 +270,6 @@ function load(){
     renderRankList("list-countries",countries,function(c){return c.country_name||c.country_code||"?";},countries[0]?countries[0].cnt:1);
     renderRankList("list-products",products,function(p){return(p.product_name||"?")+catBadge(p.category);},products[0]?products[0].cnt:1);
 
-    populateSites(d.site_ids);
 
     var now=new Date();
     G("last-refresh").textContent="Updated "+now.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" · auto-refresh 30s";
@@ -320,10 +306,15 @@ document.querySelectorAll(".period-btn").forEach(function(btn){
 
 G("apply-range").addEventListener("click",applyRange);
 
-G("site-select").addEventListener("change",function(){
-  STATE.site=this.value;
+function setSite(site){
+  STATE.site=site;
+  ["","iconsiam","centralworld"].forEach(function(s){
+    var id="spill-"+(s||"all");
+    var el=document.getElementById(id);
+    if(el)el.classList[s===site?"add":"remove"]("active");
+  });
   load();
-});
+}
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 load();
