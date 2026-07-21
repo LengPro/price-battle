@@ -5011,7 +5011,7 @@ function bindDdOption(el,code){
   if(!el||!code||el.dataset.boundDd==="1")return;
   el.dataset.boundDd="1";
   el.setAttribute("onclick","return activateDdOption('"+code+"',event)");
-  el.style.touchAction="pan-y";
+  el.style.touchAction="manipulation";
 }
 function bindExistingDdOptions(){
   var opts=document.querySelectorAll("#ddopts .ddo");
@@ -6369,7 +6369,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="21.07.2026-11:55";
+var APP_VERSION="21.07.2026-21:58";
   try{
     // Remove any Japan-version contamination of this key first
     var _sv=localStorage.getItem("apc_app_version");
