@@ -5018,8 +5018,19 @@ function bindDdDelegation(){
 function bindDdOption(el,code){
   if(!el||!code||el.dataset.boundDd==="1")return;
   el.dataset.boundDd="1";
-  el.setAttribute("onclick","return activateDdOption('"+code+"',event)");
   el.style.touchAction="manipulation";
+  // Direct touchstart/touchend for reliable tap in iOS scrollable container
+  var _ts=0,_ty=0;
+  el.addEventListener("touchstart",function(e){
+    _ts=e.timeStamp;_ty=(e.touches[0]||{}).clientY||0;
+  },{passive:true});
+  el.addEventListener("touchend",function(e){
+    var dt=e.timeStamp-_ts,dy=Math.abs(((e.changedTouches[0]||{}).clientY||0)-_ty);
+    if(dt>600||dy>10)return;
+    if(e.cancelable)e.preventDefault();
+    activateDdOption(code,e);
+  },{passive:false});
+  el.setAttribute("onclick","return activateDdOption('"+code+"',event)");
 }
 function bindExistingDdOptions(){
   var opts=document.querySelectorAll("#ddopts .ddo");
@@ -6377,7 +6388,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="21.07.2026-22:26";
+var APP_VERSION="21.07.2026-22:34";
   try{
     // Remove any Japan-version contamination of this key first
     var _sv=localStorage.getItem("apc_app_version");
