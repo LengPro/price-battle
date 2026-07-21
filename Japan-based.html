@@ -740,7 +740,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
     <div class="rp"><span class="rf">🇳🇴</span><span class="rv">0.06275</span><span class="rc">NOK</span></div>
     <div class="rp"><span class="rf">🇳🇿</span><span class="rv">0.00951</span><span class="rc">NZD</span></div>
   </div>
-  <div class="rmeta"><div class="live-dot"></div><div class="rb-txt"><span id="rb-src">Loading...</span><span id="rb-time"></span></div></div>
+  <div class="rmeta"><div class="live-dot"></div><div class="rb-txt"><span id="rb-src">Default rates</span><span id="rb-time"></span></div></div>
 </div>
 <div style="position:relative;height:0">
   <button class="info-btn" onclick="toggleInfoPopup()" id="info-btn" aria-label="Info" style="position:absolute;top:10px;right:16px;z-index:100">?</button>
@@ -4943,17 +4943,25 @@ function tryFetchRates(manual){
     if(ri)ri.textContent="🔄";
   }
 
+  // fetch with 8-second timeout so "Loading..." never stalls forever
+  function ft(url,opts){
+    return Promise.race([
+      fetch(url,opts||{}),
+      new Promise(function(_,rej){setTimeout(function(){rej(new Error("timeout"));},8000);})
+    ]);
+  }
+
   // Try 3 sources in sequence
-  fetch("https://api.frankfurter.app/latest?from=JPY")
+  ft("https://api.frankfurter.app/latest?from=JPY")
     .then(function(r){return r.json();})
     .then(function(d){if(d&&d.rates&&applyRates(d.rates,"ECB"))return;throw new Error("bad");})
     .catch(function(){
-      fetch("https://api.exchangerate-api.com/v4/latest/JPY")
+      ft("https://api.exchangerate-api.com/v4/latest/JPY")
         .then(function(r){return r.json();})
         .then(function(d){if(d&&d.rates&&applyRates(d.rates,"ER-API"))return;throw new Error("bad");})
         .catch(function(){
           try{
-            fetch("https://api.anthropic.com/v1/messages",{
+            ft("https://api.anthropic.com/v1/messages",{
               method:"POST",
               headers:{"Content-Type":"application/json"},
               body:JSON.stringify({
@@ -6365,7 +6373,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="21.07.2026-21:58-JP";
+var APP_VERSION="21.07.2026-22:26-JP";
   try{
     // Clean up contamination: old Japan versions incorrectly wrote to apc_app_version
     var _apc=localStorage.getItem("apc_app_version");
