@@ -6365,7 +6365,12 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="21.07.2026-11:40-JP";
+var APP_VERSION="21.07.2026-11:55-JP";
+  try{
+    // Clean up contamination: old Japan versions incorrectly wrote to apc_app_version
+    var _apc=localStorage.getItem("apc_app_version");
+    if(_apc&&_apc.indexOf("-JP")!==-1){localStorage.removeItem("apc_app_version");}
+  }catch(e){}
   try{
     var storedVer=localStorage.getItem("jpb_app_version");
     if(storedVer!==APP_VERSION){

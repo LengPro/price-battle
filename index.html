@@ -6369,9 +6369,12 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="21.07.2026-11:45";
+var APP_VERSION="21.07.2026-11:55";
   try{
-    var storedVer=localStorage.getItem("apc_app_version");
+    // Remove any Japan-version contamination of this key first
+    var _sv=localStorage.getItem("apc_app_version");
+    if(_sv&&_sv.indexOf("-JP")!==-1){localStorage.setItem("apc_app_version",APP_VERSION);_sv=APP_VERSION;}
+    var storedVer=_sv;
     if(storedVer!==APP_VERSION){
       ["apc_prices","apc_custom","apc_product_links","apc_country_model_notes",
        "apc_hidden_products","apc_model_order","apc_spec_order","apc_compare_cart"].forEach(function(k){
