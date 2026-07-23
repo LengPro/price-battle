@@ -316,13 +316,14 @@ function rangeLabel(){
 
 function renderLineChart(wrap,data,metric){
   if(!data||!data.length){wrap.innerHTML='<div class="chart-empty">No data for this period</div>';return;}
-  var W=520,H=220,padL=50,padR=16,padT=20,padB=42;
+  var W=520,H=240,padL=50,padR=16,padT=28,padB=42;
   var cW=W-padL-padR,cH=H-padT-padB;
   var vals=data.map(function(d){return+(d[metric]||0);});
   var maxV=Math.max.apply(null,vals)||1;
   var n=data.length;
   function xOf(i){return padL+(n<2?cW/2:i*cW/(n-1));}
   function yOf(v){return padT+cH-(v/maxV)*cH;}
+  function fmtDay(s){if(!s)return"";return s.slice(8)+"-"+s.slice(5,7);}
   var svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;">';
   // Grid + Y labels
   [0,0.25,0.5,0.75,1].forEach(function(frac){
@@ -337,16 +338,19 @@ function renderLineChart(wrap,data,metric){
   svg+='<polygon points="'+areaCoords+'" fill="#1a56db" opacity="0.07"/>';
   // Line
   svg+='<polyline points="'+pts+'" fill="none" stroke="#1a56db" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
-  // Dots
+  // Dots + value labels
   data.forEach(function(d,i){
-    var x=xOf(i).toFixed(1),y=yOf(+(d[metric]||0)).toFixed(1);
-    svg+='<circle cx="'+x+'" cy="'+y+'" r="4.5" fill="#1a56db" stroke="#fff" stroke-width="2"><title>'+d.day+': '+fmtNum(d[metric]||0)+'</title></circle>';
+    var x=xOf(i),y=yOf(+(d[metric]||0));
+    var val=+(d[metric]||0);
+    var labelY=y<padT+16?y+16:y-8;
+    svg+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="4.5" fill="#1a56db" stroke="#fff" stroke-width="2"><title>'+d.day+': '+fmtNum(val)+'</title></circle>';
+    svg+='<text x="'+x.toFixed(1)+'" y="'+labelY.toFixed(1)+'" text-anchor="middle" font-size="10" font-weight="600" fill="#1a56db">'+fmtNum(val)+'</text>';
   });
-  // X labels — max 8 evenly spaced
+  // X labels — max 8 evenly spaced, format DD-MM
   var step=Math.max(1,Math.ceil(n/8));
   data.forEach(function(d,i){
     if(i%step!==0&&i!==n-1)return;
-    svg+='<text x="'+xOf(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" font-size="10" fill="#b8bbb6">'+(d.day?d.day.slice(5):"")+'</text>';
+    svg+='<text x="'+xOf(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" font-size="10" fill="#b8bbb6">'+fmtDay(d.day)+'</text>';
   });
   svg+='</svg>';
   wrap.innerHTML=svg;
