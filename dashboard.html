@@ -66,6 +66,26 @@ input[type="date"]:focus{border-color:#1a56db;}
 .card-active-now .card-value{font-size:44px;font-weight:700;color:#dbe9ff;line-height:1;}
 .card-active-now .card-sub{font-size:11px;color:#9dc4f8;margin-top:6px;}
 
+/* Clickable stat cards */
+.card.clickable{cursor:pointer;transition:box-shadow .15s,transform .15s;}
+.card.clickable:hover{box-shadow:0 4px 20px rgba(26,86,219,0.16);transform:translateY(-2px);}
+.card.clickable:active{transform:translateY(0);}
+.trend-hint{font-size:10px;color:#1a56db;margin-top:5px;display:none;font-weight:600;}
+.card.clickable .trend-hint{display:block;}
+
+/* CHART OVERLAY */
+.chart-overlay{position:fixed;inset:0;background:rgba(10,18,55,0.52);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .18s;}
+.chart-overlay.open{opacity:1;pointer-events:all;}
+.chart-modal{background:#fff;border-radius:20px;padding:24px;width:100%;max-width:600px;max-height:88vh;overflow-y:auto;transform:translateY(14px);transition:transform .18s;}
+.chart-overlay.open .chart-modal{transform:translateY(0);}
+.chart-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.chart-modal-title{font-size:15px;font-weight:700;color:#1a1d1b;}
+.chart-modal-sub{font-size:11px;color:#9a9d99;margin-bottom:18px;}
+.chart-close{background:none;border:none;font-size:20px;color:#c8cbc5;cursor:pointer;padding:2px 8px;border-radius:8px;line-height:1;font-family:inherit;}
+.chart-close:hover{background:#f0f0ee;color:#1a1d1b;}
+.chart-empty{color:#b8bbb6;font-size:13px;padding:36px 0;text-align:center;}
+.chart-loading{color:#9a9d99;font-size:13px;padding:36px 0;text-align:center;}
+
 /* BOTTOM GRID */
 .section-title{font-size:14px;font-weight:700;color:#1a1d1b;margin-bottom:12px;}
 .grid-bottom{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:16px;}
@@ -109,6 +129,7 @@ input[type="date"]:focus{border-color:#1a56db;}
     <div class="filter-group">
       <span class="filter-label">Period</span>
       <button class="period-btn active" data-preset="today">Today</button>
+      <button class="period-btn" data-preset="yesterday">Yesterday</button>
       <button class="period-btn" data-preset="7">7 Days</button>
       <button class="period-btn" data-preset="30">30 Days</button>
       <button class="period-btn" data-preset="custom">Custom 📅</button>
@@ -142,20 +163,23 @@ input[type="date"]:focus{border-color:#1a56db;}
       <div class="card-value" id="val-active"><div class="skeleton" style="width:50px;height:44px;"></div></div>
       <div class="card-sub">Sessions · last 2 min</div>
     </div>
-    <div class="card">
+    <div class="card" id="card-opens">
       <div class="card-label">Total Opens</div>
       <div class="card-value" id="val-opens"><div class="skeleton" style="width:70px;height:44px;"></div></div>
       <div class="card-sub">Page loads</div>
+      <div class="trend-hint">📈 Tap to view trend</div>
     </div>
-    <div class="card">
+    <div class="card" id="card-trade">
       <div class="card-label">Trade-In Toggles</div>
       <div class="card-value" id="val-trade"><div class="skeleton" style="width:50px;height:44px;"></div></div>
       <div class="card-sub">Toggle on/off events</div>
+      <div class="trend-hint">📈 Tap to view trend</div>
     </div>
-    <div class="card">
+    <div class="card" id="card-bundle">
       <div class="card-label">Bundle Adds</div>
       <div class="card-value" id="val-bundle"><div class="skeleton" style="width:50px;height:44px;"></div></div>
       <div class="card-sub">Add to Bundle Cart</div>
+      <div class="trend-hint">📈 Tap to view trend</div>
     </div>
   </div>
 
@@ -175,6 +199,18 @@ input[type="date"]:focus{border-color:#1a56db;}
   </div>
 
   <div class="last-refresh" id="last-refresh">–</div>
+</div>
+
+<!-- Chart trend modal -->
+<div class="chart-overlay" id="chart-overlay">
+  <div class="chart-modal" id="chart-modal">
+    <div class="chart-modal-header">
+      <span class="chart-modal-title" id="chart-title">Trend</span>
+      <button class="chart-close" onclick="closeChart()">✕</button>
+    </div>
+    <div class="chart-modal-sub" id="chart-sub"></div>
+    <div id="chart-svg-wrap"><div class="chart-loading">Loading…</div></div>
+  </div>
 </div>
 
 <script>
@@ -200,6 +236,10 @@ function buildTimestamps(){
   if(STATE.preset==="today"){
     STATE.fromTs=todayStart().toISOString();
     STATE.untilTs=null;
+  } else if(STATE.preset==="yesterday"){
+    var yd=todayStart();yd.setDate(yd.getDate()-1);
+    STATE.fromTs=yd.toISOString();
+    STATE.untilTs=todayStart().toISOString();
   } else if(STATE.preset==="7"){
     STATE.fromTs=new Date(Date.now()-7*864e5).toISOString();
     STATE.untilTs=null;
@@ -249,6 +289,97 @@ function setStatus(live,msg){
   G("status-txt").textContent=msg;
 }
 
+// ── Chart helpers ─────────────────────────────────────────────────────────────
+function isMultiDay(){
+  return STATE.preset==="7"||STATE.preset==="30"||STATE.preset==="custom";
+}
+
+function updateCardClickability(){
+  var can=isMultiDay();
+  ["card-opens","card-trade","card-bundle"].forEach(function(id){
+    var el=G(id);
+    if(!el)return;
+    if(can)el.classList.add("clickable");
+    else el.classList.remove("clickable");
+  });
+}
+
+function rangeLabel(){
+  if(STATE.preset==="7")return"Last 7 days";
+  if(STATE.preset==="30")return"Last 30 days";
+  if(STATE.preset==="custom"){
+    var f=G("dt-from").value,t=G("dt-to").value;
+    return f+(t?" → "+t:"");
+  }
+  return"";
+}
+
+function renderLineChart(wrap,data,metric){
+  if(!data||!data.length){wrap.innerHTML='<div class="chart-empty">No data for this period</div>';return;}
+  var W=520,H=220,padL=50,padR=16,padT=20,padB=42;
+  var cW=W-padL-padR,cH=H-padT-padB;
+  var vals=data.map(function(d){return+(d[metric]||0);});
+  var maxV=Math.max.apply(null,vals)||1;
+  var n=data.length;
+  function xOf(i){return padL+(n<2?cW/2:i*cW/(n-1));}
+  function yOf(v){return padT+cH-(v/maxV)*cH;}
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;">';
+  // Grid + Y labels
+  [0,0.25,0.5,0.75,1].forEach(function(frac){
+    var gv=Math.round(maxV*frac);
+    var gy=yOf(gv);
+    svg+='<line x1="'+padL+'" y1="'+gy.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+gy.toFixed(1)+'" stroke="#eeede9" stroke-width="1"/>';
+    svg+='<text x="'+(padL-6)+'" y="'+(gy+4).toFixed(1)+'" text-anchor="end" font-size="10" fill="#b8bbb6">'+fmtNum(gv)+'</text>';
+  });
+  // Area fill
+  var pts=data.map(function(d,i){return xOf(i).toFixed(1)+","+yOf(+(d[metric]||0)).toFixed(1);}).join(" ");
+  var areaCoords=xOf(0).toFixed(1)+","+(padT+cH)+" "+pts+" "+xOf(n-1).toFixed(1)+","+(padT+cH);
+  svg+='<polygon points="'+areaCoords+'" fill="#1a56db" opacity="0.07"/>';
+  // Line
+  svg+='<polyline points="'+pts+'" fill="none" stroke="#1a56db" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+  // Dots
+  data.forEach(function(d,i){
+    var x=xOf(i).toFixed(1),y=yOf(+(d[metric]||0)).toFixed(1);
+    svg+='<circle cx="'+x+'" cy="'+y+'" r="4.5" fill="#1a56db" stroke="#fff" stroke-width="2"><title>'+d.day+': '+fmtNum(d[metric]||0)+'</title></circle>';
+  });
+  // X labels — max 8 evenly spaced
+  var step=Math.max(1,Math.ceil(n/8));
+  data.forEach(function(d,i){
+    if(i%step!==0&&i!==n-1)return;
+    svg+='<text x="'+xOf(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" font-size="10" fill="#b8bbb6">'+(d.day?d.day.slice(5):"")+'</text>';
+  });
+  svg+='</svg>';
+  wrap.innerHTML=svg;
+}
+
+function openChart(metric,title){
+  if(!isMultiDay())return;
+  G("chart-title").textContent=title;
+  G("chart-sub").textContent=rangeLabel();
+  G("chart-svg-wrap").innerHTML='<div class="chart-loading">Loading…</div>';
+  G("chart-overlay").classList.add("open");
+
+  buildTimestamps();
+  var body={since_ts:STATE.fromTs};
+  if(STATE.untilTs)body.until_ts=STATE.untilTs;
+  if(STATE.site)body.p_site_id=STATE.site;
+
+  fetch(SB_URL+"/rest/v1/rpc/get_dashboard_daily",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY},
+    body:JSON.stringify(body)
+  })
+  .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();})
+  .then(function(data){renderLineChart(G("chart-svg-wrap"),data,metric);})
+  .catch(function(e){
+    G("chart-svg-wrap").innerHTML='<div class="chart-empty">Could not load trend data<br><small>'+e.message+'</small></div>';
+  });
+}
+
+function closeChart(){
+  G("chart-overlay").classList.remove("open");
+}
+
 // ── Load ──────────────────────────────────────────────────────────────────────
 function load(){
   setStatus(true,"Loading…");
@@ -294,6 +425,7 @@ document.querySelectorAll(".period-btn").forEach(function(btn){
     btn.classList.add("active");
     var preset=btn.dataset.preset;
     STATE.preset=preset;
+    updateCardClickability();
     var range=G("date-range");
     if(preset==="custom"){
       range.classList.add("show");
@@ -310,6 +442,15 @@ document.querySelectorAll(".period-btn").forEach(function(btn){
 
 G("apply-range").addEventListener("click",applyRange);
 
+// ── Card click → trend chart ──────────────────────────────────────────────────
+G("card-opens").addEventListener("click",function(){openChart("total_opens","Total Opens");});
+G("card-trade").addEventListener("click",function(){openChart("trade_toggles","Trade-In Toggles");});
+G("card-bundle").addEventListener("click",function(){openChart("bundle_adds","Bundle Adds");});
+
+// Close on backdrop click or Escape
+G("chart-overlay").addEventListener("click",function(e){if(e.target===this)closeChart();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeChart();});
+
 function setSite(site){
   STATE.site=site;
   ["","iconsiam","centralworld"].forEach(function(s){
@@ -322,6 +463,7 @@ function setSite(site){
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 load();
+updateCardClickability();
 setInterval(load,30000);
 </script>
 </body>
