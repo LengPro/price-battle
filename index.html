@@ -195,6 +195,15 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ac-pct-value{font-size:34px;font-weight:800;color:var(--blue);letter-spacing:-.02em}
 .ac-pct-label{font-size:11px;color:var(--secondary-text);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
 .ac-unavailable{background:var(--off-white);border:1px solid var(--rule);border-radius:var(--r);padding:20px;text-align:center;font-size:13px;color:var(--secondary-text)}
+.ac-repair-rows{padding:4px 17px}
+.ac-repair-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.ac-repair-row:last-child{border-bottom:none}
+.ac-repair-issue{font-size:13px;font-weight:600;color:var(--body-text);flex:1;min-width:120px}
+.ac-repair-nums{display:flex;align-items:baseline;gap:6px;flex-shrink:0}
+.ac-repair-full{font-size:12px;color:var(--secondary-text);text-decoration:line-through}
+.ac-repair-arrow{font-size:11px;color:var(--secondary-text)}
+.ac-repair-ac{font-size:14px;font-weight:700;color:var(--blue)}
+.ac-repair-pct{font-size:11px;font-weight:700;color:#fff;background:var(--blue);border-radius:10px;padding:2px 8px;margin-left:2px}
 .sec-title{font-size:10px;font-weight:600;color:var(--secondary-text);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
 .sec-title::after{content:"";flex:1;height:1px;background:var(--rule)}
 .cmp-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
@@ -1206,6 +1215,12 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
       </div>
     </div>
     <div class="ac-unavailable" id="ac-unavailable" style="display:none"><span id="ac-lbl-unavail">AppleCare+ pricing not available for this model yet.</span></div>
+
+    <div class="sec-title" id="ac-lbl-repair-result">AppleCare+ Ratio with Repair</div>
+    <div class="ac-card" id="ac-repair-card">
+      <div class="ac-repair-rows" id="ac-repair-rows"></div>
+    </div>
+    <div class="ac-unavailable" id="ac-repair-unavailable" style="display:none"><span id="ac-lbl-repair-unavail">Repair cost comparison not available for this model yet.</span></div>
   </div>
 </div>
 </div>
@@ -1479,6 +1494,8 @@ en:{
   ac_lbl_result:"AppleCare+ Price",ac_lbl_device:"Device price",ac_lbl_ac:"AppleCare+ price",
   ac_lbl_total:"Total with AppleCare+",ac_pct_label:"of device price",
   ac_lbl_unavail:"AppleCare+ pricing not available for this model yet.",
+  ac_lbl_repair_result:"AppleCare+ Ratio with Repair",
+  ac_lbl_repair_unavail:"Repair cost comparison not available for this model yet.",
   hero_eyebrow:"🔵 PRICE BATTLE 🔵",
   hero_title:"Find the <span>best price</span><br>for your next Apple device",
   hero_sub:"Compare iPhone, iPad, Mac, Apple Watch, AirPods, Apple TV and HomePod prices in Thailand vs. your country.",
@@ -1557,6 +1574,8 @@ th:{
   ac_lbl_result:"ราคา AppleCare+",ac_lbl_device:"ราคาเครื่อง",ac_lbl_ac:"ราคา AppleCare+",
   ac_lbl_total:"ราคารวมกับ AppleCare+",ac_pct_label:"ของราคาเครื่อง",
   ac_lbl_unavail:"ยังไม่มีราคา AppleCare+ สำหรับรุ่นนี้",
+  ac_lbl_repair_result:"อัตราส่วน AppleCare+ กับค่าซ่อม",
+  ac_lbl_repair_unavail:"ยังไม่มีข้อมูลเปรียบเทียบค่าซ่อมสำหรับรุ่นนี้",
   hero_eyebrow:"🔵 PRICE BATTLE 🔵",
   hero_title:"ค้นหา<span>ราคาที่ดีที่สุด</span><br>สำหรับอุปกรณ์ Apple เครื่องถัดไปของคุณ",
   hero_sub:"เปรียบเทียบราคา iPhone, iPad, Mac, Apple Watch, AirPods, Apple TV และ HomePod ในประเทศไทยกับประเทศของคุณ",
@@ -1635,6 +1654,8 @@ zh:{
   ac_lbl_result:"AppleCare+ 价格",ac_lbl_device:"设备价格",ac_lbl_ac:"AppleCare+ 价格",
   ac_lbl_total:"含 AppleCare+ 总价",ac_pct_label:"占设备价格比例",
   ac_lbl_unavail:"该型号暂无 AppleCare+ 价格",
+  ac_lbl_repair_result:"AppleCare+ 与维修费用比例",
+  ac_lbl_repair_unavail:"该型号暂无维修费用比较数据",
   hero_eyebrow:"🔵 PRICE BATTLE 🔵",
   hero_title:"找到<span>最优惠价格</span><br>购买你的下一台 Apple 设备",
   hero_sub:"比较 iPhone、iPad、Mac、Apple Watch、AirPods、Apple TV 和 HomePod 在泰国与其他国家的价格",
@@ -1738,6 +1759,7 @@ function setLang(l){
          "tv-t1":"tv_t1","tv-sub1":"tv_sub1","tv-type-lbl":"tv_type_lbl","tv-col-model":"tv_col_model","tv-col-spec":"tv_col_spec","tv-col-value":"tv_col_value","tv-note-lbl":"tv_note_lbl","tv-note":"tv_note",
          "ac-t1":"ac_t1","ac-sub1":"ac_sub1","ac-t2":"ac_t2","ac-sub2":"ac_sub2","ac-stor-lbl":"stor_lbl",
          "ac-lbl-result":"ac_lbl_result","ac-lbl-device":"ac_lbl_device","ac-lbl-ac":"ac_lbl_ac","ac-lbl-total":"ac_lbl_total","ac-lbl-pct":"ac_pct_label","ac-lbl-unavail":"ac_lbl_unavail",
+         "ac-lbl-repair-result":"ac_lbl_repair_result","ac-lbl-repair-unavail":"ac_lbl_repair_unavail",
          "cart-title":"cart_title"};
   Object.keys(m).forEach(function(id){
     var k2=m[id];var el=G(id);
@@ -4271,6 +4293,9 @@ const GB_REPAIR_PRICE_DATA={
     }
   }
 };
+const GB_APPLECARE_FEE={
+  "iPhone":{"screen-damage":1000}
+};
 function gbRepairFamilyLabel(f){return f?(LANG==="th"?(f.labelTh||f.labelEn||f.key):(f.labelEn||f.labelTh||f.key)):"";}
 function gbRepairModelLabel(m){return m?(LANG==="th"?(m.labelTh||m.labelEn||m.key):(m.labelEn||m.labelTh||m.key)):"";}
 function getGbRepairFamilies(cat){return GB_REPAIR_FAMILIES[cat]||[];}
@@ -5694,8 +5719,53 @@ function renderAcResult(){
     var pct=Math.round((acPrice/devicePrice)*1000)/10;
     var pctEl=G("ac-r-pct");if(pctEl)pctEl.textContent=pct+"%";
   }
+  renderAcRepairCard(AC.cat,modelData.rawName);
   rw.classList.add("vis");
   track("applecare_view",{category:AC.cat||"",model:modelData.rawName||"",spec:specLabel||""});
+}
+function findRepairModelKey(cat,rawName){
+  var fams=GB_REPAIR_FAMILIES[cat]||[];
+  for(var i=0;i<fams.length;i++){
+    var models=fams[i].models||[];
+    for(var j=0;j<models.length;j++){
+      if(models[j].labelEn===rawName||models[j].labelTh===rawName)return models[j].key;
+    }
+  }
+  return null;
+}
+function renderAcRepairCard(cat,rawName){
+  var wrap=G("ac-repair-rows"),card=G("ac-repair-card"),unavail=G("ac-repair-unavailable");
+  if(!wrap)return;
+  var issues=GB_REPAIR_ISSUES[cat]||[];
+  var repairModelKey=findRepairModelKey(cat,rawName);
+  var priceMap=(repairModelKey&&GB_REPAIR_PRICE_DATA[cat])?GB_REPAIR_PRICE_DATA[cat][repairModelKey]:null;
+  var feeMap=GB_APPLECARE_FEE[cat]||{};
+  var rows=[];
+  issues.forEach(function(issue){
+    var full=priceMap?priceMap[issue.id]:null;
+    var fee=feeMap[issue.id];
+    if(full==null||fee==null)return;
+    var pct=full?Math.round((fee/full)*1000)/10:0;
+    rows.push(
+      '<div class="ac-repair-row">'+
+        '<div class="ac-repair-issue">'+gbIssueLabel(issue)+'</div>'+
+        '<div class="ac-repair-nums">'+
+          '<span class="ac-repair-full">฿'+fmt(full)+'</span>'+
+          '<span class="ac-repair-arrow">&#8594;</span>'+
+          '<span class="ac-repair-ac">฿'+fmt(fee)+'</span>'+
+          '<span class="ac-repair-pct">'+pct+'%</span>'+
+        '</div>'+
+      '</div>'
+    );
+  });
+  if(!rows.length){
+    if(card)card.style.display="none";
+    if(unavail)unavail.style.display="block";
+  }else{
+    if(card)card.style.display="block";
+    if(unavail)unavail.style.display="none";
+    wrap.innerHTML=rows.join("");
+  }
 }
 
 function getModelData(cat,modelKey){
@@ -6850,7 +6920,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="31.07.2026-22:43";
+var APP_VERSION="31.07.2026-22:55";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
