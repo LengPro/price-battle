@@ -247,8 +247,8 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .bdl-rm{width:24px;height:24px;border-radius:50%;background:#ff3b30;color:#fff;border:none;font-size:18px;font-weight:400;line-height:0;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0}
 .bdl-sep{align-self:center;display:flex;justify-content:center;align-items:center;font-size:16px;font-weight:300;line-height:1;padding-bottom:1px;color:#fff;width:22px;height:22px;min-width:22px;margin:3px 0;background:#007aff;border-radius:50%;flex-shrink:0}
 .bdl-row{display:flex;align-items:center;gap:6px;width:100%;box-sizing:border-box}
-#rw.bundle-mode .cmp-tools{flex-direction:row;width:100%;gap:8px}
-#rw.bundle-mode .vat-toggle-inline{flex:1;width:auto;justify-content:space-between}
+#rw.bundle-mode .cmp-tools{flex-direction:row;flex-wrap:wrap;width:100%;gap:8px}
+#rw.bundle-mode .vat-toggle-inline{flex:1 1 calc(50% - 4px);width:auto;justify-content:space-between}
 #rw .cmp-row2{gap:8px;flex-wrap:nowrap}
 #rw .cmp-badge{flex:1;justify-content:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #rw .rate-badge{flex:1;justify-content:center}
@@ -5565,8 +5565,9 @@ function syncAppleCareUI(){
   var al2=G("applecare-lbl2");if(al2)al2.style.color=on?"var(--green)":"var(--secondary-text)";
 }
 function onAppleCareCh(){
-  syncAppleCareUI();
   sbTrack("applecare_toggle",{country_code:S.country||"",country_zone:ZONE_MAP[S.country]||""});
+  if(S.bundleMode&&(S.cart||[]).length>=2){renderBundleComparison();return;}
+  syncAppleCareUI();
   if(S.country&&S.csvRow)render();
 }
 
@@ -5925,19 +5926,40 @@ function renderCart(){
 }
 
 // ── BUNDLE COMPARISON ─────────────────────────────────────────────────────────────
+function bundleAppleCareEligible(entries){
+  return entries.filter(function(e){
+    if(AC_CATS.indexOf(e.cat)===-1)return false;
+    var rowKey=acRowFor(e.cat,e.modelData.rawName);
+    var data=S.prices[rowKey];
+    return !!(data&&data.TH);
+  });
+}
 function renderBundleComparison(){
   var entries=(S.cart||[]).map(buildCartEntryData).filter(Boolean);
   if(entries.length<2||!S.country)return;
   var C=CUR[S.country];if(!C)return;
   var vatOn=!!(G("vchk")&&G("vchk").checked);
-  var totalTH=0,totalVAT=0,totalForeignRaw=0,totalForeignTHB=0;
+  var acOn=appleCareEnabled();
+  var acEligible=bundleAppleCareEligible(entries);
+  var acItems=(acOn?acEligible:[]).map(function(e){
+    var rowKey=acRowFor(e.cat,e.modelData.rawName);
+    var data=S.prices[rowKey]||{};
+    return{entry:e,th:data.TH||0,foreign:data[S.country]||0};
+  });
+  var acTotalTH=0,acTotalForeign=0;
+  acItems.forEach(function(ai){acTotalTH+=ai.th;acTotalForeign+=ai.foreign;});
+
+  var totalDeviceTH=0,totalVAT=0,totalForeignRaw=0,totalForeignTHB=0;
   entries.forEach(function(e){
     var cmp=e.comparison;
-    totalTH+=cmp.thPrice;
+    totalDeviceTH+=cmp.thPrice;
     totalForeignRaw+=cmp.foreignRaw;
     totalForeignTHB+=cmp.foreignTHB;
   });
-  totalVAT=vatOn?vatRefund(totalTH):0;
+  totalForeignRaw+=acTotalForeign;
+  totalForeignTHB+=Math.round(f2t(acTotalForeign,C.rate));
+  var totalTH=totalDeviceTH+acTotalTH;
+  totalVAT=vatOn?vatRefund(totalDeviceTH):0;
   var tradeVal=getTradeValue();
   var effTH=Math.max(0,totalTH-totalVAT-tradeVal);
 
@@ -5959,10 +5981,15 @@ function renderBundleComparison(){
     bir.innerHTML=parts.join("");
     bir.style.display="flex";
   }
-  // Hide single-product name/image, keep VAT/Trade-in tools visible
+  // Hide single-product name/image, keep VAT/AppleCare+/Trade-in tools visible
   var cprod=document.querySelector("#rw .cmp-product");
   if(cprod)cprod.style.display="none";
-  var aci=G("applecare-inline");if(aci)aci.style.display="none";
+  var aci=G("applecare-inline");
+  if(aci){
+    aci.style.display=acEligible.length?"inline-flex":"none";
+    if(!acEligible.length){var a2=G("acchk2");if(a2)a2.checked=false;}
+  }
+  var al2=G("applecare-lbl2");if(al2)al2.style.color=(acOn&&acEligible.length)?"var(--green)":"var(--secondary-text)";
 
   // Section title
   var lbl=G("lbl-cmp");if(lbl)lbl.textContent="BUNDLE ("+entries.length+" items)";
@@ -5988,6 +6015,9 @@ function renderBundleComparison(){
     var lines=entries.map(function(e){
       return '<div class="bd-line"><span class="bd-val">฿'+fmt(e.comparison.thPrice)+'</span><span class="bd-lbl">'+e.fullName+'</span></div>';
     });
+    acItems.forEach(function(ai){
+      lines.push('<div class="bd-line"><span class="bd-val">฿'+fmt(ai.th)+'</span><span class="bd-lbl">AppleCare+ ('+ai.entry.fullName+')</span></div>');
+    });
     if(totalVAT>0)lines.push('<div class="bd-line bd-deduct"><span class="bd-val">-฿'+fmt(totalVAT)+'</span><span class="bd-lbl">VAT refund</span></div>');
     if(tradeVal>0)lines.push('<div class="bd-line bd-deduct"><span class="bd-val">-฿'+fmt(tradeVal)+'</span><span class="bd-lbl">Trade-in</span></div>');
     thBd.innerHTML=lines.join("");thBd.style.display="block";
@@ -6000,6 +6030,9 @@ function renderBundleComparison(){
   if(otBd){
     var otLines=entries.map(function(e){
       return '<div class="bd-line"><span class="bd-val">'+C.sym+fmt2(e.comparison.foreignRaw)+'</span><span class="bd-lbl">'+e.fullName+'</span></div>';
+    });
+    acItems.forEach(function(ai){
+      otLines.push('<div class="bd-line"><span class="bd-val">'+C.sym+fmt2(ai.foreign)+'</span><span class="bd-lbl">AppleCare+ ('+ai.entry.fullName+')</span></div>');
     });
     otBd.innerHTML=otLines.join("");otBd.style.display="block";
   }
@@ -6816,7 +6849,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="31.07.2026-18:04";
+var APP_VERSION="31.07.2026-18:15";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
