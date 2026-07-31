@@ -1321,7 +1321,9 @@ function buildModelGroupsFromPrices(base){
   return groups;
 }
 var MODEL_GROUPS=buildModelGroupsFromPrices(CSV_PRICES);
-["iPhone","iPad","Mac","Watch","AirPods","AppleTV","HomePod"].forEach(function(c){if(MODEL_GROUPS[c]&&MODEL_GROUPS[c]["AppleCare+"])MODEL_GROUPS[c]["AppleCare+"].icon=IMG_APPLECARE_ICON;});
+["iPhone","iPad","Mac","Watch","AirPods"].forEach(function(c){if(MODEL_GROUPS[c]&&MODEL_GROUPS[c]["AppleCare+"])MODEL_GROUPS[c]["AppleCare+"].icon=IMG_APPLECARE_ICON;});
+if(MODEL_GROUPS["AppleTV"]&&MODEL_GROUPS["AppleTV"]["AppleCare+"])MODEL_GROUPS["AppleTV"]["AppleCare+"].icon="__IMG_APPLECARE_TV__";
+if(MODEL_GROUPS["HomePod"]&&MODEL_GROUPS["HomePod"]["AppleCare+"])MODEL_GROUPS["HomePod"]["AppleCare+"].icon="__IMG_APPLECARE_HP__";
 const ACC_CAT_MAP={"iPhone":"iPhoneAcc","iPad":"iPadAcc","Mac":"MacAcc","Watch":"WatchAcc"};
 const CAT_ORDER={"iPhone":["iPhone 17 Pro Max","iPhone 17 Pro","iPhone 17","iPhone 17e","iPhone Air","iPhone 16","iPhone 16 Plus","AppleCare+"],"iPad":["iPad Pro 11”","iPad Pro 13”","iPad Air 11”","iPad Air 13”","iPad A16","iPad mini","AppleCare+"],"Mac":["MacBook Neo","MacBook Air 13”","MacBook Air 15”","MacBook Pro 14”","MacBook Pro 16”","iMac","Mac mini","Mac Studio","AppleCare+"],"Watch":["Apple Watch SE 3","Apple Watch Series 11","Apple Watch Ultra 3","AppleCare+"],"AirPods":["AirPods Pro 3","AirPods 4 ANC","AirPods 4","AirPods Max 2","AppleCare+"],"AppleTV":["Apple TV 64GB","Apple TV 128GB","AppleCare+"],"HomePod":["HomePod","HomePod mini","AppleCare+"],"iPhoneAcc":["Clear case 16/16 Plus/17e/17/17Pro/17Pro Max/Air","Silicone case 16/16 Plus/17e/17/17Pro/17Pro Max","TechWoven case 17Pro/17Pro Max","iPhone Air Bumper case","Crossbody Strap","Belkin Ultraglass 2 Privacy 17e/17/17 Pro/17 Pro Max/Air","Belkin Ultraglass 2 /17 Pro/17 Pro Max/Air","Belkin Ultraglass 2 /17/16 Pro","Belkin Ultraglass 2 /17e","Belkin Ultraglass 2 16/16 Plus"],"iPadAcc":["Apple Pencil Pro","Apple Pencil USB-C","Magic Keyboard iPad Air 11\"","Magic Keyboard iPad Air 13\"","Magic Keyboard iPad Pro 11\"","Magic Keyboard iPad Pro 13\"","Smart Folio for iPad (A16)","Smart Folio for iPad Air 11\"","Smart Folio for iPad Air 13\"","Smart Folio for iPad Pro 11\"","Smart Folio for iPad Pro 13\"","Smart Folio for iPad mini","Magic Keyboard Folio"],"Beats":["Powerbeats Pro 2","Powerbeats Fit","Studio Buds+","Solo Buds","Studio Pro","Solo 4","Flex","Beats Pill"],"WatchAcc":["Sport Band","Sport Loop","Nike Sport Band","Nike Sport Loop","Milanese Loop","Link Bracelet","Solo Loop","Braided Solo Loop","Magnetic Link","Modern Buckle","Alpine Loop","Trail Loop","Ocean Band","Titanium Milanese Loop"],"MacAcc":["USB-C to USB","Digital AV Multiport","Magic Mouse White","Magic Mouse Black","Magic Trackpad White","Magic Trackpad Black","Magic Keyboard","Magic Keyboard with Touch ID","Magic Keyboard with Numeric","Magic Keyboard with Numeric Touch ID White","Magic Keyboard with Numeric Touch ID Black"]};;;
 const CAT_KEYS=["iPhone","iPad","Mac","Watch","AirPods","AppleTV","HomePod","Beats","AirTag","iPhoneAcc","iPadAcc","MacAcc","WatchAcc"];
@@ -5227,7 +5229,8 @@ function getIconHtml(icon,cls){
     "__IMG_WATCHSE3__":IMG_WATCHSE3,"__IMG_WATCHSERIES11__":IMG_WATCHSERIES11,
     "__IMG_WATCHULTRA3__":IMG_WATCHULTRA3,
     "__IMG_HOMEPOD__":IMG_HOMEPOD,"__IMG_HOMEPODMINI__":IMG_HOMEPODMINI,
-    "__IMG_APPLETV__":IMG_APPLETV,"__IMG_BEATS__":IMG_BEATS_ICON,"__IMG_AIRTAG__":IMG_AIRTAG_ICON,"__IMG_AIRTAG_4__":IMG_AIRTAG_4_ICON,"__IMG_IPHONE_ACC__":IMG_IPHONE_ACC_ICON,"__IMG_IPAD_ACC__":IMG_IPAD_ACC_ICON,"__IMG_MAC_ACC__":IMG_MAC_ACC_ICON,"__IMG_WATCH_ACC__":IMG_WATCH_ACC_ICON
+    "__IMG_APPLETV__":IMG_APPLETV,"__IMG_BEATS__":IMG_BEATS_ICON,"__IMG_AIRTAG__":IMG_AIRTAG_ICON,"__IMG_AIRTAG_4__":IMG_AIRTAG_4_ICON,"__IMG_IPHONE_ACC__":IMG_IPHONE_ACC_ICON,"__IMG_IPAD_ACC__":IMG_IPAD_ACC_ICON,"__IMG_MAC_ACC__":IMG_MAC_ACC_ICON,"__IMG_WATCH_ACC__":IMG_WATCH_ACC_ICON,
+    "__IMG_APPLECARE_TV__":IMG_APPLECARE_ICON,"__IMG_APPLECARE_HP__":IMG_APPLECARE_ICON
   };
   var isDirectImage=typeof icon==="string"&&(/^(file:|https?:|data:image\/)/i.test(icon)||/\.(png|jpe?g|webp|gif|svg)$/i.test(icon));
   var sizes={
@@ -5241,6 +5244,8 @@ function getIconHtml(icon,cls){
     "__IMG_APPLETV__":{"mc-img":"width:56px;height:56px"},
     "__IMG_HOMEPOD__":{"mc-img":"width:52px;height:68px;display:block;margin-bottom:8px;object-position:center bottom"},
     "__IMG_HOMEPODMINI__":{"mc-img":"width:52px;height:68px;display:block;margin-top:14px;margin-bottom:-6px;object-position:center top"},
+    "__IMG_APPLECARE_TV__":{"mc-img":"width:56px;height:56px"},
+    "__IMG_APPLECARE_HP__":{"mc-img":"width:52px;height:68px;display:block;margin-bottom:8px;object-position:center bottom"},
     "__IMG_MAC_ACC__":{
       "cat-ic-img":"width:30px;height:30px;vertical-align:middle;background:#fff;border-radius:8px;padding:2px;box-sizing:content-box",
       "step-ic-img":"width:16px;height:16px;vertical-align:middle;background:#fff;border-radius:4px;padding:1px;box-sizing:content-box",
@@ -6513,7 +6518,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="31.07.2026-17:10";
+var APP_VERSION="31.07.2026-17:15";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
