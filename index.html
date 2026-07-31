@@ -4294,7 +4294,7 @@ const GB_REPAIR_PRICE_DATA={
   }
 };
 const GB_APPLECARE_FEE={
-  "iPhone":{"screen-damage":1000}
+  "iPhone":{"battery-service":0,"screen-damage":1000,"back-glass-damage":1000,"other-damage":3300}
 };
 function gbRepairFamilyLabel(f){return f?(LANG==="th"?(f.labelTh||f.labelEn||f.key):(f.labelEn||f.labelTh||f.key)):"";}
 function gbRepairModelLabel(m){return m?(LANG==="th"?(m.labelTh||m.labelEn||m.key):(m.labelEn||m.labelTh||m.key)):"";}
@@ -6920,7 +6920,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="31.07.2026-22:55";
+var APP_VERSION="31.07.2026-22:59";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
