@@ -768,7 +768,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
     <p class="hero-sub" id="hero-sub">Compare iPhone, iPad, Mac, Apple Watch, AirPods, Apple TV and HomePod prices in Thailand vs. your country.</p>
   </div>
   <div class="mode-switch" aria-label="Section switcher">
-    <button class="mode-btn on" id="mode-pz" onclick="switchMode('pz')">Compare</button>
+    <button class="mode-btn on" id="mode-pz" onclick="switchMode('pz')">Battle</button>
     <button class="mode-btn" id="mode-ac" onclick="switchMode('ac')">AppleCare+</button>
   </div>
   <div class="mode-view show" id="mode-view-pz">
@@ -883,13 +883,13 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
               <span class="vtil" id="vat-lbl2">VAT Refund</span>
               <label class="tg" onclick="event.stopPropagation()"><input type="checkbox" id="vchk2" onchange="syncVat(this)"><span class="tgt"></span></label>
             </div>
-            <div class="vat-toggle-inline" id="trade-inline" style="display:none">
-              <span class="vtil" id="trade-lbl2">Trade-in</span>
-              <label class="tg" onclick="event.stopPropagation()"><input type="checkbox" id="tchk2" onchange="syncTrade(this)"><span class="tgt"></span></label>
-            </div>
             <div class="vat-toggle-inline" id="applecare-inline" style="display:none">
               <span class="vtil" id="applecare-lbl2">AppleCare+</span>
               <label class="tg" onclick="event.stopPropagation()"><input type="checkbox" id="acchk2" onchange="onAppleCareCh()"><span class="tgt"></span></label>
+            </div>
+            <div class="vat-toggle-inline" id="trade-inline" style="display:none">
+              <span class="vtil" id="trade-lbl2">Trade-in</span>
+              <label class="tg" onclick="event.stopPropagation()"><input type="checkbox" id="tchk2" onchange="syncTrade(this)"><span class="tgt"></span></label>
             </div>
           </div>
         </div>
@@ -1472,7 +1472,7 @@ var COL_TO_CODE={};
 // ── TRANSLATIONS ──────────────────────────────────────────────────────────────
 var TR={
 en:{
-  mode_compare:"Compare",mode_repair:"Repair",mode_trade_value:"Trade-in value",mode_ac:"AppleCare+",
+  mode_compare:"Battle",mode_repair:"Repair",mode_trade_value:"Trade-in value",mode_ac:"AppleCare+",
   ac_t1:"Select product category",ac_sub1:"Choose a product to see AppleCare+ pricing",
   ac_t2:"Select model",ac_sub2:"Choose a model",
   ac_lbl_result:"AppleCare+ Price",ac_lbl_device:"Device price",ac_lbl_ac:"AppleCare+ price",
@@ -1550,7 +1550,7 @@ en:{
   cart_bundle_total:"Bundle Total"
 },
 th:{
-  mode_compare:"เปรียบราคา",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",mode_ac:"AppleCare+",
+  mode_compare:"Battle",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",mode_ac:"AppleCare+",
   ac_t1:"เลือกประเภทสินค้า",ac_sub1:"เลือกสินค้าเพื่อดูราคา AppleCare+",
   ac_t2:"เลือกรุ่น",ac_sub2:"เลือกรุ่นสินค้า",
   ac_lbl_result:"ราคา AppleCare+",ac_lbl_device:"ราคาเครื่อง",ac_lbl_ac:"ราคา AppleCare+",
@@ -1628,7 +1628,7 @@ th:{
   cart_bundle_total:"ราคารวม Bundle"
 },
 zh:{
-  mode_compare:"比价",mode_repair:"维修",mode_trade_value:"以旧换新价值",mode_ac:"AppleCare+",
+  mode_compare:"Battle",mode_repair:"维修",mode_trade_value:"以旧换新价值",mode_ac:"AppleCare+",
   ac_t1:"选择产品类别",ac_sub1:"选择产品以查看 AppleCare+ 价格",
   ac_t2:"选择型号",ac_sub2:"选择型号",
   ac_lbl_result:"AppleCare+ 价格",ac_lbl_device:"设备价格",ac_lbl_ac:"AppleCare+ 价格",
@@ -5724,9 +5724,10 @@ function computeComparison(csvRow,countryCode,opts){
   var acData=acRowKey?S.prices[acRowKey]:null;
   var acTH=acData?(acData.TH||0):0;
   var acForeign=acData?(acData[countryCode]||0):0;
-  var thPrice=(row.TH||0)+acTH;
+  var deviceTH=row.TH||0;
+  var thPrice=deviceTH+acTH;
   var foreignRaw=(row[countryCode]||0)+acForeign;
-  var vat=vatRefund(thPrice);
+  var vat=vatRefund(deviceTH);
   var vatEnabled=!!(G("vchk")&&G("vchk").checked);
   var thAfterVat=thPrice-vat;
   var tradeVal=opts.includeTrade?getTradeValue():0;
@@ -5743,7 +5744,7 @@ function computeComparison(csvRow,countryCode,opts){
     thPrice:thPrice,vatRefund:vat,vatEnabled:vatEnabled,thAfterVat:thAfterVat,tradeValue:tradeVal,thEffective:thEffective,
     foreignRaw:foreignRaw,foreignDisplay:foreignDisplay,foreignTHB:foreignTHB,taxIncluded:taxIncluded,
     difference:foreignTHB-thEffective,
-    appleCareEnabled:acOn,appleCareTH:acTH,appleCareForeign:acForeign
+    appleCareEnabled:acOn,appleCareTH:acTH,appleCareForeign:acForeign,deviceTH:deviceTH
   };
 }
 function getCurrentComparisonSelection(){
@@ -6063,13 +6064,27 @@ function render(){
   var thn2=G("th-n");if(thn2){thn2.textContent="฿"+fmt(effTH);}
   var thf=G("th-f");if(thf)thf.textContent="≈ "+C.sym+fmt2(t2f(effTH,C.rate))+" "+C.cur;
   var vatHint=G("th-vat-hint");
-  if(vatHint){
-    var hintLines=['<span class="p-vat-hint-line">฿'+fmt(row.TH||0)+'</span>'];
-    if(comp.appleCareEnabled&&comp.appleCareTH>0)hintLines.push('<span class="p-vat-hint-line">+฿'+fmt(comp.appleCareTH)+' (AppleCare+)</span>');
-    if(von&&vat>0)hintLines.push('<span class="p-vat-hint-line">-฿'+fmt(vat)+' (VAT refund)</span>');
-    if(tradeVal>0)hintLines.push('<span class="p-vat-hint-line">-฿'+fmt(tradeVal)+' (Trade-in)</span>');
-    if(hintLines.length>1){vatHint.innerHTML=hintLines.join("");vatHint.style.display="block";}
-    else{vatHint.style.display="none";vatHint.innerHTML="";}
+  var acShown=comp.appleCareEnabled&&comp.appleCareTH>0;
+  if(acShown){
+    if(vatHint){vatHint.style.display="none";vatHint.innerHTML="";}
+    if(thBd){
+      var thLines=[
+        '<div class="bd-line"><span class="bd-val">฿'+fmt(comp.deviceTH)+'</span><span class="bd-lbl">'+fullName+'</span></div>',
+        '<div class="bd-line"><span class="bd-val">฿'+fmt(comp.appleCareTH)+'</span><span class="bd-lbl">AppleCare+</span></div>'
+      ];
+      if(von&&vat>0)thLines.push('<div class="bd-line bd-deduct"><span class="bd-val">-฿'+fmt(vat)+'</span><span class="bd-lbl">VAT refund</span></div>');
+      if(tradeVal>0)thLines.push('<div class="bd-line bd-deduct"><span class="bd-val">-฿'+fmt(tradeVal)+'</span><span class="bd-lbl">Trade-in</span></div>');
+      thBd.innerHTML=thLines.join("");thBd.style.display="block";
+    }
+  }else{
+    if(thBd){thBd.style.display="none";thBd.innerHTML="";}
+    if(vatHint){
+      var hintLines=['<span class="p-vat-hint-line">฿'+fmt(row.TH||0)+'</span>'];
+      if(von&&vat>0)hintLines.push('<span class="p-vat-hint-line">-฿'+fmt(vat)+' (VAT refund)</span>');
+      if(tradeVal>0)hintLines.push('<span class="p-vat-hint-line">-฿'+fmt(tradeVal)+' (Trade-in)</span>');
+      if(hintLines.length>1){vatHint.innerHTML=hintLines.join("");vatHint.style.display="block";}
+      else{vatHint.style.display="none";vatHint.innerHTML="";}
+    }
   }
   var vatChip=G("vat-chip");
   if(vatChip){if(von&&vat>0){var vf=t2f(vat,C.rate);vatChip.textContent="VAT Refund ฿"+fmt(vat)+" ≈ "+C.sym+fmt2(vf);vatChip.style.display="block";}else{vatChip.style.display="none";}}
@@ -6107,11 +6122,18 @@ function render(){
   var ott=G("ot-t");if(ott)ott.textContent="≈ ฿"+fmt(fpt)+(taxIncluded?" ":"");
 
   var otVatHint=G("ot-vat-hint");
-  if(otVatHint){
-    if(comp.appleCareEnabled&&comp.appleCareForeign>0){
-      otVatHint.innerHTML='<span class="p-vat-hint-line">+'+C.sym+fmt2(comp.appleCareForeign)+' (AppleCare+)</span>';
-      otVatHint.style.display="block";
-    }else{otVatHint.style.display="none";otVatHint.innerHTML="";}
+  if(acShown&&comp.appleCareForeign>0){
+    if(otVatHint){otVatHint.style.display="none";otVatHint.innerHTML="";}
+    if(otBd){
+      var otLines=[
+        '<div class="bd-line"><span class="bd-val">'+C.sym+fmt2(comp.foreignRaw-comp.appleCareForeign)+'</span><span class="bd-lbl">'+fullName+'</span></div>',
+        '<div class="bd-line"><span class="bd-val">'+C.sym+fmt2(comp.appleCareForeign)+'</span><span class="bd-lbl">AppleCare+</span></div>'
+      ];
+      otBd.innerHTML=otLines.join("");otBd.style.display="block";
+    }
+  }else{
+    if(otBd){otBd.style.display="none";otBd.innerHTML="";}
+    if(otVatHint){otVatHint.style.display="none";otVatHint.innerHTML="";}
   }
 
   var rateVal=S.rates[C.rate];
@@ -6794,7 +6816,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="31.07.2026-17:48";
+var APP_VERSION="31.07.2026-18:04";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
