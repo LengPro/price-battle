@@ -887,6 +887,10 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
               <span class="vtil" id="trade-lbl2">Trade-in</span>
               <label class="tg" onclick="event.stopPropagation()"><input type="checkbox" id="tchk2" onchange="syncTrade(this)"><span class="tgt"></span></label>
             </div>
+            <div class="vat-toggle-inline" id="applecare-inline" style="display:none">
+              <span class="vtil" id="applecare-lbl2">AppleCare+</span>
+              <label class="tg" onclick="event.stopPropagation()"><input type="checkbox" id="acchk2" onchange="onAppleCareCh()"><span class="tgt"></span></label>
+            </div>
           </div>
         </div>
         <div class="trade-inline-fields" id="trade-inline-fields">
@@ -923,6 +927,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
           <div class="pcc"><span class="pcc-fl" id="ot-fl">&#127758;</span><span class="pcc-nm" id="ot-cn">&#8212;</span><span class="pcc-cu" id="ot-cu">&#8212;</span></div>
           <div class="p-price" id="ot-n">&#8212;</div>
           <div class="p-convert" id="ot-t">&#8212;</div>
+          <div class="p-vat-hint" id="ot-vat-hint"></div>
           <div class="bundle-breakdown" id="ot-breakdown" style="display:none"></div>
                     <div class="store-link-wrap" id="store-link-wrap"><a id="store-link" href="#" target="_blank" rel="noopener"><span id="store-link-text">View on Apple Store</span> &#8599;</a></div>
         </div>
@@ -5532,6 +5537,39 @@ function acRowFor(cat,rawName){
   else spec=rawName;
   return cat+" - AppleCare+ - "+spec;
 }
+
+// ── APPLECARE+ BUNDLE TOGGLE (Compare tab) ──────────────────────────────────────
+function appleCareRowForCurrent(){
+  if(!S.cat||!S.modelKey)return null;
+  var m=MODEL_GROUPS[S.cat]&&MODEL_GROUPS[S.cat][S.modelKey];
+  if(!m)return null;
+  return acRowFor(S.cat,m.rawName);
+}
+function appleCareAvailable(){
+  if(S.bundleMode)return false;
+  if(AC_CATS.indexOf(S.cat)===-1)return false;
+  var rowKey=appleCareRowForCurrent();if(!rowKey)return false;
+  var data=S.prices[rowKey];
+  return !!(data&&data.TH);
+}
+function appleCareEnabled(){return !!(G("acchk2")&&G("acchk2").checked);}
+function syncAppleCareUI(){
+  var inline=G("applecare-inline");
+  var canShow=appleCareAvailable();
+  if(inline)inline.style.display=canShow?"inline-flex":"none";
+  if(!canShow){
+    var a2=G("acchk2");if(a2)a2.checked=false;
+    return;
+  }
+  var on=appleCareEnabled();
+  var al2=G("applecare-lbl2");if(al2)al2.style.color=on?"var(--green)":"var(--secondary-text)";
+}
+function onAppleCareCh(){
+  syncAppleCareUI();
+  sbTrack("applecare_toggle",{country_code:S.country||"",country_zone:ZONE_MAP[S.country]||""});
+  if(S.country&&S.csvRow)render();
+}
+
 function buildAcCatGrid(){
   var g=G("ac-catg");if(!g)return;g.innerHTML="";
   AC_CATS.forEach(function(key){
@@ -5681,8 +5719,13 @@ function computeComparison(csvRow,countryCode,opts){
   opts=opts||{};
   var C=CUR[countryCode],row=S.prices[csvRow]||{};
   if(!C)return null;
-  var thPrice=row.TH||0;
-  var foreignRaw=row[countryCode]||0;
+  var acOn=!!opts.includeAppleCare&&appleCareEnabled()&&appleCareAvailable();
+  var acRowKey=acOn?appleCareRowForCurrent():null;
+  var acData=acRowKey?S.prices[acRowKey]:null;
+  var acTH=acData?(acData.TH||0):0;
+  var acForeign=acData?(acData[countryCode]||0):0;
+  var thPrice=(row.TH||0)+acTH;
+  var foreignRaw=(row[countryCode]||0)+acForeign;
   var vat=vatRefund(thPrice);
   var vatEnabled=!!(G("vchk")&&G("vchk").checked);
   var thAfterVat=thPrice-vat;
@@ -5699,7 +5742,8 @@ function computeComparison(csvRow,countryCode,opts){
     country:countryCode,countryName:C.name,countryFlag:C.flag,currency:C.cur,symbol:C.sym,rateKey:C.rate,
     thPrice:thPrice,vatRefund:vat,vatEnabled:vatEnabled,thAfterVat:thAfterVat,tradeValue:tradeVal,thEffective:thEffective,
     foreignRaw:foreignRaw,foreignDisplay:foreignDisplay,foreignTHB:foreignTHB,taxIncluded:taxIncluded,
-    difference:foreignTHB-thEffective
+    difference:foreignTHB-thEffective,
+    appleCareEnabled:acOn,appleCareTH:acTH,appleCareForeign:acForeign
   };
 }
 function getCurrentComparisonSelection(){
@@ -5917,6 +5961,7 @@ function renderBundleComparison(){
   // Hide single-product name/image, keep VAT/Trade-in tools visible
   var cprod=document.querySelector("#rw .cmp-product");
   if(cprod)cprod.style.display="none";
+  var aci=G("applecare-inline");if(aci)aci.style.display="none";
 
   // Section title
   var lbl=G("lbl-cmp");if(lbl)lbl.textContent="BUNDLE ("+entries.length+" items)";
@@ -5993,9 +6038,9 @@ function render(){
   var thBd=G("th-breakdown");if(thBd)thBd.style.display="none";
   var otBd=G("ot-breakdown");if(otBd)otBd.style.display="none";
   var lbl=G("lbl-cmp");if(lbl)lbl.textContent=tr("lbl_cmp");
-  var C=CUR[S.country],row=S.prices[S.csvRow]||{},comp=computeComparison(S.csvRow,S.country,{includeTrade:true});
+  var C=CUR[S.country],row=S.prices[S.csvRow]||{},comp=computeComparison(S.csvRow,S.country,{includeTrade:true,includeAppleCare:true});
   if(!C||!comp)return;
-  var thp=comp.thPrice,fpn=row[S.country]||0;
+  var thp=comp.thPrice,fpn=comp.foreignRaw;
   var von=comp.vatEnabled;
   var vat=comp.vatRefund,thn=comp.thAfterVat,tradeVal=comp.tradeValue,effTH=comp.thEffective;
   var grp=MODEL_GROUPS[S.cat]||{},mdata=grp[S.modelKey]||{icon:"📱",displayName:"—",rawName:"—",specs:[]};
@@ -6019,7 +6064,8 @@ function render(){
   var thf=G("th-f");if(thf)thf.textContent="≈ "+C.sym+fmt2(t2f(effTH,C.rate))+" "+C.cur;
   var vatHint=G("th-vat-hint");
   if(vatHint){
-    var hintLines=['<span class="p-vat-hint-line">฿'+fmt(thp)+'</span>'];
+    var hintLines=['<span class="p-vat-hint-line">฿'+fmt(row.TH||0)+'</span>'];
+    if(comp.appleCareEnabled&&comp.appleCareTH>0)hintLines.push('<span class="p-vat-hint-line">+฿'+fmt(comp.appleCareTH)+' (AppleCare+)</span>');
     if(von&&vat>0)hintLines.push('<span class="p-vat-hint-line">-฿'+fmt(vat)+' (VAT refund)</span>');
     if(tradeVal>0)hintLines.push('<span class="p-vat-hint-line">-฿'+fmt(tradeVal)+' (Trade-in)</span>');
     if(hintLines.length>1){vatHint.innerHTML=hintLines.join("");vatHint.style.display="block";}
@@ -6060,6 +6106,14 @@ function render(){
 
   var ott=G("ot-t");if(ott)ott.textContent="≈ ฿"+fmt(fpt)+(taxIncluded?" ":"");
 
+  var otVatHint=G("ot-vat-hint");
+  if(otVatHint){
+    if(comp.appleCareEnabled&&comp.appleCareForeign>0){
+      otVatHint.innerHTML='<span class="p-vat-hint-line">+'+C.sym+fmt2(comp.appleCareForeign)+' (AppleCare+)</span>';
+      otVatHint.style.display="block";
+    }else{otVatHint.style.display="none";otVatHint.innerHTML="";}
+  }
+
   var rateVal=S.rates[C.rate];
   var orEl=G("ot-rate");
   if(orEl&&rateVal){orEl.innerHTML='<span class="rate-badge-text">฿1 = '+C.sym+rateVal.toFixed(3)+'</span>';orEl.style.display="inline-flex";}
@@ -6099,13 +6153,14 @@ function render(){
     else{vd.textContent=tr("same");vd.style.color="";vp.textContent="0%";vp.style.color="";}
   }
   syncTradeUI();
+  syncAppleCareUI();
   renderCountryNotes(S.country,S.cat,mdata.rawName||mdata.displayName);
   renderCart();
   var rwEl=G("rw");if(rwEl&&!rwEl.classList.contains("vis"))rwEl.classList.add("vis");
   var cs=G("cart-section");if(cs)cs.style.display="none";
   renderAccSuggest();
 }
-function hideResult(){var rw=G("rw");if(rw)rw.classList.remove("vis");syncTradeUI();renderCountryNotes("","","");var ss=G("acc-suggest-strip");if(ss)ss.style.display="none";}
+function hideResult(){var rw=G("rw");if(rw)rw.classList.remove("vis");syncTradeUI();syncAppleCareUI();renderCountryNotes("","","");var ss=G("acc-suggest-strip");if(ss)ss.style.display="none";}
 function onVatCh(){
   var on=G("vchk")&&G("vchk").checked;
   var vl=G("vat-lbl");if(vl)vl.textContent=tr(on?"vat_on":"vat_off");
@@ -6739,7 +6794,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="31.07.2026-17:36";
+var APP_VERSION="31.07.2026-17:48";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
