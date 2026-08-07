@@ -903,7 +903,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
           </div>
         </div>
         <div class="trade-inline-fields" id="trade-inline-fields">
-          <div class="trade-date-note">Trade-in value · 26/05/2026</div>
+          <div class="trade-date-note">Trade-in value · 06/08/2026</div>
           <div class="trade-grid">
             <div class="trade-field">
               <label id="trade-type-lbl" for="trade-type">Device type</label>
@@ -4711,15 +4711,15 @@ const TRADE_IN_DATA={
   "iPhone":{
     "iPhone 16 Pro Max":{"256GB":17000,"512GB":18000,"1TB":20000},
     "iPhone 16 Pro":{"128GB":14000,"256GB":15000,"512GB":17000,"1TB":18000},
-    "iPhone 16 Plus":{"128GB":11000,"256GB":11300,"512GB":11500},
-    "iPhone 16":{"128GB":10500,"256GB":10800,"512GB":11200},
+    "iPhone 16 Plus":{"128GB":11700,"256GB":12200,"512GB":12500},
+    "iPhone 16":{"128GB":11500,"256GB":12000,"512GB":12500},
     "iPhone 16e":{"128GB":7000,"256GB":7500,"512GB":7800},
     "iPhone 15 Pro Max":{"256GB":14500,"512GB":15000,"1TB":15500},
-    "iPhone 15 Pro":{"128GB":10900,"256GB":11300,"512GB":11500,"1TB":11800},
+    "iPhone 15 Pro":{"128GB":11000,"256GB":11400,"512GB":11600,"1TB":11800},
     "iPhone 15 Plus":{"128GB":9000,"256GB":9500,"512GB":9800},
-    "iPhone 15":{"128GB":8300,"256GB":8500,"512GB":8800},
+    "iPhone 15":{"128GB":8400,"256GB":8600,"512GB":8800},
     "iPhone 14 Pro Max":{"128GB":10300,"256GB":10600,"512GB":11000,"1TB":11500},
-    "iPhone 14 Pro":{"128GB":8000,"256GB":8300,"512GB":8600,"1TB":9000},
+    "iPhone 14 Pro":{"128GB":8200,"256GB":8400,"512GB":8600,"1TB":9000},
     "iPhone 14 Plus":{"128GB":6000,"256GB":6200,"512GB":6500},
     "iPhone 14":{"128GB":5500,"256GB":5700,"512GB":6000},
     "iPhone SE (3rd generation)":{"64GB":1400,"128GB":1600,"256GB":1800},
@@ -4729,13 +4729,13 @@ const TRADE_IN_DATA={
     "iPhone 13 mini":{"128GB":3300,"256GB":3600,"512GB":3900},
     "iPhone 12 Pro Max":{"128GB":5100,"256GB":5500,"512GB":5700},
     "iPhone 12 Pro":{"128GB":3700,"256GB":4100,"512GB":4300},
-    "iPhone 12":{"64GB":2500,"128GB":2800,"256GB":3000},
+    "iPhone 12":{"64GB":2500,"128GB":2900,"256GB":3000},
     "iPhone 12 mini":{"64GB":1500,"128GB":1700,"256GB":1900},
     "iPhone 11 Pro Max":{"64GB":3000,"256GB":3200,"512GB":3400},
     "iPhone 11 Pro":{"64GB":2600,"256GB":2800,"512GB":3100},
-    "iPhone 11":{"64GB":2000,"128GB":2300,"256GB":2500},
-    "iPhone XS Max":{"64GB":1700,"256GB":1900,"512GB":2100},
-    "iPhone XS":{"64GB":1200,"256GB":1300,"512GB":1500},
+    "iPhone 11":{"64GB":2000,"128GB":2400,"256GB":2600},
+    "iPhone XS Max":{"64GB":1600,"256GB":1900,"512GB":2100},
+    "iPhone XS":{"64GB":1100,"256GB":1300,"512GB":1500},
     "iPhone XR":{"64GB":1300,"128GB":1500,"256GB":1700}
   },
   "iPad":{
@@ -6920,7 +6920,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="31.07.2026-22:59";
+var APP_VERSION="07.08.2026-10:50";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
