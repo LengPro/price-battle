@@ -185,14 +185,16 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ac-card-hd{display:flex;align-items:center;gap:12px;padding:16px 17px;border-bottom:1px solid var(--rule)}
 .ac-card-nm{font-size:16px;font-weight:700;letter-spacing:-.02em}
 .ac-card-sp{font-size:12px;color:var(--secondary-text);margin-top:2px}
-.ac-table-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid var(--rule)}
+.ac-table-row{display:grid;grid-template-columns:1.3fr 1fr 1fr 0.8fr;border-bottom:1px solid var(--rule)}
 .ac-table-row:last-child{border-bottom:none}
 .ac-table-row.header{background:var(--off-white)}
 .ac-table-row.sel{background:rgba(0,113,227,.05)}
-.ac-table-cell{padding:11px 8px;text-align:center;font-size:13px;font-weight:600;color:var(--body-text)}
-.ac-table-row.header .ac-table-cell{font-size:10px;font-weight:700;color:var(--secondary-text);text-transform:uppercase;letter-spacing:.05em;padding:9px 8px}
-.ac-table-cell:first-child{text-align:left;font-weight:700}
+.ac-table-cell{padding:11px 6px;text-align:center;font-size:13px;font-weight:600;color:var(--body-text);min-width:0;overflow-wrap:break-word}
+.ac-table-row.header .ac-table-cell{font-size:10px;font-weight:700;color:var(--secondary-text);text-transform:uppercase;letter-spacing:.05em;padding:9px 6px}
+.ac-table-cell:first-child{text-align:left;font-weight:700;padding-left:10px}
 .ac-table-row.header .ac-table-cell:first-child{font-weight:700}
+.ac-table-spec{line-height:1.25}
+.ac-table-spec .sp-rest{display:block;word-break:break-all}
 .ac-table-row:not(.header) .ac-table-cell:last-child{color:var(--blue);font-weight:800}
 .ac-unavailable{background:var(--off-white);border:1px solid var(--rule);border-radius:var(--r);padding:20px;text-align:center;font-size:13px;color:var(--secondary-text)}
 .ac-repair-rows{padding:4px 17px}
@@ -5717,10 +5719,10 @@ function renderAcResult(){
       if(!price)return;
       var pct=Math.round((acPrice/price)*1000)/10;
       var parts=splitSpecLabel(sp.label);
-      var specTxt=parts.size+(parts.rest?" "+parts.rest:"");
+      var specHtml='<span class="sp-size">'+parts.size+'</span>'+(parts.rest?'<span class="sp-rest">'+parts.rest+'</span>':'');
       var sel=sp.csvRow===AC.csvRow?" sel":"";
       html+='<div class="ac-table-row'+sel+'">'+
-        '<div class="ac-table-cell">'+specTxt+'</div>'+
+        '<div class="ac-table-cell ac-table-spec">'+specHtml+'</div>'+
         '<div class="ac-table-cell">฿'+fmt(price)+'</div>'+
         '<div class="ac-table-cell">฿'+fmt(acPrice)+'</div>'+
         '<div class="ac-table-cell">'+pct+'%</div>'+
@@ -6929,7 +6931,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="07.08.2026-22:29";
+var APP_VERSION="07.08.2026-23:20";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
