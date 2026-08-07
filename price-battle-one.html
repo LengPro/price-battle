@@ -4636,13 +4636,13 @@ const TRADE_IN_DATA={
     "iPad Air 13-inch (M2)":{"Cellular 128GB":7000,"Cellular 256GB":7000,"Cellular 512GB":7000,"Cellular 1TB":7000,"WiFi 128GB":7000,"WiFi 256GB":7000,"WiFi 512GB":7000,"WiFi 1TB":7000},
     "iPad Air 11-inch (M3)":{"Cellular 128GB":9500,"Cellular 256GB":9500,"Cellular 512GB":9500,"Cellular 1TB":9500,"WiFi 128GB":9500,"WiFi 256GB":9500,"WiFi 512GB":9500,"WiFi 1TB":9500},
     "iPad Air 11-inch (M2)":{"Cellular 128GB":6000,"Cellular 256GB":6000,"Cellular 512GB":6000,"Cellular 1TB":6000,"WiFi 128GB":6000,"WiFi 256GB":6000,"WiFi 512GB":6000,"WiFi 1TB":6000},
-    "iPad Air 5":{"Cellular 64GB":4000,"Cellular 256GB":4000,"WiFi 64GB":4000,"WiFi 256GB":4000},
+    "iPad Air 5":{"Cellular 64GB":3800,"Cellular 256GB":3800,"WiFi 64GB":3800,"WiFi 256GB":3800},
     "iPad Air 4":{"Cellular 64GB":2500,"Cellular 256GB":2500,"WiFi 64GB":2500,"WiFi 256GB":2500},
     "iPad A16":{"Cellular 128GB":5000,"Cellular 256GB":5000,"Cellular 512GB":5000,"WiFi 128GB":5000,"WiFi 256GB":5000,"WiFi 512GB":5000},
-    "iPad 10":{"Cellular 64GB":2700,"Cellular 256GB":2700,"WiFi 64GB":2700,"WiFi 256GB":2700},
-    "iPad 9":{"Cellular 64GB":1300,"Cellular 256GB":1300,"WiFi 64GB":1300,"WiFi 256GB":1300},
+    "iPad 10":{"Cellular 64GB":2800,"Cellular 256GB":2800,"WiFi 64GB":2800,"WiFi 256GB":2800},
+    "iPad 9":{"Cellular 64GB":1500,"Cellular 256GB":1500,"WiFi 64GB":1500,"WiFi 256GB":1500},
     "iPad mini A17 Pro":{"Cellular 128GB":4000,"Cellular 256GB":4000,"Cellular 512GB":4000,"WiFi 128GB":4000,"WiFi 256GB":4000,"WiFi 512GB":4000},
-    "iPad mini 6":{"Cellular 64GB":2500,"Cellular 256GB":2500,"WiFi 64GB":2500,"WiFi 256GB":2500}
+    "iPad mini 6":{"Cellular 64GB":3000,"Cellular 256GB":3000,"WiFi 64GB":3000,"WiFi 256GB":3000}
   },
   "Apple Watch":{
     "Apple Watch Ultra 2":{"Max Trade-in value":6700},
@@ -6510,7 +6510,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="07.08.2026-10:50";
+var APP_VERSION="07.08.2026-11:01";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
