@@ -185,15 +185,15 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ac-card-hd{display:flex;align-items:center;gap:12px;padding:16px 17px;border-bottom:1px solid var(--rule)}
 .ac-card-nm{font-size:16px;font-weight:700;letter-spacing:-.02em}
 .ac-card-sp{font-size:12px;color:var(--secondary-text);margin-top:2px}
-.ac-price-rows{padding:14px 17px 6px}
-.ac-price-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--rule)}
-.ac-price-row span:first-child{color:var(--secondary-text);font-weight:500}
-.ac-price-row span:last-child{font-weight:700}
-.ac-total-row{border-bottom:none}
-.ac-total-row span:last-child{color:var(--blue)}
-.ac-pct-wrap{background:rgba(0,113,227,.05);padding:16px 17px 18px;text-align:center}
-.ac-pct-value{font-size:34px;font-weight:800;color:var(--blue);letter-spacing:-.02em}
-.ac-pct-label{font-size:11px;color:var(--secondary-text);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+.ac-table-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:1px solid var(--rule)}
+.ac-table-row:last-child{border-bottom:none}
+.ac-table-row.header{background:var(--off-white)}
+.ac-table-row.sel{background:rgba(0,113,227,.05)}
+.ac-table-cell{padding:11px 8px;text-align:center;font-size:13px;font-weight:600;color:var(--body-text)}
+.ac-table-row.header .ac-table-cell{font-size:10px;font-weight:700;color:var(--secondary-text);text-transform:uppercase;letter-spacing:.05em;padding:9px 8px}
+.ac-table-cell:first-child{text-align:left;font-weight:700}
+.ac-table-row.header .ac-table-cell:first-child{font-weight:700}
+.ac-table-row:not(.header) .ac-table-cell:last-child{color:var(--blue);font-weight:800}
 .ac-unavailable{background:var(--off-white);border:1px solid var(--rule);border-radius:var(--r);padding:20px;text-align:center;font-size:13px;color:var(--secondary-text)}
 .ac-repair-rows{padding:4px 17px}
 .ac-repair-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--rule);flex-wrap:wrap}
@@ -1204,15 +1204,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
         <span class="ac-card-ic" id="ac-r-ic"></span>
         <div><div class="ac-card-nm" id="ac-r-nm">&#8212;</div><div class="ac-card-sp" id="ac-r-sp"></div></div>
       </div>
-      <div class="ac-price-rows">
-        <div class="ac-price-row"><span id="ac-lbl-device">Device price</span><span id="ac-r-device">&#8212;</span></div>
-        <div class="ac-price-row"><span id="ac-lbl-ac">AppleCare+ price</span><span id="ac-r-ac">&#8212;</span></div>
-        <div class="ac-price-row ac-total-row"><span id="ac-lbl-total">Total with AppleCare+</span><span id="ac-r-total">&#8212;</span></div>
-      </div>
-      <div class="ac-pct-wrap">
-        <div class="ac-pct-value" id="ac-r-pct">&#8212;</div>
-        <div class="ac-pct-label" id="ac-lbl-pct">of device price</div>
-      </div>
+      <div class="ac-table" id="ac-table"></div>
     </div>
     <div class="ac-unavailable" id="ac-unavailable" style="display:none"><span id="ac-lbl-unavail">AppleCare+ pricing not available for this model yet.</span></div>
 
@@ -1491,8 +1483,8 @@ en:{
   mode_compare:"Battle",mode_repair:"Repair",mode_trade_value:"Trade-in value",mode_ac:"AppleCare+",
   ac_t1:"Select product category",ac_sub1:"Choose a product to see AppleCare+ pricing",
   ac_t2:"Select model",ac_sub2:"Choose a model",
-  ac_lbl_result:"AppleCare+ Price",ac_lbl_device:"Device price",ac_lbl_ac:"AppleCare+ price",
-  ac_lbl_total:"Total with AppleCare+",ac_pct_label:"of device price",
+  ac_lbl_result:"AppleCare+ Price",ac_lbl_device:"Price",ac_lbl_ac:"AppleCare+",ac_col_spec:"Storage",
+  ac_pct_label:"Ratio",
   ac_lbl_unavail:"AppleCare+ pricing not available for this model yet.",
   ac_lbl_repair_result:"AppleCare+ Ratio with Repair",
   ac_lbl_repair_unavail:"Repair cost comparison not available for this model yet.",
@@ -1571,8 +1563,8 @@ th:{
   mode_compare:"Battle",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",mode_ac:"AppleCare+",
   ac_t1:"เลือกประเภทสินค้า",ac_sub1:"เลือกสินค้าเพื่อดูราคา AppleCare+",
   ac_t2:"เลือกรุ่น",ac_sub2:"เลือกรุ่นสินค้า",
-  ac_lbl_result:"ราคา AppleCare+",ac_lbl_device:"ราคาเครื่อง",ac_lbl_ac:"ราคา AppleCare+",
-  ac_lbl_total:"ราคารวมกับ AppleCare+",ac_pct_label:"ของราคาเครื่อง",
+  ac_lbl_result:"ราคา AppleCare+",ac_lbl_device:"ราคา",ac_lbl_ac:"AppleCare+",ac_col_spec:"ความจุ",
+  ac_pct_label:"อัตราส่วน",
   ac_lbl_unavail:"ยังไม่มีราคา AppleCare+ สำหรับรุ่นนี้",
   ac_lbl_repair_result:"อัตราส่วน AppleCare+ กับค่าซ่อม",
   ac_lbl_repair_unavail:"ยังไม่มีข้อมูลเปรียบเทียบค่าซ่อมสำหรับรุ่นนี้",
@@ -1651,8 +1643,8 @@ zh:{
   mode_compare:"Battle",mode_repair:"维修",mode_trade_value:"以旧换新价值",mode_ac:"AppleCare+",
   ac_t1:"选择产品类别",ac_sub1:"选择产品以查看 AppleCare+ 价格",
   ac_t2:"选择型号",ac_sub2:"选择型号",
-  ac_lbl_result:"AppleCare+ 价格",ac_lbl_device:"设备价格",ac_lbl_ac:"AppleCare+ 价格",
-  ac_lbl_total:"含 AppleCare+ 总价",ac_pct_label:"占设备价格比例",
+  ac_lbl_result:"AppleCare+ 价格",ac_lbl_device:"价格",ac_lbl_ac:"AppleCare+",ac_col_spec:"容量",
+  ac_pct_label:"比例",
   ac_lbl_unavail:"该型号暂无 AppleCare+ 价格",
   ac_lbl_repair_result:"AppleCare+ 与维修费用比例",
   ac_lbl_repair_unavail:"该型号暂无维修费用比较数据",
@@ -1758,7 +1750,7 @@ function setLang(l){
          "gb-trade-type-lbl":"gb_trade_type_lbl","gb-trade-model-lbl":"gb_trade_model_lbl","gb-trade-spec-lbl":"gb_trade_spec_lbl",
          "tv-t1":"tv_t1","tv-sub1":"tv_sub1","tv-type-lbl":"tv_type_lbl","tv-col-model":"tv_col_model","tv-col-spec":"tv_col_spec","tv-col-value":"tv_col_value","tv-note-lbl":"tv_note_lbl","tv-note":"tv_note",
          "ac-t1":"ac_t1","ac-sub1":"ac_sub1","ac-t2":"ac_t2","ac-sub2":"ac_sub2","ac-stor-lbl":"stor_lbl",
-         "ac-lbl-result":"ac_lbl_result","ac-lbl-device":"ac_lbl_device","ac-lbl-ac":"ac_lbl_ac","ac-lbl-total":"ac_lbl_total","ac-lbl-pct":"ac_pct_label","ac-lbl-unavail":"ac_lbl_unavail",
+         "ac-lbl-result":"ac_lbl_result","ac-lbl-unavail":"ac_lbl_unavail",
          "ac-lbl-repair-result":"ac_lbl_repair_result","ac-lbl-repair-unavail":"ac_lbl_repair_unavail",
          "cart-title":"cart_title"};
   Object.keys(m).forEach(function(id){
@@ -1773,6 +1765,7 @@ function setLang(l){
   var mtv=G("mode-tv");if(mtv)mtv.textContent=tr("mode_trade_value");
   var mac=G("mode-ac");if(mac)mac.textContent=tr("mode_ac");
   if(AC.cat)buildAcMGrid(AC.cat);
+  if(AC.cat&&AC.modelKey&&AC.csvRow)renderAcResult();
   var vl=G("vat-lbl");if(vl)vl.textContent=tr(G("vchk")&&G("vchk").checked?"vat_on":"vat_off");
   var vl2=G("vat-lbl2");if(vl2)vl2.textContent="VAT Refund";
   var gvl2=G("gb-vat-lbl2");if(gvl2)gvl2.textContent="VAT Refund";
@@ -5695,29 +5688,45 @@ function renderAcResult(){
   if(!AC.cat||!AC.modelKey||!AC.csvRow){rw.classList.remove("vis");return;}
   var modelData=getModelData(AC.cat,AC.modelKey);if(!modelData){rw.classList.remove("vis");return;}
   var specLabel=getSpecLabelForRow(AC.cat,AC.modelKey,AC.csvRow);
-  var devRow=S.prices[AC.csvRow]||{};
-  var devicePrice=devRow.TH||0;
   var acCsvRow=acRowFor(AC.cat,modelData.rawName);
   var acRow=S.prices[acCsvRow];
   var acPrice=acRow?(acRow.TH||0):null;
 
   var icEl=G("ac-r-ic");if(icEl)icEl.innerHTML=getIconHtml(modelData.icon,"cmp-ic-img");
   var nmEl=G("ac-r-nm");if(nmEl)nmEl.textContent=modelData.rawName;
-  var spEl=G("ac-r-sp");if(spEl)spEl.textContent=specLabel&&specLabel!=="Standard"?specLabel:"";
+  var spEl=G("ac-r-sp");if(spEl)spEl.textContent="";
 
   var unavail=G("ac-unavailable");
   var card=rw.querySelector(".ac-card");
-  if(!acPrice||!devicePrice){
+  var table=G("ac-table");
+  if(!acPrice){
     if(card)card.style.display="none";
     if(unavail)unavail.style.display="block";
   }else{
     if(card)card.style.display="block";
     if(unavail)unavail.style.display="none";
-    var devEl=G("ac-r-device");if(devEl)devEl.textContent="฿"+fmt(devicePrice);
-    var acEl=G("ac-r-ac");if(acEl)acEl.textContent="฿"+fmt(acPrice);
-    var totalEl=G("ac-r-total");if(totalEl)totalEl.textContent="฿"+fmt(devicePrice+acPrice);
-    var pct=Math.round((acPrice/devicePrice)*1000)/10;
-    var pctEl=G("ac-r-pct");if(pctEl)pctEl.textContent=pct+"%";
+    var html='<div class="ac-table-row header">'+
+      '<div class="ac-table-cell">'+tr("ac_col_spec")+'</div>'+
+      '<div class="ac-table-cell">'+tr("ac_lbl_device")+'</div>'+
+      '<div class="ac-table-cell">'+tr("ac_lbl_ac")+'</div>'+
+      '<div class="ac-table-cell">'+tr("ac_pct_label")+'</div>'+
+    '</div>';
+    (modelData.specs||[]).forEach(function(sp){
+      var row=S.prices[sp.csvRow]||{};
+      var price=row.TH||0;
+      if(!price)return;
+      var pct=Math.round((acPrice/price)*1000)/10;
+      var parts=splitSpecLabel(sp.label);
+      var specTxt=parts.size+(parts.rest?" "+parts.rest:"");
+      var sel=sp.csvRow===AC.csvRow?" sel":"";
+      html+='<div class="ac-table-row'+sel+'">'+
+        '<div class="ac-table-cell">'+specTxt+'</div>'+
+        '<div class="ac-table-cell">฿'+fmt(price)+'</div>'+
+        '<div class="ac-table-cell">฿'+fmt(acPrice)+'</div>'+
+        '<div class="ac-table-cell">'+pct+'%</div>'+
+      '</div>';
+    });
+    if(table)table.innerHTML=html;
   }
   renderAcRepairCard(AC.cat,modelData.rawName);
   rw.classList.add("vis");
@@ -6920,7 +6929,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="07.08.2026-11:01";
+var APP_VERSION="07.08.2026-22:29";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
