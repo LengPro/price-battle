@@ -189,13 +189,14 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ac-table-row:last-child{border-bottom:none}
 .ac-table-row.header{background:var(--off-white)}
 .ac-table-row.sel{background:rgba(0,113,227,.05)}
-.ac-table-cell{padding:11px 6px;text-align:center;font-size:13px;font-weight:600;color:var(--body-text);min-width:0;overflow-wrap:break-word}
-.ac-table-row.header .ac-table-cell{font-size:10px;font-weight:700;color:var(--secondary-text);text-transform:uppercase;letter-spacing:.05em;padding:9px 6px}
+.ac-table-cell{padding:13px 6px;text-align:center;font-size:16px;font-weight:600;color:var(--body-text);min-width:0;overflow-wrap:break-word}
+.ac-table-row.header .ac-table-cell{font-size:11px;font-weight:700;color:var(--secondary-text);text-transform:uppercase;letter-spacing:.05em;padding:9px 6px}
 .ac-table-cell:first-child{text-align:left;font-weight:700;padding-left:10px}
 .ac-table-row.header .ac-table-cell:first-child{font-weight:700}
 .ac-table-spec{line-height:1.25}
 .ac-table-spec .sp-rest{display:block;word-break:break-all}
-.ac-table-row:not(.header) .ac-table-cell:last-child{color:var(--blue);font-weight:800}
+.ac-table-cell:last-child{text-align:right;padding-right:10px}
+.ac-table-row:not(.header) .ac-table-cell:last-child{color:var(--blue);font-weight:800;font-size:18px}
 .ac-unavailable{background:var(--off-white);border:1px solid var(--rule);border-radius:var(--r);padding:20px;text-align:center;font-size:13px;color:var(--secondary-text)}
 .ac-repair-rows{padding:4px 17px}
 .ac-repair-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--rule);flex-wrap:wrap}
@@ -6932,7 +6933,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="08.08.2026-11:19";
+var APP_VERSION="08.08.2026-11:21";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
