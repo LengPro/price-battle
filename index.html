@@ -6372,14 +6372,20 @@ function renderCountryNotes(code,cat,model){
   if(!code){wrap.style.display="none";return;}
   var notes=getCountryNotes(code).concat(getModelNotes(code,cat,model));
   if(!notes.length){wrap.style.display="none";return;}
+  var seen=Object.create(null),shown=0;
   notes.forEach(function(note){
     var cleanNote=(note||"").replace(/^\s*[•\-\u2022]+\s*/,"").trim();
     if(!cleanNote)return;
+    var dedupKey=cleanNote.toLowerCase().replace(/\s+/g," ");
+    if(seen[dedupKey])return;
+    seen[dedupKey]=1;
     var li=document.createElement("li");
     li.style.cssText="font-size:12px;color:var(--body-text);line-height:1.5";
     li.textContent="• "+cleanNote;
     list.appendChild(li);
+    shown++;
   });
+  if(!shown){wrap.style.display="none";return;}
   wrap.style.display="";
 }
 function getProductLink(countryCode,csvRow){
@@ -6933,7 +6939,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="08.08.2026-15:14";
+var APP_VERSION="08.08.2026-18:06";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
