@@ -196,17 +196,10 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ac-table-spec{line-height:1.25}
 .ac-table-spec .sp-rest{display:block;word-break:break-all}
 .ac-table-cell:last-child{text-align:right;padding-right:10px}
-.ac-table-row:not(.header) .ac-table-cell:last-child{color:var(--blue);font-weight:800;font-size:18px}
+.ac-ratio-pill{display:inline-block;background:var(--blue);color:#fff;font-size:14px;font-weight:700;line-height:1.2;padding:5px 12px;border-radius:14px;white-space:nowrap}
 .ac-unavailable{background:var(--off-white);border:1px solid var(--rule);border-radius:var(--r);padding:20px;text-align:center;font-size:13px;color:var(--secondary-text)}
-.ac-repair-rows{padding:4px 17px}
-.ac-repair-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--rule);flex-wrap:wrap}
-.ac-repair-row:last-child{border-bottom:none}
-.ac-repair-issue{font-size:13px;font-weight:600;color:var(--body-text);flex:1;min-width:120px}
-.ac-repair-nums{display:flex;align-items:baseline;gap:6px;flex-shrink:0}
-.ac-repair-full{font-size:12px;color:var(--secondary-text);text-decoration:line-through}
-.ac-repair-arrow{font-size:11px;color:var(--secondary-text)}
-.ac-repair-ac{font-size:14px;font-weight:700;color:var(--blue)}
-.ac-repair-pct{font-size:11px;font-weight:700;color:#fff;background:var(--blue);border-radius:10px;padding:2px 8px;margin-left:2px}
+.ac-repair-full{color:var(--secondary-text);text-decoration:line-through}
+.ac-table-issue{line-height:1.25}
 .sec-title{font-size:10px;font-weight:600;color:var(--secondary-text);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
 .sec-title::after{content:"";flex:1;height:1px;background:var(--rule)}
 .cmp-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
@@ -1487,7 +1480,7 @@ en:{
   mode_compare:"Battle",mode_repair:"Repair",mode_trade_value:"Trade-in value",mode_ac:"AppleCare+",
   ac_t1:"Select product category",ac_sub1:"Choose a product to see AppleCare+ pricing",
   ac_t2:"Select model",ac_sub2:"Choose a model",
-  ac_lbl_result:"AppleCare+ Price",ac_lbl_device:"Price",ac_lbl_ac:"AppleCare+",ac_col_spec:"Storage",
+  ac_lbl_result:"AppleCare+ Price",ac_lbl_device:"Price",ac_lbl_ac:"AppleCare+",ac_col_spec:"Storage",ac_col_issue:"Issue",ac_col_repair:"Repair",
   ac_pct_label:"Ratio",
   ac_lbl_unavail:"AppleCare+ pricing not available for this model yet.",
   ac_lbl_repair_result:"AppleCare+ Ratio with Repair",
@@ -1567,7 +1560,7 @@ th:{
   mode_compare:"Battle",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",mode_ac:"AppleCare+",
   ac_t1:"เลือกประเภทสินค้า",ac_sub1:"เลือกสินค้าเพื่อดูราคา AppleCare+",
   ac_t2:"เลือกรุ่น",ac_sub2:"เลือกรุ่นสินค้า",
-  ac_lbl_result:"ราคา AppleCare+",ac_lbl_device:"ราคา",ac_lbl_ac:"AppleCare+",ac_col_spec:"ความจุ",
+  ac_lbl_result:"ราคา AppleCare+",ac_lbl_device:"ราคา",ac_lbl_ac:"AppleCare+",ac_col_spec:"ความจุ",ac_col_issue:"อาการ",ac_col_repair:"ค่าซ่อม",
   ac_pct_label:"อัตราส่วน",
   ac_lbl_unavail:"ยังไม่มีราคา AppleCare+ สำหรับรุ่นนี้",
   ac_lbl_repair_result:"อัตราส่วน AppleCare+ กับค่าซ่อม",
@@ -1647,7 +1640,7 @@ zh:{
   mode_compare:"Battle",mode_repair:"维修",mode_trade_value:"以旧换新价值",mode_ac:"AppleCare+",
   ac_t1:"选择产品类别",ac_sub1:"选择产品以查看 AppleCare+ 价格",
   ac_t2:"选择型号",ac_sub2:"选择型号",
-  ac_lbl_result:"AppleCare+ 价格",ac_lbl_device:"价格",ac_lbl_ac:"AppleCare+",ac_col_spec:"容量",
+  ac_lbl_result:"AppleCare+ 价格",ac_lbl_device:"价格",ac_lbl_ac:"AppleCare+",ac_col_spec:"容量",ac_col_issue:"问题",ac_col_repair:"维修费",
   ac_pct_label:"比例",
   ac_lbl_unavail:"该型号暂无 AppleCare+ 价格",
   ac_lbl_repair_result:"AppleCare+ 与维修费用比例",
@@ -5727,7 +5720,7 @@ function renderAcResult(){
         '<div class="ac-table-cell ac-table-spec">'+specHtml+'</div>'+
         '<div class="ac-table-cell">฿'+fmt(price)+'</div>'+
         '<div class="ac-table-cell">฿'+fmt(acPrice)+'</div>'+
-        '<div class="ac-table-cell">'+pct+'%</div>'+
+        '<div class="ac-table-cell"><span class="ac-ratio-pill">'+pct+'%</span></div>'+
       '</div>';
     });
     if(table)table.innerHTML=html;
@@ -5746,10 +5739,15 @@ function findRepairModelKey(cat,rawName){
   }
   return null;
 }
+const AC_ISSUE_ORDER=["battery-service","screen-damage","screen-and-back-glass-damage","back-glass-damage","rear-camera-damage","damaged-case","damaged-airpod-left-or-right","lost-case","lost-airpod-left-or-right","other-damage"];
+function acIssueRank(id){
+  var i=AC_ISSUE_ORDER.indexOf(id);
+  return i<0?AC_ISSUE_ORDER.length:i;
+}
 function renderAcRepairCard(cat,rawName){
   var wrap=G("ac-repair-rows"),card=G("ac-repair-card"),unavail=G("ac-repair-unavailable");
   if(!wrap)return;
-  var issues=GB_REPAIR_ISSUES[cat]||[];
+  var issues=(GB_REPAIR_ISSUES[cat]||[]).slice().sort(function(a,b){return acIssueRank(a.id)-acIssueRank(b.id);});
   var repairModelKey=findRepairModelKey(cat,rawName);
   var priceMap=(repairModelKey&&GB_REPAIR_PRICE_DATA[cat])?GB_REPAIR_PRICE_DATA[cat][repairModelKey]:null;
   var feeMap=GB_APPLECARE_FEE[cat]||{};
@@ -5760,14 +5758,11 @@ function renderAcRepairCard(cat,rawName){
     if(full==null||fee==null)return;
     var pct=full?Math.round((fee/full)*1000)/10:0;
     rows.push(
-      '<div class="ac-repair-row">'+
-        '<div class="ac-repair-issue">'+gbIssueLabel(issue)+'</div>'+
-        '<div class="ac-repair-nums">'+
-          '<span class="ac-repair-full">฿'+fmt(full)+'</span>'+
-          '<span class="ac-repair-arrow">&#8594;</span>'+
-          '<span class="ac-repair-ac">฿'+fmt(fee)+'</span>'+
-          '<span class="ac-repair-pct">'+pct+'%</span>'+
-        '</div>'+
+      '<div class="ac-table-row">'+
+        '<div class="ac-table-cell ac-table-issue">'+gbIssueLabel(issue)+'</div>'+
+        '<div class="ac-table-cell ac-repair-full">฿'+fmt(full)+'</div>'+
+        '<div class="ac-table-cell">฿'+fmt(fee)+'</div>'+
+        '<div class="ac-table-cell"><span class="ac-ratio-pill">'+pct+'%</span></div>'+
       '</div>'
     );
   });
@@ -5777,7 +5772,12 @@ function renderAcRepairCard(cat,rawName){
   }else{
     if(card)card.style.display="block";
     if(unavail)unavail.style.display="none";
-    wrap.innerHTML=rows.join("");
+    wrap.innerHTML='<div class="ac-table-row header">'+
+      '<div class="ac-table-cell">'+tr("ac_col_issue")+'</div>'+
+      '<div class="ac-table-cell">'+tr("ac_col_repair")+'</div>'+
+      '<div class="ac-table-cell">'+tr("ac_lbl_ac")+'</div>'+
+      '<div class="ac-table-cell">'+tr("ac_pct_label")+'</div>'+
+    '</div>'+rows.join("");
   }
 }
 
@@ -6939,7 +6939,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="08.08.2026-18:06";
+var APP_VERSION="09.08.2026-09:02";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
