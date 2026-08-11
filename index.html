@@ -213,7 +213,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ls-row.header{background:var(--off-white)}
 .ls-row.header .ls-cell{font-size:12px;font-weight:700;color:var(--secondary-text);text-transform:uppercase;letter-spacing:.05em;padding:9px 6px}
 .ls-cell{padding:12px 6px;text-align:center;font-size:16px;font-weight:600;color:var(--body-text);min-width:0;overflow-wrap:break-word}
-.ls-cell:first-child{text-align:center;padding-left:8px;line-height:1.25}
+.ls-cell:first-child{text-align:left;padding-left:12px;line-height:1.25}
 .ls-cell:last-child{text-align:center;padding-right:8px}
 .ls-nm{font-size:15px;font-weight:700;display:block}
 .ls-sp{font-size:12px;font-weight:400;color:var(--secondary-text);display:block;margin-top:2px;word-break:break-all}
@@ -225,7 +225,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 @media(max-width:600px){
   .ls-row{grid-template-columns:1.25fr 0.95fr 0.95fr 0.7fr}
   .ls-cell{font-size:14px;padding:10px 3px}
-  .ls-cell:first-child{padding-left:5px}
+  .ls-cell:first-child{padding-left:8px}
   .ls-cell:last-child{padding-right:5px}
   .ls-nm{font-size:13.5px}
   .ls-sp,.ls-sub{font-size:11px}
@@ -6090,7 +6090,7 @@ function renderLsList(){
     var pctTxt=(e.diff===0?"0":(e.pct>0?"":"-")+Math.abs(e.pct).toFixed(1))+"%";
     html+='<div class="ls-row">'+
       '<div class="ls-cell"><span class="ls-nm">'+e.rawName+'</span>'+(specTxt?'<span class="ls-sp">'+specTxt+'</span>':'')+'</div>'+
-      '<div class="ls-cell">฿'+fmt(e.thEff)+(e.vat>0?'<span class="ls-sub">-'+C.sym+fmt2(t2f(e.vat,C.rate))+' VAT</span>':'')+'</div>'+
+      '<div class="ls-cell">฿'+fmt(e.thEff)+'<span class="ls-sub">≈ '+C.sym+fmt2(t2f(e.thEff,C.rate))+'</span></div>'+
       '<div class="ls-cell">'+C.sym+fmt2(e.foreign)+'<span class="ls-sub">≈ ฿'+fmt(e.foreignTHB)+'</span></div>'+
       '<div class="ls-cell"><span class="ls-pill '+cls+'">'+pctTxt+'</span></div>'+
     '</div>';
@@ -7257,7 +7257,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.08.2026-00:24";
+var APP_VERSION="12.08.2026-00:36";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
