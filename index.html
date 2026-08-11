@@ -203,7 +203,10 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 /* LIST TAB */
 #ls-rw{display:none}
 #ls-rw.vis{display:block;animation:slideIn .35s ease}
-.ls-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.ls-tools{display:flex;align-items:stretch;gap:10px;margin-top:14px}
+.ls-tools .vat-toggle-inline{flex:1 1 0;width:auto;min-width:0}
+.ls-tools .vtil{white-space:nowrap}
+.ls-tools .rate-badge{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center}
 .ls-summary{font-size:12px;color:var(--secondary-text);margin-bottom:8px;line-height:1.5}
 .ls-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 0.7fr;align-items:center;border-bottom:1px solid var(--rule)}
 .ls-row:last-child{border-bottom:none}
@@ -220,9 +223,14 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ls-pill.lose{background:var(--red)}
 .ls-pill.same{background:var(--secondary-text)}
 @media(max-width:600px){
-  .ls-row{grid-template-columns:1.4fr 1fr 0.8fr}
-  .ls-row .ls-cell.ls-hide-sm{display:none}
-  .ls-cell{font-size:14px;padding:11px 5px}
+  .ls-row{grid-template-columns:1.25fr 0.95fr 0.95fr 0.7fr}
+  .ls-cell{font-size:13px;padding:10px 3px}
+  .ls-cell:first-child{padding-left:8px}
+  .ls-cell:last-child{padding-right:8px}
+  .ls-nm{font-size:12.5px}
+  .ls-sp,.ls-sub{font-size:10px}
+  .ls-pill{font-size:11.5px;padding:4px 7px}
+  .ls-row.header .ls-cell{font-size:9.5px;padding:8px 3px}
 }
 .sec-title{font-size:10px;font-weight:600;color:var(--secondary-text);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
 .sec-title::after{content:"";flex:1;height:1px;background:var(--rule)}
@@ -1058,7 +1066,17 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
         <div class="step-chosen" id="ls-ch1"></div>
       </div>
       <div class="step-body">
-        <select class="form-sel" id="ls-country" onchange="onLsCountryChange()" style="width:100%;max-width:340px"></select>
+        <div class="ddw" id="ls-ddw">
+          <div class="ddt" id="ls-ddt" onclick="toggleLsDd(event)">
+            <span id="ls-ddfl" class="ddfl">&#127758;</span>
+            <div class="ddi"><div id="ls-ddnm" class="ddph">Select a country...</div><div id="ls-ddcu" class="ddcu"></div></div>
+            <span class="ddarr">&#9660;</span>
+          </div>
+          <div class="ddm" id="ls-ddm">
+            <div class="ddsrow"><input id="ls-dds" type="text" placeholder="Search..." oninput="filterLsDd(this.value)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></div>
+            <div id="ls-ddopts"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1544,7 +1562,7 @@ en:{
   mode_compare:"Battle",mode_repair:"Repair",mode_trade_value:"Trade-in value",mode_ac:"AppleCare+",mode_list:"List",
   ls_t1:"Select comparison country",ls_sub1:"Compare every model against Thailand",
   ls_t2:"Select product category",ls_sub2:"Sorted by biggest Thailand saving",
-  ls_lbl_result:"Price List",ls_col_model:"Model",ls_col_diff:"Diff",
+  ls_lbl_result:"Price List",ls_col_model:"Model",ls_col_diff:"Save",
   ls_lbl_unavail:"No price data for this category in the selected country.",
   ls_summary:function(w,t,c){return "Thailand is cheaper on "+w+" of "+t+" items vs "+c+".";},
   ac_t1:"Select product category",ac_sub1:"Choose a product to see AppleCare+ pricing",
@@ -1629,7 +1647,7 @@ th:{
   mode_compare:"Battle",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",mode_ac:"AppleCare+",mode_list:"List",
   ls_t1:"เลือกประเทศคู่เปรียบเทียบ",ls_sub1:"เทียบทุกรุ่นกับราคาไทย",
   ls_t2:"เลือกประเภทสินค้า",ls_sub2:"เรียงจากที่ไทยถูกกว่ามากที่สุด",
-  ls_lbl_result:"รายการราคา",ls_col_model:"รุ่น",ls_col_diff:"ต่างกัน",
+  ls_lbl_result:"รายการราคา",ls_col_model:"รุ่น",ls_col_diff:"ประหยัด",
   ls_lbl_unavail:"ไม่มีข้อมูลราคาของหมวดนี้ในประเทศที่เลือก",
   ls_summary:function(w,t,c){return "ไทยถูกกว่า "+w+" จาก "+t+" รายการ เมื่อเทียบกับ"+c;},
   ac_t1:"เลือกประเภทสินค้า",ac_sub1:"เลือกสินค้าเพื่อดูราคา AppleCare+",
@@ -1714,7 +1732,7 @@ zh:{
   mode_compare:"Battle",mode_repair:"维修",mode_trade_value:"以旧换新价值",mode_ac:"AppleCare+",mode_list:"List",
   ls_t1:"选择比较国家",ls_sub1:"将所有型号与泰国价格比较",
   ls_t2:"选择产品类别",ls_sub2:"按泰国最便宜排序",
-  ls_lbl_result:"价格列表",ls_col_model:"型号",ls_col_diff:"差价",
+  ls_lbl_result:"价格列表",ls_col_model:"型号",ls_col_diff:"节省",
   ls_lbl_unavail:"所选国家没有此类别的价格数据",
   ls_summary:function(w,t,c){return "泰国在 "+t+" 项中有 "+w+" 项更便宜（对比"+c+"）";},
   ac_t1:"选择产品类别",ac_sub1:"选择产品以查看 AppleCare+ 价格",
@@ -1842,7 +1860,7 @@ function setLang(l){
   var mtv=G("mode-tv");if(mtv)mtv.textContent=tr("mode_trade_value");
   var mac=G("mode-ac");if(mac)mac.textContent=tr("mode_ac");
   var mls=G("mode-ls");if(mls)mls.textContent=tr("mode_list");
-  if(G("ls-country")){G("ls-country").dataset.built="";buildLsCountrySelect();}
+  if(G("ls-ddopts")){G("ls-ddopts").dataset.built="";buildLsCountrySelect();if(LS.country)pickLsCountry(LS.country);else{var lp=G("ls-ddnm");if(lp)lp.textContent=tr("dd_ph");}}
   buildLsCatPills();renderLsList();
   if(AC.cat)buildAcMGrid(AC.cat);
   if(AC.cat&&AC.modelKey&&AC.csvRow)renderAcResult();
@@ -5251,12 +5269,12 @@ function buildDd(){
 }
 function filterDd(q){
   var lo=q.toLowerCase();
-  var opts=document.querySelectorAll(".ddo");
+  var opts=document.querySelectorAll("#ddopts .ddo");
   for(var i=0;i<opts.length;i++){
     var el=opts[i];
     el.style.display=(el.dataset.search&&el.dataset.search.indexOf(lo)>=0)?"":"none";
   }
-  var lbls=document.querySelectorAll(".ddrl");
+  var lbls=document.querySelectorAll("#ddopts .ddrl");
   for(var j=0;j<lbls.length;j++){
     var lbl=lbls[j];var s=lbl.nextElementSibling;var any=false;
     while(s&&s.classList.contains("ddo")){if(s.style.display!=="none")any=true;s=s.nextElementSibling;}
@@ -5870,21 +5888,94 @@ function renderAcRepairCard(cat,rawName){
 // ── LIST TAB ──────────────────────────────────────────────────────────────────
 var LS={country:"",cat:""};
 const LS_CATS=["iPhone","iPad","Mac","Watch","AirPods","AppleTV","HomePod"];
+var _lsPicking=false;
 function buildLsCountrySelect(){
-  var el=G("ls-country");if(!el||el.dataset.built==="1")return;
-  var html='<option value="">'+tr("dd_ph")+'</option>';
-  Object.keys(REGIONS).forEach(function(region){
-    var opts=REGIONS[region].filter(function(c){return CUR[c];});
-    if(!opts.length)return;
-    html+='<optgroup label="'+region+'">';
-    opts.forEach(function(c){
-      html+='<option value="'+c+'">'+CUR[c].flag+" "+CUR[c].name+" · "+CUR[c].cur+'</option>';
+  var wrap=G("ls-ddopts");if(!wrap||wrap.dataset.built==="1")return;
+  wrap.innerHTML="";
+  Object.keys(REGIONS).forEach(function(reg){
+    var lbl=document.createElement("div");lbl.className="ddrl";lbl.textContent=reg;wrap.appendChild(lbl);
+    REGIONS[reg].forEach(function(code){
+      var C=CUR[code];if(!C)return;
+      var d=document.createElement("button");d.type="button";d.className="ddo";d.id="ls-ddo-"+code;
+      d.dataset.search=(C.name+" "+C.cur).toLowerCase();
+      d.innerHTML='<span class="ddofl">'+C.flag+'</span><div class="ddoi"><div class="ddon">'+C.name+'</div><div class="ddoc">'+C.cur+" · "+C.sym+'</div></div><span class="ddock">✓</span>';
+      bindLsDdOption(d,code);
+      wrap.appendChild(d);
     });
-    html+='</optgroup>';
   });
-  el.innerHTML=html;
-  el.dataset.built="1";
-  if(LS.country)el.value=LS.country;
+  wrap.dataset.built="1";
+  document.addEventListener("touchend",function(e){
+    if(_lsPicking){_lsPicking=false;return;}
+    var m=G("ls-ddm"),w=G("ls-ddw");
+    if(m&&m.classList.contains("open")&&w&&!w.contains(e.target))closeLsDd();
+  },{passive:true});
+  document.addEventListener("mousedown",function(e){
+    if(_lsPicking){_lsPicking=false;return;}
+    var m=G("ls-ddm"),w=G("ls-ddw");
+    if(m&&m.classList.contains("open")&&w&&!w.contains(e.target))closeLsDd();
+  });
+  var ph=G("ls-ddnm");if(ph&&!LS.country)ph.textContent=tr("dd_ph");
+}
+function activateLsDdOption(code,e){
+  if(e){e.preventDefault();e.stopPropagation();}
+  _lsPicking=true;
+  pickLsCountry(code);
+  return false;
+}
+function bindLsDdOption(el,code){
+  if(!el||!code||el.dataset.boundDd==="1")return;
+  el.dataset.boundDd="1";
+  el.style.touchAction="manipulation";
+  var _ts=0,_ty=0;
+  el.addEventListener("touchstart",function(e){
+    _ts=e.timeStamp;_ty=(e.touches[0]||{}).clientY||0;
+  },{passive:true});
+  el.addEventListener("touchend",function(e){
+    var dt=e.timeStamp-_ts,dy=Math.abs(((e.changedTouches[0]||{}).clientY||0)-_ty);
+    if(dt>600||dy>10)return;
+    if(e.cancelable)e.preventDefault();
+    activateLsDdOption(code,e);
+  },{passive:false});
+  el.setAttribute("onclick","return activateLsDdOption('"+code+"',event)");
+}
+function toggleLsDd(e){
+  if(e){e.preventDefault();e.stopPropagation();}
+  buildLsCountrySelect();
+  var m=G("ls-ddm"),t=G("ls-ddt");
+  if(!m||!t)return;
+  if(m.classList.contains("open"))closeLsDd();
+  else{t.classList.add("open");m.classList.add("open");setTimeout(function(){var si=G("ls-dds");if(si)si.focus();},60);}
+}
+function closeLsDd(){
+  var t=G("ls-ddt"),m=G("ls-ddm");
+  if(t)t.classList.remove("open");if(m)m.classList.remove("open");
+  var si=G("ls-dds");if(si){si.value="";filterLsDd("");}
+}
+function filterLsDd(q){
+  var lo=(q||"").toLowerCase();
+  var opts=document.querySelectorAll("#ls-ddopts .ddo");
+  for(var i=0;i<opts.length;i++){
+    var el=opts[i];
+    el.style.display=(el.dataset.search&&el.dataset.search.indexOf(lo)>=0)?"":"none";
+  }
+  var lbls=document.querySelectorAll("#ls-ddopts .ddrl");
+  for(var j=0;j<lbls.length;j++){
+    var lbl=lbls[j];var s=lbl.nextElementSibling;var any=false;
+    while(s&&s.classList.contains("ddo")){if(s.style.display!=="none")any=true;s=s.nextElementSibling;}
+    lbl.style.display=any?"":"none";
+  }
+}
+function pickLsCountry(code){
+  LS.country=code;
+  var C=CUR[code];
+  var fl=G("ls-ddfl");if(fl&&C)fl.textContent=C.flag;
+  var nm=G("ls-ddnm");if(nm&&C){nm.textContent=C.name;nm.className="ddnm";}
+  var cu=G("ls-ddcu");if(cu&&C){cu.textContent=C.cur+" · "+C.sym;cu.style.display="block";}
+  var opts=document.querySelectorAll("#ls-ddopts .ddo");
+  for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");
+  var sel=G("ls-ddo-"+code);if(sel)sel.classList.add("sel");
+  closeLsDd();
+  onLsCountryChange();
 }
 function buildLsCatPills(){
   var g=G("ls-catg");if(!g)return;g.innerHTML="";
@@ -5898,8 +5989,6 @@ function buildLsCatPills(){
   });
 }
 function onLsCountryChange(){
-  var el=G("ls-country");
-  LS.country=el&&el.value?el.value:"";
   var ch1=G("ls-ch1"),C=CUR[LS.country];
   if(ch1){
     if(C){ch1.textContent=C.flag+" "+C.name;ch1.style.display="inline-flex";}
@@ -5991,7 +6080,7 @@ function renderLsList(){
   var html='<div class="ls-row header">'+
     '<div class="ls-cell">'+tr("ls_col_model")+'</div>'+
     '<div class="ls-cell">'+tr("lbl_th")+'</div>'+
-    '<div class="ls-cell ls-hide-sm">'+C.flag+' '+C.name+'</div>'+
+    '<div class="ls-cell">'+C.flag+' '+C.name+'</div>'+
     '<div class="ls-cell">'+tr("ls_col_diff")+'</div>'+
   '</div>';
   entries.forEach(function(e){
@@ -6002,7 +6091,7 @@ function renderLsList(){
     html+='<div class="ls-row">'+
       '<div class="ls-cell"><span class="ls-nm">'+e.rawName+'</span>'+(specTxt?'<span class="ls-sp">'+specTxt+'</span>':'')+'</div>'+
       '<div class="ls-cell">฿'+fmt(e.thEff)+(e.vat>0?'<span class="ls-sub">-฿'+fmt(e.vat)+' VAT</span>':'')+'</div>'+
-      '<div class="ls-cell ls-hide-sm">'+C.sym+fmt2(e.foreign)+'<span class="ls-sub">≈ ฿'+fmt(e.foreignTHB)+'</span></div>'+
+      '<div class="ls-cell">'+C.sym+fmt2(e.foreign)+'<span class="ls-sub">≈ ฿'+fmt(e.foreignTHB)+'</span></div>'+
       '<div class="ls-cell"><span class="ls-pill '+cls+'">'+pctTxt+'</span></div>'+
     '</div>';
   });
@@ -7168,7 +7257,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.08.2026-00:03";
+var APP_VERSION="12.08.2026-00:14";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
