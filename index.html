@@ -200,6 +200,30 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ac-unavailable{background:var(--off-white);border:1px solid var(--rule);border-radius:var(--r);padding:20px;text-align:center;font-size:13px;color:var(--secondary-text)}
 .ac-repair-full{color:var(--secondary-text);text-decoration:line-through}
 .ac-table-issue{line-height:1.25}
+/* LIST TAB */
+#ls-rw{display:none}
+#ls-rw.vis{display:block;animation:slideIn .35s ease}
+.ls-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.ls-summary{font-size:12px;color:var(--secondary-text);margin-bottom:8px;line-height:1.5}
+.ls-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 0.7fr;align-items:center;border-bottom:1px solid var(--rule)}
+.ls-row:last-child{border-bottom:none}
+.ls-row.header{background:var(--off-white)}
+.ls-row.header .ls-cell{font-size:11px;font-weight:700;color:var(--secondary-text);text-transform:uppercase;letter-spacing:.05em;padding:9px 6px}
+.ls-cell{padding:12px 6px;text-align:center;font-size:15px;font-weight:600;color:var(--body-text);min-width:0;overflow-wrap:break-word}
+.ls-cell:first-child{text-align:left;padding-left:12px;line-height:1.25}
+.ls-cell:last-child{text-align:right;padding-right:12px}
+.ls-nm{font-size:14px;font-weight:700;display:block}
+.ls-sp{font-size:11px;font-weight:400;color:var(--secondary-text);display:block;margin-top:2px;word-break:break-all}
+.ls-sub{font-size:11px;font-weight:400;color:var(--secondary-text);display:block;margin-top:2px}
+.ls-pill{display:inline-block;font-size:13px;font-weight:700;line-height:1.2;padding:5px 10px;border-radius:14px;white-space:nowrap;color:#fff}
+.ls-pill.win{background:#1a7a32}
+.ls-pill.lose{background:var(--red)}
+.ls-pill.same{background:var(--secondary-text)}
+@media(max-width:600px){
+  .ls-row{grid-template-columns:1.4fr 1fr 0.8fr}
+  .ls-row .ls-cell.ls-hide-sm{display:none}
+  .ls-cell{font-size:14px;padding:11px 5px}
+}
 .sec-title{font-size:10px;font-weight:600;color:var(--secondary-text);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 10px;display:flex;align-items:center;gap:8px}
 .sec-title::after{content:"";flex:1;height:1px;background:var(--rule)}
 .cmp-card{background:var(--white);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
@@ -774,8 +798,9 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
   </div>
   <div class="mode-switch" aria-label="Section switcher">
     <button class="mode-btn on" id="mode-pz" onclick="switchMode('pz')">Battle</button>
-    <button class="mode-btn" id="mode-gb" onclick="switchMode('gb')">Repair</button>
+    <button class="mode-btn" id="mode-ls" onclick="switchMode('ls')">List</button>
     <button class="mode-btn" id="mode-ac" onclick="switchMode('ac')">AppleCare+</button>
+    <button class="mode-btn" id="mode-gb" onclick="switchMode('gb')">Repair</button>
   </div>
   <div class="mode-view show" id="mode-view-pz">
   <!-- STEP 1 -->
@@ -1023,6 +1048,45 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
   <a href="mailto:leng_pp2@icloud.com?subject=Feedback%3A%20Price%20battle" style="font-size:13px;color:var(--secondary-text);text-decoration:none" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--secondary-text)'">&#9993;&#65039; Send Feedback</a>
 </div>
 </div>
+</div>
+<div class="mode-view" id="mode-view-ls">
+  <div class="step-wrap" id="ls-sw1">
+    <div class="step-card active" id="ls-sc1">
+      <div class="step-hd">
+        <div class="step-num active" id="ls-sn1">1</div>
+        <div><div class="step-title" id="ls-t1">Select comparison country</div><div class="step-sub" id="ls-sub1">Compare every model against Thailand</div></div>
+        <div class="step-chosen" id="ls-ch1"></div>
+      </div>
+      <div class="step-body">
+        <select class="form-sel" id="ls-country" onchange="onLsCountryChange()" style="width:100%;max-width:340px"></select>
+      </div>
+    </div>
+  </div>
+  <div class="step-wrap locked" id="ls-sw2">
+    <div class="step-card" id="ls-sc2">
+      <div class="step-hd">
+        <div class="step-num" id="ls-sn2">2</div>
+        <div><div class="step-title" id="ls-t2">Select product category</div><div class="step-sub" id="ls-sub2">Sorted by biggest Thailand saving</div></div>
+        <div class="step-chosen" id="ls-ch2"></div>
+      </div>
+      <div class="step-body">
+        <div class="catg" id="ls-catg"></div>
+        <div class="ls-tools" id="ls-tools" style="display:none">
+          <div class="vat-toggle-inline">
+            <span class="vtil" id="ls-vat-lbl">VAT Refund</span>
+            <label class="tg" onclick="event.stopPropagation()"><input type="checkbox" id="ls-vchk" onchange="renderLsList()"><span class="tgt"></span></label>
+          </div>
+          <div class="rate-badge" id="ls-rate" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="ls-rw">
+    <div class="sec-title" id="ls-lbl-result">Price List</div>
+    <div class="ls-summary" id="ls-summary"></div>
+    <div class="ac-card"><div id="ls-rows"></div></div>
+    <div class="ac-unavailable" id="ls-unavailable" style="display:none"><span id="ls-lbl-unavail">No price data for this category in the selected country.</span></div>
+  </div>
 </div>
 <!-- BUNDLE TRAY -->
 <div class="mode-view" id="mode-view-gb">
@@ -1477,7 +1541,12 @@ var COL_TO_CODE={};
 // ── TRANSLATIONS ──────────────────────────────────────────────────────────────
 var TR={
 en:{
-  mode_compare:"Battle",mode_repair:"Repair",mode_trade_value:"Trade-in value",mode_ac:"AppleCare+",
+  mode_compare:"Battle",mode_repair:"Repair",mode_trade_value:"Trade-in value",mode_ac:"AppleCare+",mode_list:"List",
+  ls_t1:"Select comparison country",ls_sub1:"Compare every model against Thailand",
+  ls_t2:"Select product category",ls_sub2:"Sorted by biggest Thailand saving",
+  ls_lbl_result:"Price List",ls_col_model:"Model",ls_col_diff:"Diff",
+  ls_lbl_unavail:"No price data for this category in the selected country.",
+  ls_summary:function(w,t,c){return "Thailand is cheaper on "+w+" of "+t+" items vs "+c+".";},
   ac_t1:"Select product category",ac_sub1:"Choose a product to see AppleCare+ pricing",
   ac_t2:"Select model",ac_sub2:"Choose a model",
   ac_lbl_result:"AppleCare+ Price",ac_lbl_device:"Price",ac_lbl_ac:"AppleCare+",ac_col_spec:"Storage",ac_col_issue:"Issue",ac_col_repair:"Repair",
@@ -1557,7 +1626,12 @@ en:{
   cart_bundle_total:"Bundle Total"
 },
 th:{
-  mode_compare:"Battle",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",mode_ac:"AppleCare+",
+  mode_compare:"Battle",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",mode_ac:"AppleCare+",mode_list:"List",
+  ls_t1:"เลือกประเทศคู่เปรียบเทียบ",ls_sub1:"เทียบทุกรุ่นกับราคาไทย",
+  ls_t2:"เลือกประเภทสินค้า",ls_sub2:"เรียงจากที่ไทยถูกกว่ามากที่สุด",
+  ls_lbl_result:"รายการราคา",ls_col_model:"รุ่น",ls_col_diff:"ต่างกัน",
+  ls_lbl_unavail:"ไม่มีข้อมูลราคาของหมวดนี้ในประเทศที่เลือก",
+  ls_summary:function(w,t,c){return "ไทยถูกกว่า "+w+" จาก "+t+" รายการ เมื่อเทียบกับ"+c;},
   ac_t1:"เลือกประเภทสินค้า",ac_sub1:"เลือกสินค้าเพื่อดูราคา AppleCare+",
   ac_t2:"เลือกรุ่น",ac_sub2:"เลือกรุ่นสินค้า",
   ac_lbl_result:"ราคา AppleCare+",ac_lbl_device:"ราคา",ac_lbl_ac:"AppleCare+",ac_col_spec:"ความจุ",ac_col_issue:"อาการ",ac_col_repair:"ค่าซ่อม",
@@ -1637,7 +1711,12 @@ th:{
   cart_bundle_total:"ราคารวม Bundle"
 },
 zh:{
-  mode_compare:"Battle",mode_repair:"维修",mode_trade_value:"以旧换新价值",mode_ac:"AppleCare+",
+  mode_compare:"Battle",mode_repair:"维修",mode_trade_value:"以旧换新价值",mode_ac:"AppleCare+",mode_list:"List",
+  ls_t1:"选择比较国家",ls_sub1:"将所有型号与泰国价格比较",
+  ls_t2:"选择产品类别",ls_sub2:"按泰国最便宜排序",
+  ls_lbl_result:"价格列表",ls_col_model:"型号",ls_col_diff:"差价",
+  ls_lbl_unavail:"所选国家没有此类别的价格数据",
+  ls_summary:function(w,t,c){return "泰国在 "+t+" 项中有 "+w+" 项更便宜（对比"+c+"）";},
   ac_t1:"选择产品类别",ac_sub1:"选择产品以查看 AppleCare+ 价格",
   ac_t2:"选择型号",ac_sub2:"选择型号",
   ac_lbl_result:"AppleCare+ 价格",ac_lbl_device:"价格",ac_lbl_ac:"AppleCare+",ac_col_spec:"容量",ac_col_issue:"问题",ac_col_repair:"维修费",
@@ -1748,6 +1827,7 @@ function setLang(l){
          "tv-t1":"tv_t1","tv-sub1":"tv_sub1","tv-type-lbl":"tv_type_lbl","tv-col-model":"tv_col_model","tv-col-spec":"tv_col_spec","tv-col-value":"tv_col_value","tv-note-lbl":"tv_note_lbl","tv-note":"tv_note",
          "ac-t1":"ac_t1","ac-sub1":"ac_sub1","ac-t2":"ac_t2","ac-sub2":"ac_sub2","ac-stor-lbl":"stor_lbl",
          "ac-lbl-result":"ac_lbl_result","ac-lbl-unavail":"ac_lbl_unavail",
+         "ls-t1":"ls_t1","ls-sub1":"ls_sub1","ls-t2":"ls_t2","ls-sub2":"ls_sub2","ls-lbl-result":"ls_lbl_result","ls-lbl-unavail":"ls_lbl_unavail",
          "ac-lbl-repair-result":"ac_lbl_repair_result","ac-lbl-repair-unavail":"ac_lbl_repair_unavail",
          "cart-title":"cart_title"};
   Object.keys(m).forEach(function(id){
@@ -1761,6 +1841,9 @@ function setLang(l){
   var mg=G("mode-gb");if(mg)mg.textContent=tr("mode_repair");
   var mtv=G("mode-tv");if(mtv)mtv.textContent=tr("mode_trade_value");
   var mac=G("mode-ac");if(mac)mac.textContent=tr("mode_ac");
+  var mls=G("mode-ls");if(mls)mls.textContent=tr("mode_list");
+  if(G("ls-country")){G("ls-country").dataset.built="";buildLsCountrySelect();}
+  buildLsCatPills();renderLsList();
   if(AC.cat)buildAcMGrid(AC.cat);
   if(AC.cat&&AC.modelKey&&AC.csvRow)renderAcResult();
   var vl=G("vat-lbl");if(vl)vl.textContent=tr(G("vchk")&&G("vchk").checked?"vat_on":"vat_off");
@@ -4984,16 +5067,19 @@ function onTradeStorageChange(){syncTradeUI();if(S.bundleMode&&(S.cart||[]).leng
 var _GC=Object.create(null);
 function G(id){if(_GC[id])return _GC[id];var el=document.getElementById(id);if(el)_GC[id]=el;return el;}
 function switchMode(mode){
-  var pzBtn=G("mode-pz"),gbBtn=G("mode-gb"),tvBtn=G("mode-tv"),acBtn=G("mode-ac"),pzView=G("mode-view-pz"),gbView=G("mode-view-gb"),tvView=G("mode-view-tv"),acView=G("mode-view-ac");
+  var pzBtn=G("mode-pz"),gbBtn=G("mode-gb"),tvBtn=G("mode-tv"),acBtn=G("mode-ac"),lsBtn=G("mode-ls"),pzView=G("mode-view-pz"),gbView=G("mode-view-gb"),tvView=G("mode-view-tv"),acView=G("mode-view-ac"),lsView=G("mode-view-ls");
   if(pzBtn)pzBtn.classList[mode==="pz"?"add":"remove"]("on");
   if(gbBtn)gbBtn.classList[mode==="gb"?"add":"remove"]("on");
   if(tvBtn)tvBtn.classList[mode==="tv"?"add":"remove"]("on");
   if(acBtn)acBtn.classList[mode==="ac"?"add":"remove"]("on");
+  if(lsBtn)lsBtn.classList[mode==="ls"?"add":"remove"]("on");
   if(pzView)pzView.classList[mode==="pz"?"add":"remove"]("show");
   if(gbView)gbView.classList[mode==="gb"?"add":"remove"]("show");
   if(tvView)tvView.classList[mode==="tv"?"add":"remove"]("show");
   if(acView)acView.classList[mode==="ac"?"add":"remove"]("show");
+  if(lsView)lsView.classList[mode==="ls"?"add":"remove"]("show");
   if(mode==="ac")buildAcCatGrid();
+  if(mode==="ls"){buildLsCountrySelect();buildLsCatPills();}
   try{localStorage.setItem("apc_mode",mode);}catch(e){}
 }
 function fmt(n){return Math.round(n).toLocaleString("en");}
@@ -5779,6 +5865,149 @@ function renderAcRepairCard(cat,rawName){
       '<div class="ac-table-cell">'+tr("ac_pct_label")+'</div>'+
     '</div>'+rows.join("");
   }
+}
+
+// ── LIST TAB ──────────────────────────────────────────────────────────────────
+var LS={country:"",cat:""};
+const LS_CATS=["iPhone","iPad","Mac","Watch","AirPods","AppleTV","HomePod"];
+function buildLsCountrySelect(){
+  var el=G("ls-country");if(!el||el.dataset.built==="1")return;
+  var html='<option value="">'+tr("dd_ph")+'</option>';
+  Object.keys(REGIONS).forEach(function(region){
+    var opts=REGIONS[region].filter(function(c){return CUR[c];});
+    if(!opts.length)return;
+    html+='<optgroup label="'+region+'">';
+    opts.forEach(function(c){
+      html+='<option value="'+c+'">'+CUR[c].flag+" "+CUR[c].name+" · "+CUR[c].cur+'</option>';
+    });
+    html+='</optgroup>';
+  });
+  el.innerHTML=html;
+  el.dataset.built="1";
+  if(LS.country)el.value=LS.country;
+}
+function buildLsCatPills(){
+  var g=G("ls-catg");if(!g)return;g.innerHTML="";
+  LS_CATS.forEach(function(key){
+    var C=CATS[key];if(!C)return;
+    var b=document.createElement("button");
+    b.className="cpill"+(LS.cat===key?" sel":"");b.id="ls-cp-"+key;
+    b.innerHTML=getIconHtml(C.icon,"cat-ic-img")+C.label;
+    b.onclick=function(){pickLsCat(key);};
+    g.appendChild(b);
+  });
+}
+function onLsCountryChange(){
+  var el=G("ls-country");
+  LS.country=el&&el.value?el.value:"";
+  var ch1=G("ls-ch1"),C=CUR[LS.country];
+  if(ch1){
+    if(C){ch1.textContent=C.flag+" "+C.name;ch1.style.display="inline-flex";}
+    else ch1.style.display="none";
+  }
+  setNum("ls-sn1",LS.country?"done":"active");
+  var sw2=G("ls-sw2"),sc2=G("ls-sc2");
+  if(LS.country){
+    if(sw2)sw2.classList.remove("locked");
+    if(sc2)sc2.classList.add("active");
+    setNum("ls-sn2","active");
+  }else{
+    if(sw2)sw2.classList.add("locked");
+    if(sc2)sc2.classList.remove("active");
+    setNum("ls-sn2","");
+  }
+  renderLsList();
+}
+function pickLsCat(key){
+  LS.cat=key;
+  buildLsCatPills();
+  var C=CATS[key],ch2=G("ls-ch2");
+  if(ch2&&C){ch2.innerHTML=getIconHtml(C.icon,"step-ic-img")+" "+C.label;ch2.style.display="inline-flex";}
+  setNum("ls-sn2","done");
+  renderLsList();
+  setTimeout(function(){var rw=G("ls-rw");if(rw&&rw.classList.contains("vis"))rw.scrollIntoView({behavior:"smooth",block:"start"});},140);
+}
+function buildLsEntries(cat,countryCode,vatOn){
+  var C=CUR[countryCode];if(!C)return[];
+  var grp=MODEL_GROUPS[cat]||{};
+  var order=(CAT_ORDER&&CAT_ORDER[cat])||[];
+  var out=[];
+  Object.keys(grp).forEach(function(modelKey){
+    if(modelKey==="AppleCare+")return;
+    var m=grp[modelKey];
+    (m.specs||[]).forEach(function(sp){
+      var row=S.prices[sp.csvRow]||{};
+      var th=row.TH||0,foreign=row[countryCode]||0;
+      if(!th||!foreign)return;
+      var vat=vatOn?vatRefund(th):0;
+      var thEff=Math.max(0,th-vat);
+      var foreignTHB=Math.round(f2t(foreign,C.rate));
+      if(!foreignTHB)return;
+      var diff=foreignTHB-thEff;
+      var pct=foreignTHB?(diff/foreignTHB)*100:0;
+      out.push({
+        modelKey:modelKey,rawName:m.rawName||modelKey,icon:m.icon,
+        specLabel:sp.label,csvRow:sp.csvRow,
+        th:th,vat:vat,thEff:thEff,foreign:foreign,foreignTHB:foreignTHB,
+        diff:diff,pct:pct,orderIdx:order.indexOf(modelKey)
+      });
+    });
+  });
+  out.sort(function(a,b){
+    if(b.pct!==a.pct)return b.pct-a.pct;
+    var ao=a.orderIdx<0?9999:a.orderIdx,bo=b.orderIdx<0?9999:b.orderIdx;
+    if(ao!==bo)return ao-bo;
+    return a.rawName.localeCompare(b.rawName);
+  });
+  return out;
+}
+function renderLsList(){
+  var rw=G("ls-rw"),rows=G("ls-rows"),unavail=G("ls-unavailable"),tools=G("ls-tools"),summary=G("ls-summary");
+  if(!rw||!rows)return;
+  if(tools)tools.style.display=LS.cat?"flex":"none";
+  if(!LS.country||!LS.cat){rw.classList.remove("vis");return;}
+  var C=CUR[LS.country];if(!C){rw.classList.remove("vis");return;}
+  var vatOn=!!(G("ls-vchk")&&G("ls-vchk").checked);
+  var entries=buildLsEntries(LS.cat,LS.country,vatOn);
+
+  var rate=G("ls-rate"),rateVal=S.rates[C.rate];
+  if(rate&&rateVal){rate.innerHTML='<span class="rate-badge-text">฿1 = '+C.sym+rateVal.toFixed(3)+'</span>';rate.style.display="inline-flex";}
+
+  var card=rw.querySelector(".ac-card");
+  if(!entries.length){
+    if(card)card.style.display="none";
+    if(summary)summary.textContent="";
+    rows.innerHTML="";
+    if(unavail)unavail.style.display="block";
+    rw.classList.add("vis");
+    return;
+  }
+  if(card)card.style.display="block";
+  if(unavail)unavail.style.display="none";
+
+  var wins=entries.filter(function(e){return e.diff>0;}).length;
+  if(summary)summary.textContent=tr("ls_summary",wins,entries.length,C.name);
+
+  var html='<div class="ls-row header">'+
+    '<div class="ls-cell">'+tr("ls_col_model")+'</div>'+
+    '<div class="ls-cell">'+tr("lbl_th")+'</div>'+
+    '<div class="ls-cell ls-hide-sm">'+C.flag+' '+C.name+'</div>'+
+    '<div class="ls-cell">'+tr("ls_col_diff")+'</div>'+
+  '</div>';
+  entries.forEach(function(e){
+    var parts=splitSpecLabel(e.specLabel);
+    var specTxt=(e.specLabel&&e.specLabel!=="Standard")?(parts.size+(parts.rest?" "+parts.rest:"")):"";
+    var cls=e.diff>0?"win":(e.diff<0?"lose":"same");
+    var pctTxt=(e.diff===0?"0":(e.pct>0?"":"-")+Math.abs(e.pct).toFixed(1))+"%";
+    html+='<div class="ls-row">'+
+      '<div class="ls-cell"><span class="ls-nm">'+e.rawName+'</span>'+(specTxt?'<span class="ls-sp">'+specTxt+'</span>':'')+'</div>'+
+      '<div class="ls-cell">฿'+fmt(e.thEff)+(e.vat>0?'<span class="ls-sub">-฿'+fmt(e.vat)+' VAT</span>':'')+'</div>'+
+      '<div class="ls-cell ls-hide-sm">'+C.sym+fmt2(e.foreign)+'<span class="ls-sub">≈ ฿'+fmt(e.foreignTHB)+'</span></div>'+
+      '<div class="ls-cell"><span class="ls-pill '+cls+'">'+pctTxt+'</span></div>'+
+    '</div>';
+  });
+  rows.innerHTML=html;
+  rw.classList.add("vis");
 }
 
 function getModelData(cat,modelKey){
@@ -6939,7 +7168,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="09.08.2026-09:02";
+var APP_VERSION="12.08.2026-00:03";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
@@ -6961,7 +7190,7 @@ var APP_VERSION="09.08.2026-09:02";
   try{var l=localStorage.getItem("apc_lang");if(l==="th"||l==="zh")setLang(l);}catch(e){}
   try{
     var savedMode=localStorage.getItem("apc_mode");
-    switchMode(savedMode==="ac"?savedMode:"pz");
+    switchMode((savedMode==="ac"||savedMode==="ls"||savedMode==="gb")?savedMode:"pz");
   }catch(e){switchMode("pz");}
   var aovEl=G("aov");if(aovEl)aovEl.addEventListener("click",function(e){if(e.target===this)closeAdmin();});
   initBranch(function(){
