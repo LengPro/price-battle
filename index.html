@@ -212,14 +212,16 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ls-card{overflow:visible}
 .ls-row.header{position:sticky;top:44px;z-index:5;border-top-left-radius:var(--r);border-top-right-radius:var(--r)}
 .ls-row.header .ls-cell:first-child{text-align:center}
-.ls-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 0.7fr;align-items:center;border-bottom:1px solid var(--rule)}
+.ls-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 0.7fr;align-items:baseline;border-bottom:1px solid var(--rule)}
+.ls-row.header{align-items:center}
+.ls-row .ls-cell:last-child{align-self:center}
 .ls-row:last-child{border-bottom:none}
 .ls-row.header{background:var(--off-white)}
 .ls-row.header .ls-cell{font-size:12px;font-weight:700;color:var(--secondary-text);text-transform:uppercase;letter-spacing:.05em;padding:9px 6px}
 .ls-cell{padding:12px 6px;text-align:center;font-size:16px;font-weight:600;color:var(--body-text);min-width:0;overflow-wrap:break-word}
 .ls-cell:first-child{text-align:left;padding-left:12px;line-height:1.25}
 .ls-cell:last-child{text-align:center;padding-right:8px}
-.ls-row:not(.header) .ls-cell:nth-child(2),.ls-row:not(.header) .ls-cell:nth-child(3){text-align:right;padding-right:12px}
+.ls-cell:nth-child(2),.ls-cell:nth-child(3){text-align:right;padding-right:12px}
 .ls-nm{font-size:15px;font-weight:700;display:block}
 .ls-sp{font-size:13px;font-weight:400;color:var(--secondary-text);display:block;margin-top:2px;word-break:break-all}
 .ls-sub{font-size:13px;font-weight:400;color:var(--secondary-text);display:block;margin-top:2px}
@@ -234,7 +236,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
   .ls-cell{font-size:14px;padding:10px 3px}
   .ls-cell:first-child{padding-left:8px}
   .ls-cell:last-child{padding-right:5px}
-  .ls-row:not(.header) .ls-cell:nth-child(2),.ls-row:not(.header) .ls-cell:nth-child(3){padding-right:7px}
+  .ls-cell:nth-child(2),.ls-cell:nth-child(3){padding-right:7px}
   .ls-nm{font-size:13.5px}
   .ls-sp,.ls-sub{font-size:12px}
   .ls-pill{font-size:12.5px;padding:4px 7px}
@@ -7266,7 +7268,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.08.2026-01:27";
+var APP_VERSION="12.08.2026-01:36";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
