@@ -219,6 +219,8 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ls-sp{font-size:12px;font-weight:400;color:var(--secondary-text);display:block;margin-top:2px;word-break:break-all}
 .ls-sub{font-size:12px;font-weight:400;color:var(--secondary-text);display:block;margin-top:2px}
 .ls-pill{display:inline-block;font-size:14px;font-weight:700;line-height:1.2;padding:5px 10px;border-radius:14px;white-space:nowrap;color:#fff}
+.ls-cell.ls-cheaper{color:#1a7a32}
+.ls-cell.ls-cheaper .ls-sub{color:#1a7a32}
 .ls-pill.win{background:#1a7a32}
 .ls-pill.lose{background:var(--red)}
 .ls-pill.same{background:var(--secondary-text)}
@@ -6090,8 +6092,8 @@ function renderLsList(){
     var pctTxt=(e.diff===0?"0":(e.pct>0?"":"-")+Math.abs(e.pct).toFixed(1))+"%";
     html+='<div class="ls-row">'+
       '<div class="ls-cell"><span class="ls-nm">'+e.rawName+'</span>'+(specTxt?'<span class="ls-sp">'+specTxt+'</span>':'')+'</div>'+
-      '<div class="ls-cell">฿'+fmt(e.thEff)+'<span class="ls-sub">≈ '+C.sym+fmt2(t2f(e.thEff,C.rate))+'</span></div>'+
-      '<div class="ls-cell">'+C.sym+fmt2(e.foreign)+'<span class="ls-sub">≈ ฿'+fmt(e.foreignTHB)+'</span></div>'+
+      '<div class="ls-cell'+(e.diff>0?' ls-cheaper':'')+'">฿'+fmt(e.thEff)+'<span class="ls-sub">≈ '+C.sym+fmt2(t2f(e.thEff,C.rate))+'</span></div>'+
+      '<div class="ls-cell'+(e.diff<0?' ls-cheaper':'')+'">'+C.sym+fmt2(e.foreign)+'<span class="ls-sub">≈ ฿'+fmt(e.foreignTHB)+'</span></div>'+
       '<div class="ls-cell"><span class="ls-pill '+cls+'">'+pctTxt+'</span></div>'+
     '</div>';
   });
@@ -7257,7 +7259,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.08.2026-00:36";
+var APP_VERSION="12.08.2026-00:43";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
