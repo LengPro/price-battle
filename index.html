@@ -212,9 +212,9 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ls-card{overflow:visible}
 .ls-row.header{position:sticky;top:44px;z-index:5;border-top-left-radius:var(--r);border-top-right-radius:var(--r)}
 .ls-row.header .ls-cell:first-child{text-align:center}
-.ls-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr) auto;align-items:baseline;border-bottom:1px solid var(--rule)}
+.ls-row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) minmax(max-content,0.62fr);align-items:baseline;border-bottom:1px solid var(--rule)}
 .ls-row.header{align-items:center}
-.ls-row .ls-cell:last-child{align-self:center}
+.ls-row.header .ls-cell:last-child{align-self:center}
 .ls-row:last-child{border-bottom:none}
 .ls-row.header{background:var(--off-white)}
 .ls-row.header .ls-cell{font-size:12px;font-weight:700;color:var(--secondary-text);text-transform:uppercase;letter-spacing:.05em;padding:9px 6px}
@@ -232,7 +232,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ls-pill.lose{background:var(--red)}
 .ls-pill.same{background:var(--secondary-text)}
 @media(max-width:600px){
-  .ls-row{grid-template-columns:minmax(0,1.25fr) minmax(0,0.95fr) minmax(0,0.95fr) auto}
+  .ls-row{grid-template-columns:minmax(0,1.2fr) minmax(0,0.95fr) minmax(0,0.95fr) minmax(max-content,0.6fr)}
   .ls-cell{font-size:14px;padding:10px 3px}
   .ls-cell:first-child{padding-left:8px}
   .ls-cell:last-child{padding-right:5px}
@@ -1110,7 +1110,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
     </div>
   </div>
   <div id="ls-rw">
-    <div class="sec-title" id="ls-lbl-result">Price List</div>
+    <div class="sec-title" id="ls-lbl-result">Price List Compare</div>
     <div class="ls-summary" id="ls-summary"></div>
     <div class="ls-legend" id="ls-legend">🟢 is great price</div>
     <div class="ac-card ls-card"><div id="ls-rows"></div></div>
@@ -1573,7 +1573,7 @@ en:{
   mode_compare:"Battle",mode_repair:"Repair",mode_trade_value:"Trade-in value",mode_ac:"AppleCare+",mode_list:"List",
   ls_t1:"Select comparison country",ls_sub1:"Compare every model against Thailand",
   ls_t2:"Select product category",ls_sub2:"Sorted by biggest Thailand saving",
-  ls_lbl_result:"Price List",ls_col_model:"Model",ls_col_diff:"Save",ls_legend:"🟢 is great price",ls_cat_all:"All",
+  ls_lbl_result:"Price List Compare",ls_col_model:"Model",ls_col_diff:"Save",ls_legend:"🟢 is great price",ls_cat_all:"All",
   ls_lbl_unavail:"No price data for this category in the selected country.",
   ls_summary:function(w,t,c){return "Thailand is cheaper on "+w+" of "+t+" items vs "+c+".";},
   ac_t1:"Select product category",ac_sub1:"Choose a product to see AppleCare+ pricing",
@@ -1658,7 +1658,7 @@ th:{
   mode_compare:"Battle",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",mode_ac:"AppleCare+",mode_list:"List",
   ls_t1:"เลือกประเทศคู่เปรียบเทียบ",ls_sub1:"เทียบทุกรุ่นกับราคาไทย",
   ls_t2:"เลือกประเภทสินค้า",ls_sub2:"เรียงจากที่ไทยถูกกว่ามากที่สุด",
-  ls_lbl_result:"รายการราคา",ls_col_model:"รุ่น",ls_col_diff:"ประหยัด",ls_legend:"🟢 คือราคาที่คุ้มกว่า",ls_cat_all:"ทั้งหมด",
+  ls_lbl_result:"เปรียบเทียบรายการราคา",ls_col_model:"รุ่น",ls_col_diff:"ประหยัด",ls_legend:"🟢 คือราคาที่คุ้มกว่า",ls_cat_all:"ทั้งหมด",
   ls_lbl_unavail:"ไม่มีข้อมูลราคาของหมวดนี้ในประเทศที่เลือก",
   ls_summary:function(w,t,c){return "ไทยถูกกว่า "+w+" จาก "+t+" รายการ เมื่อเทียบกับ"+c;},
   ac_t1:"เลือกประเภทสินค้า",ac_sub1:"เลือกสินค้าเพื่อดูราคา AppleCare+",
@@ -1743,7 +1743,7 @@ zh:{
   mode_compare:"Battle",mode_repair:"维修",mode_trade_value:"以旧换新价值",mode_ac:"AppleCare+",mode_list:"List",
   ls_t1:"选择比较国家",ls_sub1:"将所有型号与泰国价格比较",
   ls_t2:"选择产品类别",ls_sub2:"按泰国最便宜排序",
-  ls_lbl_result:"价格列表",ls_col_model:"型号",ls_col_diff:"节省",ls_legend:"🟢 表示更划算的价格",ls_cat_all:"全部",
+  ls_lbl_result:"价格对比列表",ls_col_model:"型号",ls_col_diff:"节省",ls_legend:"🟢 表示更划算的价格",ls_cat_all:"全部",
   ls_lbl_unavail:"所选国家没有此类别的价格数据",
   ls_summary:function(w,t,c){return "泰国在 "+t+" 项中有 "+w+" 项更便宜（对比"+c+"）";},
   ac_t1:"选择产品类别",ac_sub1:"选择产品以查看 AppleCare+ 价格",
@@ -5899,7 +5899,7 @@ function renderAcRepairCard(cat,rawName){
 
 // ── LIST TAB ──────────────────────────────────────────────────────────────────
 var LS={country:"",cat:"all"};
-const LS_CATS=["iPhone","iPad","Mac","Watch","AirPods","AppleTV","HomePod","Beats","AirTag"];
+const LS_CATS=CAT_KEYS.slice();
 var _lsPicking=false,_lsDdBound=false;
 function buildLsCountrySelect(){
   var wrap=G("ls-ddopts");if(!wrap||wrap.dataset.built==="1")return;
@@ -7301,7 +7301,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.08.2026-13:38";
+var APP_VERSION="12.08.2026-14:44";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
