@@ -1871,7 +1871,7 @@ function setLang(l){
   var mtv=G("mode-tv");if(mtv)mtv.textContent=tr("mode_trade_value");
   var mac=G("mode-ac");if(mac)mac.textContent=tr("mode_ac");
   var mls=G("mode-ls");if(mls)mls.textContent=tr("mode_list");
-  if(G("ls-ddopts")){G("ls-ddopts").dataset.built="";buildLsCountrySelect();if(LS.country)pickLsCountry(LS.country);else{var lp=G("ls-ddnm");if(lp)lp.textContent=tr("dd_ph");}}
+  if(G("ls-ddopts")){G("ls-ddopts").dataset.built="";buildLsCountrySelect();if(LS.country)applyLsCountry(LS.country);else{var lp=G("ls-ddnm");if(lp)lp.textContent=tr("dd_ph");}}
   buildLsCatPills();renderLsList();
   if(AC.cat)buildAcMGrid(AC.cat);
   if(AC.cat&&AC.modelKey&&AC.csvRow)renderAcResult();
@@ -5108,7 +5108,7 @@ function switchMode(mode){
   if(acView)acView.classList[mode==="ac"?"add":"remove"]("show");
   if(lsView)lsView.classList[mode==="ls"?"add":"remove"]("show");
   if(mode==="ac")buildAcCatGrid();
-  if(mode==="ls"){buildLsCountrySelect();buildLsCatPills();}
+  if(mode==="ls"){buildLsCountrySelect();buildLsCatPills();if(S.country&&CUR[S.country])applyLsCountry(S.country);}
   try{localStorage.setItem("apc_mode",mode);}catch(e){}
 }
 function fmt(n){return Math.round(n).toLocaleString("en");}
@@ -5385,7 +5385,7 @@ function pickCountry(code){
   var fl=G("ddfl");if(fl)fl.textContent=C.flag;
   var nm=G("ddnm");if(nm){nm.textContent=C.name;nm.className="ddnm";}
   var cu=G("ddcu");if(cu){cu.textContent=C.cur+" · "+C.sym;cu.style.display="block";}
-  var opts=document.querySelectorAll(".ddo");for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");
+  var opts=document.querySelectorAll("#ddopts .ddo");for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");
   var sel=G("ddo-"+code);if(sel)sel.classList.add("sel");
   closeDd();setNum("sn1","done");
   var ch1=G("ch1");if(ch1){ch1.textContent=C.flag+" "+C.name;ch1.style.display="block";}
@@ -5402,6 +5402,7 @@ function pickCountry(code){
   if(S.bundleMode&&(S.cart||[]).length>=2)renderBundleComparison();
   else if(S.csvRow)render();
   else renderCart();
+  if(typeof applyLsCountry==="function"&&LS.country!==code)applyLsCountry(code);
 }
 
 // ── CATEGORIES ──────────────────────────────────────────────────────────────────
@@ -5899,7 +5900,7 @@ function renderAcRepairCard(cat,rawName){
 // ── LIST TAB ──────────────────────────────────────────────────────────────────
 var LS={country:"",cat:""};
 const LS_CATS=["iPhone","iPad","Mac","Watch","AirPods","AppleTV","HomePod","Beats","AirTag"];
-var _lsPicking=false;
+var _lsPicking=false,_lsDdBound=false;
 function buildLsCountrySelect(){
   var wrap=G("ls-ddopts");if(!wrap||wrap.dataset.built==="1")return;
   wrap.innerHTML="";
@@ -5915,6 +5916,8 @@ function buildLsCountrySelect(){
     });
   });
   wrap.dataset.built="1";
+  if(_lsDdBound)return;
+  _lsDdBound=true;
   document.addEventListener("touchend",function(e){
     if(_lsPicking){_lsPicking=false;return;}
     var m=G("ls-ddm"),w=G("ls-ddw");
@@ -5976,17 +5979,23 @@ function filterLsDd(q){
     lbl.style.display=any?"":"none";
   }
 }
-function pickLsCountry(code){
+function applyLsCountry(code){
+  var C=CUR[code];if(!C)return;
   LS.country=code;
-  var C=CUR[code];
-  var fl=G("ls-ddfl");if(fl&&C)fl.textContent=C.flag;
-  var nm=G("ls-ddnm");if(nm&&C){nm.textContent=C.name;nm.className="ddnm";}
-  var cu=G("ls-ddcu");if(cu&&C){cu.textContent=C.cur+" · "+C.sym;cu.style.display="block";}
+  var fl=G("ls-ddfl");if(fl)fl.textContent=C.flag;
+  var nm=G("ls-ddnm");if(nm){nm.textContent=C.name;nm.className="ddnm";}
+  var cu=G("ls-ddcu");if(cu){cu.textContent=C.cur+" · "+C.sym;cu.style.display="block";}
   var opts=document.querySelectorAll("#ls-ddopts .ddo");
-  for(var i=0;i<opts.length;i++)opts[i].classList.remove("sel");
-  var sel=G("ls-ddo-"+code);if(sel)sel.classList.add("sel");
-  closeLsDd();
+  for(var i=0;i<opts.length;i++){
+    opts[i].classList.remove("sel");
+    if(opts[i].id==="ls-ddo-"+code)opts[i].classList.add("sel");
+  }
   onLsCountryChange();
+}
+function pickLsCountry(code){
+  applyLsCountry(code);
+  closeLsDd();
+  if(S.country!==code&&typeof pickCountry==="function")pickCountry(code);
 }
 function buildLsCatPills(){
   var g=G("ls-catg");if(!g)return;g.innerHTML="";
@@ -7268,7 +7277,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.08.2026-11:48";
+var APP_VERSION="12.08.2026-12:20";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
