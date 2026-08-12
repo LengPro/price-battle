@@ -212,7 +212,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ls-card{overflow:visible}
 .ls-row.header{position:sticky;top:44px;z-index:5;border-top-left-radius:var(--r);border-top-right-radius:var(--r)}
 .ls-row.header .ls-cell:first-child{text-align:center}
-.ls-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 0.7fr;align-items:baseline;border-bottom:1px solid var(--rule)}
+.ls-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr) auto;align-items:baseline;border-bottom:1px solid var(--rule)}
 .ls-row.header{align-items:center}
 .ls-row .ls-cell:last-child{align-self:center}
 .ls-row:last-child{border-bottom:none}
@@ -232,7 +232,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ls-pill.lose{background:var(--red)}
 .ls-pill.same{background:var(--secondary-text)}
 @media(max-width:600px){
-  .ls-row{grid-template-columns:1.25fr 0.95fr 0.95fr 0.7fr}
+  .ls-row{grid-template-columns:minmax(0,1.25fr) minmax(0,0.95fr) minmax(0,0.95fr) auto}
   .ls-cell{font-size:14px;padding:10px 3px}
   .ls-cell:first-child{padding-left:8px}
   .ls-cell:last-child{padding-right:5px}
@@ -7268,7 +7268,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.08.2026-01:36";
+var APP_VERSION="12.08.2026-11:48";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
