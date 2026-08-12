@@ -1573,7 +1573,7 @@ en:{
   mode_compare:"Battle",mode_repair:"Repair",mode_trade_value:"Trade-in value",mode_ac:"AppleCare+",mode_list:"List",
   ls_t1:"Select comparison country",ls_sub1:"Compare every model against Thailand",
   ls_t2:"Select product category",ls_sub2:"Sorted by biggest Thailand saving",
-  ls_lbl_result:"Price List",ls_col_model:"Model",ls_col_diff:"Save",ls_legend:"🟢 is great price",
+  ls_lbl_result:"Price List",ls_col_model:"Model",ls_col_diff:"Save",ls_legend:"🟢 is great price",ls_cat_all:"All",
   ls_lbl_unavail:"No price data for this category in the selected country.",
   ls_summary:function(w,t,c){return "Thailand is cheaper on "+w+" of "+t+" items vs "+c+".";},
   ac_t1:"Select product category",ac_sub1:"Choose a product to see AppleCare+ pricing",
@@ -1658,7 +1658,7 @@ th:{
   mode_compare:"Battle",mode_repair:"ซ่อม",mode_trade_value:"มูลค่า Trade-in",mode_ac:"AppleCare+",mode_list:"List",
   ls_t1:"เลือกประเทศคู่เปรียบเทียบ",ls_sub1:"เทียบทุกรุ่นกับราคาไทย",
   ls_t2:"เลือกประเภทสินค้า",ls_sub2:"เรียงจากที่ไทยถูกกว่ามากที่สุด",
-  ls_lbl_result:"รายการราคา",ls_col_model:"รุ่น",ls_col_diff:"ประหยัด",ls_legend:"🟢 คือราคาที่คุ้มกว่า",
+  ls_lbl_result:"รายการราคา",ls_col_model:"รุ่น",ls_col_diff:"ประหยัด",ls_legend:"🟢 คือราคาที่คุ้มกว่า",ls_cat_all:"ทั้งหมด",
   ls_lbl_unavail:"ไม่มีข้อมูลราคาของหมวดนี้ในประเทศที่เลือก",
   ls_summary:function(w,t,c){return "ไทยถูกกว่า "+w+" จาก "+t+" รายการ เมื่อเทียบกับ"+c;},
   ac_t1:"เลือกประเภทสินค้า",ac_sub1:"เลือกสินค้าเพื่อดูราคา AppleCare+",
@@ -1743,7 +1743,7 @@ zh:{
   mode_compare:"Battle",mode_repair:"维修",mode_trade_value:"以旧换新价值",mode_ac:"AppleCare+",mode_list:"List",
   ls_t1:"选择比较国家",ls_sub1:"将所有型号与泰国价格比较",
   ls_t2:"选择产品类别",ls_sub2:"按泰国最便宜排序",
-  ls_lbl_result:"价格列表",ls_col_model:"型号",ls_col_diff:"节省",ls_legend:"🟢 表示更划算的价格",
+  ls_lbl_result:"价格列表",ls_col_model:"型号",ls_col_diff:"节省",ls_legend:"🟢 表示更划算的价格",ls_cat_all:"全部",
   ls_lbl_unavail:"所选国家没有此类别的价格数据",
   ls_summary:function(w,t,c){return "泰国在 "+t+" 项中有 "+w+" 项更便宜（对比"+c+"）";},
   ac_t1:"选择产品类别",ac_sub1:"选择产品以查看 AppleCare+ 价格",
@@ -1872,7 +1872,7 @@ function setLang(l){
   var mac=G("mode-ac");if(mac)mac.textContent=tr("mode_ac");
   var mls=G("mode-ls");if(mls)mls.textContent=tr("mode_list");
   if(G("ls-ddopts")){G("ls-ddopts").dataset.built="";buildLsCountrySelect();if(LS.country)applyLsCountry(LS.country);else{var lp=G("ls-ddnm");if(lp)lp.textContent=tr("dd_ph");}}
-  buildLsCatPills();renderLsList();
+  buildLsCatPills();syncLsCatChip();renderLsList();
   if(AC.cat)buildAcMGrid(AC.cat);
   if(AC.cat&&AC.modelKey&&AC.csvRow)renderAcResult();
   var vl=G("vat-lbl");if(vl)vl.textContent=tr(G("vchk")&&G("vchk").checked?"vat_on":"vat_off");
@@ -5108,7 +5108,7 @@ function switchMode(mode){
   if(acView)acView.classList[mode==="ac"?"add":"remove"]("show");
   if(lsView)lsView.classList[mode==="ls"?"add":"remove"]("show");
   if(mode==="ac")buildAcCatGrid();
-  if(mode==="ls"){buildLsCountrySelect();buildLsCatPills();if(S.country&&CUR[S.country])applyLsCountry(S.country);}
+  if(mode==="ls"){buildLsCountrySelect();buildLsCatPills();syncLsCatChip();if(S.country&&CUR[S.country])applyLsCountry(S.country);}
   try{localStorage.setItem("apc_mode",mode);}catch(e){}
 }
 function fmt(n){return Math.round(n).toLocaleString("en");}
@@ -5898,7 +5898,7 @@ function renderAcRepairCard(cat,rawName){
 }
 
 // ── LIST TAB ──────────────────────────────────────────────────────────────────
-var LS={country:"",cat:""};
+var LS={country:"",cat:"all"};
 const LS_CATS=["iPhone","iPad","Mac","Watch","AirPods","AppleTV","HomePod","Beats","AirTag"];
 var _lsPicking=false,_lsDdBound=false;
 function buildLsCountrySelect(){
@@ -5999,6 +5999,11 @@ function pickLsCountry(code){
 }
 function buildLsCatPills(){
   var g=G("ls-catg");if(!g)return;g.innerHTML="";
+  var all=document.createElement("button");
+  all.className="cpill"+(LS.cat==="all"?" sel":"");all.id="ls-cp-all";
+  all.textContent=tr("ls_cat_all");
+  all.onclick=function(){pickLsCat("all");};
+  g.appendChild(all);
   LS_CATS.forEach(function(key){
     var C=CATS[key];if(!C)return;
     var b=document.createElement("button");
@@ -6027,17 +6032,36 @@ function onLsCountryChange(){
   }
   renderLsList();
 }
+function syncLsCatChip(){
+  var ch2=G("ls-ch2");if(!ch2)return;
+  if(LS.cat==="all"){ch2.textContent=tr("ls_cat_all");ch2.style.display="inline-flex";return;}
+  var C=CATS[LS.cat];
+  if(C){ch2.innerHTML=getIconHtml(C.icon,"step-ic-img")+" "+C.label;ch2.style.display="inline-flex";}
+  else ch2.style.display="none";
+}
 function pickLsCat(key){
   LS.cat=key;
   buildLsCatPills();
   var C=CATS[key],ch2=G("ls-ch2");
-  if(ch2&&C){ch2.innerHTML=getIconHtml(C.icon,"step-ic-img")+" "+C.label;ch2.style.display="inline-flex";}
+  if(ch2){
+    if(key==="all"){ch2.textContent=tr("ls_cat_all");ch2.style.display="inline-flex";}
+    else if(C){ch2.innerHTML=getIconHtml(C.icon,"step-ic-img")+" "+C.label;ch2.style.display="inline-flex";}
+  }
   setNum("ls-sn2","done");
   renderLsList();
   setTimeout(function(){var rw=G("ls-rw");if(rw&&rw.classList.contains("vis"))rw.scrollIntoView({behavior:"smooth",block:"start"});},140);
 }
 function buildLsEntries(cat,countryCode,vatOn){
   var C=CUR[countryCode];if(!C)return[];
+  if(cat==="all"){
+    var merged=[];
+    LS_CATS.forEach(function(k){merged=merged.concat(buildLsEntries(k,countryCode,vatOn));});
+    merged.sort(function(a,b){
+      if(b.pct!==a.pct)return b.pct-a.pct;
+      return a.rawName.localeCompare(b.rawName);
+    });
+    return merged;
+  }
   var grp=MODEL_GROUPS[cat]||{};
   var order=(CAT_ORDER&&CAT_ORDER[cat])||[];
   var out=[];
@@ -7277,7 +7301,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.08.2026-12:20";
+var APP_VERSION="12.08.2026-13:00";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
