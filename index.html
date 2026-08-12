@@ -221,7 +221,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
 .ls-cell{padding:12px 6px;text-align:center;font-size:16px;font-weight:600;color:var(--body-text);min-width:0;overflow-wrap:break-word}
 .ls-cell:first-child{text-align:left;padding-left:12px;line-height:1.25}
 .ls-cell:last-child{text-align:center;padding-right:8px}
-.ls-cell:nth-child(2),.ls-cell:nth-child(3){text-align:right;padding-right:12px}
+.ls-row:not(.header) .ls-cell:nth-child(2),.ls-row:not(.header) .ls-cell:nth-child(3){text-align:right;padding-right:12px}
 .ls-nm{font-size:15px;font-weight:700;display:block}
 .ls-sp{font-size:13px;font-weight:400;color:var(--secondary-text);display:block;margin-top:2px;word-break:break-all}
 .ls-sub{font-size:13px;font-weight:400;color:var(--secondary-text);display:block;margin-top:2px}
@@ -236,7 +236,7 @@ nav{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-
   .ls-cell{font-size:14px;padding:10px 3px}
   .ls-cell:first-child{padding-left:8px}
   .ls-cell:last-child{padding-right:5px}
-  .ls-cell:nth-child(2),.ls-cell:nth-child(3){padding-right:7px}
+  .ls-row:not(.header) .ls-cell:nth-child(2),.ls-row:not(.header) .ls-cell:nth-child(3){padding-right:7px}
   .ls-nm{font-size:13.5px}
   .ls-sp,.ls-sub{font-size:12px}
   .ls-pill{font-size:12.5px;padding:4px 7px}
@@ -7301,7 +7301,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="12.08.2026-13:00";
+var APP_VERSION="12.08.2026-13:38";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
