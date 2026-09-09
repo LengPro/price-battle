@@ -6747,12 +6747,31 @@ function getModelNotes(countryCode,cat,model){
     return DEFAULT_COUNTRY_MODEL_NOTES[countryCode][key];
   return[];
 }
+function collectNoteValues(value,out){
+  if(typeof value==="string"){
+    value.split("|").forEach(function(p){var t=p.trim();if(t)out.push(t);});
+  }else if(Array.isArray(value)){
+    value.forEach(function(s){collectNoteValues(s,out);});
+  }
+}
+function getAllCountryModelNotes(countryCode){
+  var out=[];
+  var addMap=function(map){
+    if(!map||!map[countryCode])return;
+    Object.keys(map[countryCode]).forEach(function(key){
+      collectNoteValues(map[countryCode][key],out);
+    });
+  };
+  if(typeof DEFAULT_COUNTRY_MODEL_NOTES!=="undefined")addMap(DEFAULT_COUNTRY_MODEL_NOTES);
+  addMap(getCountryModelNotesMap());
+  return out;
+}
 function renderCountryNotes(code,cat,model){
   var wrap=G("notes-section"),list=G("notes-list");
   if(!wrap||!list)return;
   list.innerHTML="";
   if(!code){wrap.style.display="none";return;}
-  var notes=getCountryNotes(code).concat(getModelNotes(code,cat,model));
+  var notes=getCountryNotes(code).concat(getAllCountryModelNotes(code));
   if(!notes.length){wrap.style.display="none";return;}
   var seen=Object.create(null),shown=0;
   notes.forEach(function(note){
@@ -7323,7 +7342,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="05.09.2026-09:37";
+var APP_VERSION="09.09.2026-17:08";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
