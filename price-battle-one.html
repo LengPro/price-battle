@@ -1535,6 +1535,22 @@ function normalizeCategoryKey(raw){
   if(key==="watch"||key==="apple watch")return "Watch";
   return raw||"";
 }
+function normalizeAppleCareImportItem(item){
+  var s=(item||"").toString().trim().replace(/\u00a0/g," ").replace(/\s+/g," ");
+  if(s.indexOf("iPhone - AppleCare+ - ")===0)return s;
+  if(s.indexOf("AppleCare+ - ")!==0)return s;
+  var spec=s.slice("AppleCare+ - ".length).trim(),cat="";
+  if(/^iPad Pro/.test(spec)||/^iPad Air/.test(spec)||spec==="iPad mini")cat="iPad";
+  else if(spec==="iPad"){cat="iPad";spec="iPad A16";}
+  else if(/^MacBook/.test(spec)||["iMac","Mac mini","Mac Studio","Mac Pro"].indexOf(spec)>=0||/^Studio Display/.test(spec))cat="Mac";
+  else if(spec==="Apple Watch SE"){cat="Watch";spec="SE 3";}
+  else if(spec==="Apple Series 11"){cat="Watch";spec="Series 11";}
+  else if(spec==="Apple Ultra 3"){cat="Watch";spec="Ultra 3";}
+  else if(/^AirPods/.test(spec))cat="AirPods";
+  else if(spec==="Apple TV")cat="AppleTV";
+  else if(/^HomePod/.test(spec))cat="HomePod";
+  return cat?cat+" - AppleCare+ - "+spec:s;
+}
 function buildModelGroupsFromPrices(base){
   var groups={};
   Object.keys(base||{}).forEach(function(item){
@@ -1993,9 +2009,32 @@ Object.keys(ALL_ACC_IMPORTED_PRICES).forEach(function(item){
   var itemSpec=(parts.slice(2).join(" - ")||"Standard").trim()||"Standard";
   ensureImportedProduct(itemCat,itemModel,itemSpec,item);
 });
+
+/* APPLECARE CSV PRICE UPDATE START */
+const CSV_APPLECARE_PRICE_UPDATE={"iPhone - AppleCare+ - Duo":{"AT":359,"CL":369990,"CN":2599,"DK":2399,"FI":359,"FR":359,"HK":2599,"IN":51900,"IE":359,"IT":359,"MY":1499,"NL":359,"NZ":629,"NO":3690,"SA":1499,"SG":499,"KR":549000,"ES":359,"SE":3695,"CH":329,"TH":12990,"AE":1349,"VN":8999000},"iPhone - AppleCare+ - 18 Pro Max":{"AT":249,"CL":249990,"CN":1799,"DK":1549,"FI":249,"FR":249,"HK":1799,"IN":25900,"IE":249,"IT":249,"MY":1049,"NL":249,"NZ":419,"NO":2490,"SA":999,"SG":339,"KR":359000,"ES":249,"SE":2495,"CH":219,"TH":8590,"AE":899,"VN":6099000},"iPhone - AppleCare+ - 18 Pro":{"AT":249,"CL":249990,"CN":1799,"DK":1549,"FI":249,"FR":249,"HK":1799,"IN":25900,"IE":249,"IT":249,"MY":1049,"NL":249,"NZ":419,"NO":2490,"SA":999,"SG":339,"KR":359000,"ES":249,"SE":2495,"CH":219,"TH":8590,"AE":899,"VN":6099000},"iPhone - AppleCare+ - Air":{"AT":219,"CL":209990,"CN":1799,"DK":1399,"FI":219,"FR":219,"HK":1699,"IN":22900,"IE":219,"IT":219,"MY":949,"NL":219,"NZ":389,"NO":2190,"SA":879,"SG":299,"KR":289000,"ES":219,"SE":2295,"CH":199,"TH":7590,"AE":799,"VN":5099000},"iPhone - AppleCare+ - 17":{"AT":189,"CL":199990,"CN":1399,"DK":1199,"FI":189,"FR":189,"HK":1399,"IN":19900,"IE":189,"IT":189,"MY":849,"NL":189,"NZ":339,"NO":1890,"SA":749,"SG":249,"KR":259000,"ES":189,"SE":1895,"CH":169,"TH":6590,"AE":679,"VN":4799000},"iPhone - AppleCare+ - 17e":{"AT":159,"CL":149990,"CN":1099,"DK":949,"FI":159,"FR":159,"HK":1099,"IN":16900,"IE":159,"IT":159,"MY":649,"NL":159,"NZ":269,"NO":1490,"SA":629,"SG":199,"KR":209000,"ES":159,"SE":1395,"CH":129,"TH":4990,"AE":579,"VN":3899000},"iPhone - AppleCare+ - 16":{"AT":189,"CL":199990,"CN":1399,"DK":1199,"FI":189,"FR":189,"HK":1399,"IN":19900,"IE":189,"IT":189,"MY":849,"NL":189,"NZ":339,"NO":1890,"SA":749,"SG":249,"KR":259000,"ES":189,"SE":1895,"CH":169,"TH":6590,"AE":679,"VN":4799000},"iPad - AppleCare+ - iPad Pro 13”":{"AT":189,"CL":204990,"CN":1549,"DK":1229,"FI":189,"FR":189,"HK":1499,"IN":19900,"IE":189,"IT":189,"MY":849,"NL":189,"NZ":369,"NO":1790,"SA":809,"SG":269,"KR":279000,"ES":189,"SE":1795,"CH":159,"TH":6090,"AE":759,"VN":4999000},"iPad - AppleCare+ - iPad Pro 11”":{"AT":169,"CL":179990,"CN":1399,"DK":1099,"FI":169,"FR":169,"HK":1299,"IN":17900,"IE":169,"IT":169,"MY":749,"NL":169,"NZ":329,"NO":1590,"SA":709,"SG":239,"KR":249000,"ES":169,"SE":1595,"CH":139,"TH":5390,"AE":659,"VN":4499000},"iPad - AppleCare+ - iPad Air 13”":{"AT":119,"CL":119990,"CN":899,"DK":779,"FI":119,"FR":119,"HK":899,"IN":11900,"IE":119,"IT":119,"MY":499,"NL":119,"NZ":229,"NO":1090,"SA":509,"SG":169,"KR":179000,"ES":119,"SE":1095,"CH":99,"TH":3890,"AE":459,"VN":3099000},"iPad - AppleCare+ - iPad Air 11”":{"AT":99,"CL":94990,"CN":749,"DK":649,"FI":99,"FR":99,"HK":699,"IN":9900,"IE":99,"IT":99,"MY":399,"NL":99,"NZ":189,"NO":890,"SA":409,"SG":139,"KR":149000,"ES":99,"SE":895,"CH":79,"TH":3190,"AE":359,"VN":2599000},"iPad - AppleCare+ - iPad A16":{"AT":89,"CL":82990,"CN":649,"DK":579,"FI":89,"FR":89,"HK":599,"IN":8900,"IE":89,"IT":89,"MY":379,"NL":89,"NZ":169,"NO":790,"SA":359,"SG":119,"KR":129000,"ES":89,"SE":795,"CH":69,"TH":2990,"AE":329,"VN":2149000},"iPad - AppleCare+ - iPad mini":{"AT":89,"CL":82990,"CN":649,"DK":579,"FI":89,"FR":89,"HK":599,"IN":8900,"IE":89,"IT":89,"MY":379,"NL":89,"NZ":169,"NO":790,"SA":359,"SG":119,"KR":129000,"ES":89,"SE":795,"CH":69,"TH":2990,"AE":329,"VN":2149000},"Mac - AppleCare+ - MacBook Pro 16”":{"AT":445,"CL":434990,"CN":3449,"DK":2949,"FI":445,"FR":445,"HK":3149,"IN":40900,"IE":445,"IT":445,"MY":1779,"NL":445,"NZ":809,"NO":4490,"SA":1899,"SG":609,"KR":629000,"ES":445,"SE":4195,"CH":365,"TH":14590,"AE":1699,"VN":11499000},"Mac - AppleCare+ - MacBook Pro 14”":{"AT":315,"CL":304990,"CN":2449,"DK":2149,"FI":315,"FR":315,"HK":2449,"IN":29900,"IE":315,"IT":315,"MY":1279,"NL":315,"NZ":589,"NO":3190,"SA":1299,"SG":429,"KR":459000,"ES":315,"SE":2995,"CH":265,"TH":10590,"AE":1199,"VN":7999000},"Mac - AppleCare+ - MacBook Air 15”":{"AT":265,"CL":254990,"CN":2049,"DK":1749,"FI":265,"FR":265,"HK":1949,"IN":24900,"IE":265,"IT":265,"MY":1079,"NL":265,"NZ":489,"NO":2590,"SA":1099,"SG":359,"KR":379000,"ES":265,"SE":2495,"CH":215,"TH":8590,"AE":999,"VN":6499000},"Mac - AppleCare+ - MacBook Air 13”":{"AT":235,"CL":224990,"CN":1749,"DK":1549,"FI":235,"FR":235,"HK":1749,"IN":22900,"IE":235,"IT":235,"MY":929,"NL":235,"NZ":439,"NO":2290,"SA":999,"SG":309,"KR":329000,"ES":235,"SE":2195,"CH":195,"TH":7590,"AE":899,"VN":5699000},"Mac - AppleCare+ - MacBook Neo":{"AT":165,"CL":164990,"CN":1249,"DK":1149,"FI":165,"FR":165,"HK":1249,"IN":16900,"IE":165,"IT":165,"MY":679,"NL":165,"NZ":319,"NO":1690,"SA":699,"SG":229,"KR":239000,"ES":165,"SE":1595,"CH":135,"TH":5590,"AE":649,"VN":4299000},"Mac - AppleCare+ - iMac":{"AT":195,"CL":194990,"CN":1549,"DK":1249,"FI":195,"FR":195,"HK":1449,"IN":19900,"IE":195,"IT":195,"MY":879,"NL":195,"NZ":359,"NO":1990,"SA":849,"SG":279,"KR":249000,"ES":195,"SE":1895,"CH":165,"TH":6490,"AE":749,"VN":4899000},"Mac - AppleCare+ - Mac mini":{"AT":129,"CL":119990,"CN":799,"DK":849,"FI":129,"FR":129,"HK":879,"IN":12900,"IE":129,"IT":129,"MY":529,"NL":129,"NZ":239,"NO":1290,"SA":529,"SG":169,"KR":159000,"ES":129,"SE":1195,"CH":105,"TH":4290,"AE":469,"VN":3299000},"Mac - AppleCare+ - Mac Studio":{"AT":195,"CL":194990,"CN":1549,"DK":1249,"FI":195,"FR":195,"HK":1449,"IN":19900,"IE":195,"IT":195,"MY":879,"NL":195,"NZ":359,"NO":1990,"SA":849,"SG":279,"KR":249000,"ES":195,"SE":1895,"CH":165,"TH":6490,"AE":749,"VN":4899000},"Mac - AppleCare+ - Mac Pro":{"AT":529,"CL":529990,"CN":3999,"DK":3499,"FI":529,"FR":529,"HK":3999,"IN":49900,"IE":529,"IT":529,"MY":2499,"NL":529,"NZ":949,"NO":5390,"SA":2199,"SG":749,"KR":649000,"ES":529,"SE":5295,"CH":499,"TH":17900,"AE":1999,"VN":12999000},"Mac - AppleCare+ - Studio Display":{"AT":159,"CL":159990,"CN":1249,"DK":1099,"FI":159,"FR":139,"HK":1199,"IN":14900,"IE":159,"IT":159,"MY":649,"NL":159,"NZ":279,"NO":1590,"SA":649,"SG":209,"KR":229000,"ES":159,"SE":1495,"CH":129,"TH":5290,"AE":599,"VN":3999000},"Mac - AppleCare+ - Studio Display XDR":{"AT":319,"CL":319990,"CN":2499,"DK":2199,"FI":319,"FR":319,"HK":2399,"IN":29900,"IE":319,"IT":319,"MY":1299,"NL":319,"NZ":559,"NO":3190,"SA":2199,"SG":419,"KR":459000,"ES":319,"SE":2995,"CH":259,"TH":10490,"AE":1999,"VN":7999000},"Watch - AppleCare+ - SE 3":{"AT":59,"CL":89990,"CN":399,"DK":379,"FI":59,"FR":59,"HK":399,"IN":4900,"IE":59,"IT":59,"MY":249,"NL":59,"NZ":99,"NO":590,"SA":219,"SG":79,"KR":79000,"ES":59,"SE":595,"CH":49,"TH":1890,"AE":189,"VN":1299000},"Watch - AppleCare+ - Series 11":{"AT":89,"CL":89990,"CN":649,"DK":599,"FI":89,"FR":89,"HK":649,"IN":7900,"IE":89,"IT":89,"MY":399,"NL":89,"NZ":159,"NO":890,"SA":349,"SG":119,"KR":119000,"ES":89,"SE":895,"CH":79,"TH":2990,"AE":299,"VN":2099000},"Watch - AppleCare+ - Ultra 3":{"AT":109,"CL":109990,"CN":799,"DK":749,"FI":109,"FR":109,"HK":799,"IN":9900,"IE":109,"IT":109,"MY":499,"NL":109,"NZ":199,"NO":1090,"SA":429,"SG":149,"KR":149000,"ES":109,"SE":1095,"CH":99,"TH":3790,"AE":379,"VN":2699000},"AirPods - AppleCare+ - AirPods Max 2":{"AT":59,"CL":62990,"CN":549,"DK":399,"FI":59,"FR":59,"HK":499,"IN":6900,"IE":59,"IT":59,"MY":299,"NL":59,"NZ":119,"NO":590,"SA":279,"SG":99,"KR":99000,"ES":59,"SE":595,"CH":59,"TH":2290,"AE":249,"VN":1699000},"AirPods - AppleCare+ - AirPods Pro 3":{"AT":39,"CL":42990,"CN":449,"DK":279,"FI":39,"FR":39,"HK":349,"IN":4900,"IE":39,"IT":39,"MY":199,"NL":39,"NZ":79,"NO":390,"SA":179,"SG":69,"KR":79000,"ES":39,"SE":395,"CH":39,"TH":1490,"AE":159,"VN":1099000},"AirPods - AppleCare+ - AirPods 4 ANC":{"AT":29,"CL":30990,"CN":349,"DK":199,"FI":29,"FR":35,"HK":249,"IN":2900,"IE":29,"IT":29,"MY":149,"NL":29,"NZ":59,"NO":290,"SA":129,"SG":49,"KR":69000,"ES":29,"SE":295,"CH":29,"TH":1090,"AE":119,"VN":799000},"AirPods - AppleCare+ - AirPods 4":{"AT":29,"CL":30990,"CN":349,"DK":199,"FI":29,"FR":35,"HK":249,"IN":2900,"IE":29,"IT":29,"MY":149,"NL":29,"NZ":59,"NO":290,"SA":129,"SG":49,"KR":69000,"ES":29,"SE":295,"CH":29,"TH":1090,"AE":119,"VN":799000},"AppleTV - AppleCare+ - Apple TV":{"AT":29,"CL":30990,"DK":199,"FI":29,"FR":29,"HK":198,"IN":2900,"IE":29,"IT":29,"MY":149,"NL":29,"NZ":39,"NO":269,"SA":149,"SG":45,"KR":34000,"ES":29,"SE":275,"CH":29,"TH":990,"AE":119,"VN":899000},"HomePod - AppleCare+ - HomePod":{"AT":39,"CL":40990,"CN":299,"DK":299,"FI":39,"FR":39,"HK":299,"IN":3900,"IE":39,"IT":39,"MY":199,"NL":39,"NZ":79,"NO":390,"SG":59,"ES":39,"SE":395,"CH":39,"TH":1500},"HomePod - AppleCare+ - HomePod mini":{"AT":15,"CL":15990,"CN":119,"DK":99,"FI":15,"FR":15,"HK":119,"IN":1600,"IE":15,"IT":15,"MY":79,"NL":15,"NZ":19,"NO":150,"SG":25,"ES":15,"SE":150,"CH":15,"TH":600}};
+Object.assign(CSV_PRICES,CSV_APPLECARE_PRICE_UPDATE);
+Object.keys(CSV_APPLECARE_PRICE_UPDATE).forEach(function(item){
+  var parts=item.split(" - ");
+  var itemCat=normalizeCategoryKey(parts[0]||"");
+  var itemModel=(parts[1]||"").trim();
+  var itemSpec=(parts.slice(2).join(" - ")||"Standard").trim()||"Standard";
+  ensureImportedProduct(itemCat,itemModel,itemSpec,item);
+});
+/* APPLECARE CSV PRICE UPDATE END */
 /* ACC CSV IMPORT END */
 function loadState(){
   var rates=null,prices=null,cart=null;
+  try{
+    var loadVer="10.09.2026-18:51-ONE";
+    var storedVer=localStorage.getItem("apc_app_version");
+    if(storedVer!==loadVer){
+      ["apc_prices","apc_custom","apc_product_links","apc_country_model_notes",
+       "apc_hidden_products","apc_model_order","apc_spec_order","apc_compare_cart"].forEach(function(k){
+        localStorage.removeItem(k);
+      });
+      localStorage.setItem("apc_app_version",loadVer);
+    }
+  }catch(e){}
   try{
     var cached=JSON.parse(localStorage.getItem("apc_rates")||"null");
     // Validate: JPY should be between 3-10 for THB base
@@ -7496,7 +7535,7 @@ function importCSV(input){
       var custom=[];try{custom=JSON.parse(localStorage.getItem("apc_custom")||"[]");}catch(e2){}
       var hidden=getHiddenProductsMap();
       for(var i=1;i<lines.length;i++){
-        var vals=parseCSVRow(lines[i]);var item=vals[0];if(!item)continue;
+        var vals=parseCSVRow(lines[i]);var item=vals[0];if(!item)continue;item=normalizeAppleCareImportItem(item);
         if(hidden[item])continue;
         var itemParts=item.split(" - ");
         var itemCat=itemParts[0]||"",itemModel=itemParts[1]||"",itemSpec=itemParts.slice(2).join(" - ")||"Standard";
@@ -7563,7 +7602,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="10.09.2026-15:53-ONE";
+var APP_VERSION="10.09.2026-18:51-ONE";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
