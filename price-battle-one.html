@@ -2045,7 +2045,8 @@ const RETIRED_PRODUCT_MODELS={
 };
 const RETIRED_PRODUCT_SPECS={
   Mac:{
-    "Mac mini":["M4 256/16GB","M4 512/16GB","M4 512/24GB","M4 Pro 12C/16C/512/24GB"]
+    "Mac mini":["M4 256/16GB","M4 512/16GB","M4 512/24GB","M4 Pro 12C/16C/512/24GB"],
+    "Mac Studio":["M4 Max 14C/32C/512/36GB","M4 Max 16C/40C/1TB/64GB","M3 Ultra 28C/60C/1TB/96GB"]
   }
 };
 const RETIRED_APPLECARE_SPECS={
@@ -2097,7 +2098,7 @@ removeRetiredProducts();
 function loadState(){
   var rates=null,prices=null,cart=null;
   try{
-    var loadVer="14.09.2026-23:13-ONE";
+    var loadVer="14.09.2026-23:45-ONE";
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==loadVer){
       ["apc_prices","apc_custom","apc_product_links","apc_country_model_notes",
@@ -5027,34 +5028,39 @@ const TRADE_IN_DATA={
     "iPhone XR":{"64GB":1300,"128GB":1500,"256GB":1700}
   },
   "iPad":{
+    "iPad Pro 13-inch (M5)":{"Cellular 256GB":19500,"Cellular 512GB":20300,"Cellular 1TB":21500,"Cellular 2TB":22800,"WiFi 256GB":18700,"WiFi 512GB":19500,"WiFi 1TB":20800,"WiFi 2TB":22000},
     "iPad Pro 13-inch (M4)":{"Cellular 256GB":15000,"Cellular 512GB":15000,"Cellular 1TB":15000,"Cellular 2TB":15000,"WiFi 256GB":15000,"WiFi 512GB":15000,"WiFi 1TB":15000,"WiFi 2TB":15000},
-    "iPad Pro 11-inch (M4)":{"Cellular 256GB":10000,"Cellular 512GB":10000,"Cellular 1TB":10000,"Cellular 2TB":10000,"WiFi 256GB":10000,"WiFi 512GB":10000,"WiFi 1TB":10000,"WiFi 2TB":10000},
-    "iPad Pro 12.9-inch (6th Gen)":{"Cellular 128GB":9500,"Cellular 256GB":9500,"Cellular 512GB":9500,"Cellular 1TB":9500,"Cellular 2TB":9500,"WiFi 128GB":9500,"WiFi 256GB":9500,"WiFi 512GB":9500,"WiFi 1TB":9500,"WiFi 2TB":9500},
+    "iPad Pro 12.9-inch (6th Gen)":{"Cellular 128GB":10500,"Cellular 256GB":10500,"Cellular 512GB":10500,"Cellular 1TB":10500,"Cellular 2TB":10500,"WiFi 128GB":10500,"WiFi 256GB":10500,"WiFi 512GB":10500,"WiFi 1TB":10500,"WiFi 2TB":10500},
     "iPad Pro 11-inch (4th Gen)":{"Cellular 128GB":8000,"Cellular 256GB":8000,"Cellular 512GB":8000,"Cellular 1TB":8000,"Cellular 2TB":8000,"WiFi 128GB":8000,"WiFi 256GB":8000,"WiFi 512GB":8000,"WiFi 1TB":8000,"WiFi 2TB":8000},
     "iPad Pro 12.9-inch (5th Gen)":{"Cellular 128GB":8500,"Cellular 256GB":8500,"Cellular 512GB":8500,"Cellular 1TB":8500,"Cellular 2TB":8500,"WiFi 128GB":8500,"WiFi 256GB":8500,"WiFi 512GB":8500,"WiFi 1TB":8500,"WiFi 2TB":8500},
-    "iPad Pro 11-inch (3rd Gen)":{"Cellular 128GB":7000,"Cellular 256GB":7000,"Cellular 512GB":7000,"Cellular 1TB":7000,"Cellular 2TB":7000,"WiFi 128GB":7000,"WiFi 256GB":7000,"WiFi 512GB":7000,"WiFi 1TB":7000,"WiFi 2TB":7000},
+    "iPad Pro 11-inch (M5)":{"Cellular 256GB":16000,"Cellular 512GB":16000,"Cellular 1TB":16000,"Cellular 2TB":16000,"WiFi 256GB":16000,"WiFi 512GB":16000,"WiFi 1TB":16000,"WiFi 2TB":16000},
+    "iPad Pro 11-inch (M4)":{"Cellular 256GB":10500,"Cellular 512GB":10500,"Cellular 1TB":10500,"Cellular 2TB":10500,"WiFi 256GB":10500,"WiFi 512GB":10500,"WiFi 1TB":10500,"WiFi 2TB":10500},
+    "iPad Pro 11-inch (3rd Gen)":{"Cellular 128GB":7200,"Cellular 256GB":7200,"Cellular 512GB":7200,"Cellular 1TB":7200,"Cellular 2TB":7200,"WiFi 128GB":7200,"WiFi 256GB":7200,"WiFi 512GB":7200,"WiFi 1TB":7200,"WiFi 2TB":7200},
     "iPad Pro 12.9-inch (4th Gen)":{"Cellular 128GB":5500,"Cellular 256GB":5500,"Cellular 512GB":5500,"Cellular 1TB":5500,"WiFi 128GB":5500,"WiFi 256GB":5500,"WiFi 512GB":5500,"WiFi 1TB":5500},
     "iPad Pro 11-inch (2nd Gen)":{"Cellular 128GB":5000,"Cellular 256GB":5000,"Cellular 512GB":5000,"Cellular 1TB":5000,"WiFi 128GB":5000,"WiFi 256GB":5000,"WiFi 512GB":5000,"WiFi 1TB":5000},
     "iPad Pro 12.9-inch (3rd Gen)":{"Cellular 64GB":3000,"Cellular 256GB":3000,"Cellular 512GB":3000,"Cellular 1TB":3000,"WiFi 64GB":3000,"WiFi 256GB":3000,"WiFi 512GB":3000,"WiFi 1TB":3000},
-    "iPad Pro 11-inch":{"Cellular 64GB":3000,"Cellular 256GB":3000,"Cellular 512GB":3000,"Cellular 1TB":3000,"Cellular (4G) 64GB":3000,"Cellular (4G) 256GB":3000,"Cellular (4G) 512GB":3000,"Cellular (4G) 1TB":3000},
+    "iPad Pro 11-inch":{"Cellular 64GB":3000,"Cellular 256GB":3000,"Cellular 512GB":3000,"Cellular 1TB":3000,"WiFi 64GB":3000,"WiFi 256GB":3000,"WiFi 512GB":3000,"WiFi 1TB":3000},
     "iPad Air 13-inch (M3)":{"Cellular 128GB":11000,"Cellular 256GB":11000,"Cellular 512GB":11000,"Cellular 1TB":11000,"WiFi 128GB":11000,"WiFi 256GB":11000,"WiFi 512GB":11000,"WiFi 1TB":11000},
-    "iPad Air 13-inch (M2)":{"Cellular 128GB":7000,"Cellular 256GB":7000,"Cellular 512GB":7000,"Cellular 1TB":7000,"WiFi 128GB":7000,"WiFi 256GB":7000,"WiFi 512GB":7000,"WiFi 1TB":7000},
+    "iPad Air 13-inch (M2)":{"Cellular 128GB":7500,"Cellular 256GB":7500,"Cellular 512GB":7500,"Cellular 1TB":7500,"WiFi 128GB":7500,"WiFi 256GB":7500,"WiFi 512GB":7500,"WiFi 1TB":7500},
     "iPad Air 11-inch (M3)":{"Cellular 128GB":9500,"Cellular 256GB":9500,"Cellular 512GB":9500,"Cellular 1TB":9500,"WiFi 128GB":9500,"WiFi 256GB":9500,"WiFi 512GB":9500,"WiFi 1TB":9500},
-    "iPad Air 11-inch (M2)":{"Cellular 128GB":6000,"Cellular 256GB":6000,"Cellular 512GB":6000,"Cellular 1TB":6000,"WiFi 128GB":6000,"WiFi 256GB":6000,"WiFi 512GB":6000,"WiFi 1TB":6000},
-    "iPad Air 5":{"Cellular 64GB":3800,"Cellular 256GB":3800,"WiFi 64GB":3800,"WiFi 256GB":3800},
-    "iPad Air 4":{"Cellular 64GB":2500,"Cellular 256GB":2500,"WiFi 64GB":2500,"WiFi 256GB":2500},
-    "iPad A16":{"Cellular 128GB":5000,"Cellular 256GB":5000,"Cellular 512GB":5000,"WiFi 128GB":5000,"WiFi 256GB":5000,"WiFi 512GB":5000},
-    "iPad 10":{"Cellular 64GB":2800,"Cellular 256GB":2800,"WiFi 64GB":2800,"WiFi 256GB":2800},
-    "iPad 9":{"Cellular 64GB":1500,"Cellular 256GB":1500,"WiFi 64GB":1500,"WiFi 256GB":1500},
-    "iPad mini A17 Pro":{"Cellular 128GB":4000,"Cellular 256GB":4000,"Cellular 512GB":4000,"WiFi 128GB":4000,"WiFi 256GB":4000,"WiFi 512GB":4000},
-    "iPad mini 6":{"Cellular 64GB":3000,"Cellular 256GB":3000,"WiFi 64GB":3000,"WiFi 256GB":3000}
+    "iPad Air 11-inch (M2)":{"Cellular 128GB":6500,"Cellular 256GB":6500,"Cellular 512GB":6500,"Cellular 1TB":6500,"WiFi 128GB":6500,"WiFi 256GB":6500,"WiFi 512GB":6500,"WiFi 1TB":6500},
+    "iPad Air 5":{"Cellular 64GB":5300,"Cellular 256GB":5300,"WiFi 64GB":5300,"WiFi 256GB":5300},
+    "iPad Air 4":{"Cellular 64GB":3300,"Cellular 256GB":3300,"WiFi 64GB":3300,"WiFi 256GB":3300},
+    "iPad A16":{"Cellular 128GB":6400,"Cellular 256GB":6400,"Cellular 512GB":6400,"WiFi 128GB":6400,"WiFi 256GB":6400,"WiFi 512GB":6400},
+    "iPad 10":{"Cellular 64GB":4300,"Cellular 256GB":4300,"WiFi 64GB":4300,"WiFi 256GB":4300},
+    "iPad 9":{"Cellular 64GB":2300,"Cellular 256GB":2300,"WiFi 64GB":2300,"WiFi 256GB":2300},
+    "iPad mini A17 Pro":{"Cellular 128GB":4600,"Cellular 256GB":4600,"Cellular 512GB":4600,"WiFi 128GB":4600,"WiFi 256GB":4600,"WiFi 512GB":4600},
+    "iPad mini 6":{"Cellular 64GB":3500,"Cellular 256GB":3500,"WiFi 64GB":3500,"WiFi 256GB":3500}
   },
   "Apple Watch":{
-    "Apple Watch Ultra 2":{"Max Trade-in value":6700},
-    "Apple Watch Series 10":{"Max Trade-in value":3100},
+    "Apple Watch Ultra 3":{"Max Trade-in value":12000},
+    "Apple Watch Ultra 2":{"Max Trade-in value":7000},
+    "Apple Watch Series 11":{"Max Trade-in value":6500},
+    "Apple Watch Series 10":{"Max Trade-in value":3300},
     "Apple Watch Series 9":{"Max Trade-in value":2300},
-    "Apple Watch Ultra":{"Max Trade-in value":4300},
-    "Apple Watch Series 8":{"Max Trade-in value":1600}
+    "Apple Watch Ultra":{"Max Trade-in value":4500},
+    "Apple Watch Series 8":{"Max Trade-in value":1600},
+    "Apple Watch SE (3rd generation)":{"Max Trade-in value":2600}
   }
 };
 const TRADE_IN_TYPES=["iPhone","iPad","Apple Watch"];
@@ -7678,7 +7684,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="14.09.2026-23:13-ONE";
+var APP_VERSION="14.09.2026-23:45-ONE";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
