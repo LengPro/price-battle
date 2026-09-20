@@ -2037,6 +2037,89 @@ Object.keys(CSV_APPLECARE_PRICE_UPDATE).forEach(function(item){
   ensureImportedProduct(itemCat,itemModel,itemSpec,item);
 });
 /* APPLECARE CSV PRICE UPDATE END */
+/* CSV NAME SYNC START */
+const CSV_RENAME_ROWS={
+  "iPhone Acc - TechWoven case 18Pro/18Pro Max":"iPhone Acc - TechWoven 18 Pro/18 Pro Max/17 Pro/17 Pro Max",
+  "iPhone Acc - Silicone case 16/16 Plus/17e/17/17Pro/17Pro Max":"iPhone Acc - Silicone 18 Pro/ 18 Pro Max/17 Pro Max/17 Pro/17/17e/16/16 Plus",
+  "iPhone Acc - Clear case 16/16 Plus/17e/17/17Pro/17Pro Max/Air":"iPhone Acc - Clear case 18 Pro/ 18 Pro Max/17 Pro Max/17 Pro/17/17e/Air/16/16 Plus",
+  "iPhone Acc - Belkin Ultraglass 2 /17 Pro/17 Pro Max/Air":"iPhone Acc - Belkin Ultraglass 2 18 Pro/18 Pro Max/17 Pro/17 Pro Max/Air",
+  "iPad - AppleCare+ - iPad A16":"iPad - AppleCare+ - iPad",
+  "Watch - AppleCare+ - SE 3":"Watch - AppleCare+ - Apple Watch SE",
+  "Watch - AppleCare+ - Series 11":"Watch - AppleCare+ - Apple Series 12",
+  "Watch - AppleCare+ - Ultra 3":"Watch - AppleCare+ - Apple Ultra 4",
+  "AirPods - AppleCare+ - AirPods 4 ANC":"AirPods - AppleCare+ - AirPods 5 Wireless charge",
+  "AirPods - AppleCare+ - AirPods 4":"AirPods - AppleCare+ - AirPods 5"
+};
+const CSV_PRICE_OVERRIDES={
+  "iPhone Acc - Crossbody Strap":{TH:2290}
+};
+function syncCsvRowName(oldRow,newRow){
+  if(!oldRow||!newRow||oldRow===newRow)return;
+  if(CSV_PRICES[oldRow]){
+    CSV_PRICES[newRow]=Object.assign({},CSV_PRICES[oldRow],CSV_PRICES[newRow]||{});
+    delete CSV_PRICES[oldRow];
+  }
+  Object.keys(DEFAULT_PRODUCT_LINKS).forEach(function(cc){
+    if(DEFAULT_PRODUCT_LINKS[cc]&&DEFAULT_PRODUCT_LINKS[cc][oldRow]){
+      DEFAULT_PRODUCT_LINKS[cc][newRow]=DEFAULT_PRODUCT_LINKS[cc][newRow]||DEFAULT_PRODUCT_LINKS[cc][oldRow];
+      delete DEFAULT_PRODUCT_LINKS[cc][oldRow];
+    }
+  });
+  if(typeof CSV_NOTES!=="undefined"){
+    Object.keys(CSV_NOTES).forEach(function(cc){
+      if(CSV_NOTES[cc]&&CSV_NOTES[cc][oldRow]){
+        CSV_NOTES[cc][newRow]=CSV_NOTES[cc][newRow]||CSV_NOTES[cc][oldRow];
+        delete CSV_NOTES[cc][oldRow];
+      }
+    });
+  }
+  var oldParts=oldRow.split(" - ");
+  var newParts=newRow.split(" - ");
+  var oldCat=normalizeCategoryKey(oldParts[0]||"");
+  var newCat=normalizeCategoryKey(newParts[0]||"");
+  var oldModel=(oldParts[1]||"").trim();
+  var newModel=(newParts[1]||"").trim();
+  var oldSpec=(oldParts.slice(2).join(" - ")||"Standard").trim()||"Standard";
+  var newSpec=(newParts.slice(2).join(" - ")||"Standard").trim()||"Standard";
+  var group=MODEL_GROUPS[oldCat]&&MODEL_GROUPS[oldCat][oldModel];
+  if(group){
+    if(oldModel===newModel&&oldCat===newCat){
+      group.specs.forEach(function(sp){
+        if(sp.csvRow===oldRow||sp.label===oldSpec){
+          sp.csvRow=newRow;
+          sp.label=newSpec;
+        }
+      });
+    }else{
+      if(!MODEL_GROUPS[newCat])MODEL_GROUPS[newCat]={};
+      var target=MODEL_GROUPS[newCat][newModel]||{icon:group.icon,displayName:newModel,rawName:newModel,specs:[]};
+      group.specs.forEach(function(sp){
+        if(sp.csvRow===oldRow||sp.label===oldSpec){
+          sp.csvRow=newRow;
+          sp.label=newSpec;
+          if(!target.specs.find(function(x){return x.csvRow===sp.csvRow;}))target.specs.push(sp);
+        }
+      });
+      MODEL_GROUPS[newCat][newModel]=target;
+      group.specs=group.specs.filter(function(sp){return sp.csvRow!==newRow;});
+      if(!group.specs.length)delete MODEL_GROUPS[oldCat][oldModel];
+    }
+  }
+  if(CAT_ORDER[oldCat]){
+    CAT_ORDER[oldCat]=CAT_ORDER[oldCat].map(function(item){return item===oldModel?newModel:item;});
+    CAT_ORDER[oldCat]=CAT_ORDER[oldCat].filter(function(item,idx,arr){return arr.indexOf(item)===idx;});
+  }
+  if(newCat!==oldCat){
+    CAT_ORDER[newCat]=CAT_ORDER[newCat]||[];
+    if(CAT_ORDER[newCat].indexOf(newModel)<0)CAT_ORDER[newCat].push(newModel);
+  }
+}
+Object.keys(CSV_RENAME_ROWS).forEach(function(oldRow){syncCsvRowName(oldRow,CSV_RENAME_ROWS[oldRow]);});
+Object.keys(CSV_PRICE_OVERRIDES).forEach(function(row){
+  CSV_PRICES[row]=CSV_PRICES[row]||{};
+  Object.assign(CSV_PRICES[row],CSV_PRICE_OVERRIDES[row]);
+});
+/* CSV NAME SYNC END */
 /* RETIRED PRODUCT HIDE START */
 const RETIRED_PRODUCT_MODELS={
   iPhone:["iPhone 16 Plus","iPhone 17 Pro Max","iPhone 17 Pro"],
@@ -2098,7 +2181,7 @@ removeRetiredProducts();
 function loadState(){
   var rates=null,prices=null,cart=null;
   try{
-    var loadVer="14.09.2026-23:45-ONE";
+    var loadVer="20.09.2026-10:50-ONE";
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==loadVer){
       ["apc_prices","apc_custom","apc_product_links","apc_country_model_notes",
@@ -7684,7 +7767,7 @@ function initApp(){
   if(initApp._done)return;
   initApp._done=true;
   // Auto-clear localStorage if app version has changed
-var APP_VERSION="14.09.2026-23:45-ONE";
+var APP_VERSION="20.09.2026-10:50-ONE";
   try{
     var storedVer=localStorage.getItem("apc_app_version");
     if(storedVer!==APP_VERSION){
